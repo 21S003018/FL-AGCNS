@@ -5,6 +5,7 @@ import torch_geometric.nn as gnn
 import utils
 from torch import optim
 from torch.autograd import Variable
+import pickle
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -151,6 +152,131 @@ class Structure():
         self.y_11 = 'GMMConv(self.len, self.len,2,4)'#59,676
         self.y_12 = 'gnn.GatedGraphConv(self.len,3)'
         return
+
+class SonNet(nn.Module):
+    def __init__(self,nfeat, nclass):
+        path = 'tmp.pkl'
+        with open(path,'rb') as f:
+            self.supermask = pickle.load(f)
+        super(SonNet, self).__init__()
+        self.len = 64
+
+        self.x_blink = nn.Identity()
+        self.z_blink = nn.Identity()
+
+        self.x1 = 'nn.Linear(nfeat, self.len)'
+        self.x2 = 'nn.Linear(nfeat, self.len)'
+        self.x3 = 'nn.Linear(nfeat, self.len)'
+        self.x4 = 'nn.Linear(nfeat, self.len)'
+        self.x5 = 'nn.Linear(nfeat, self.len)'
+        self.x_1 = 'F.sigmoid'
+        self.x_2 = 'F.tanh'
+        self.x_3 = 'F.relu'
+        self.x_4 = 'F.softmax'
+        self.x_5 = 'nn.Identity()'
+
+        self.y_1 = 'gnn.GATConv(self.len, self.len,6,False)'  # 6:755
+        y_2_local_len = 64
+        self.y_2 = 'gnn.GINConv(nn.Sequential({},{},{},{}),train_eps =True)' \
+            .format('nn.Linear(self.len,y_2_local_len)',
+                    'nn.BatchNorm1d(y_2_local_len)',
+                    'nn.ReLU()',
+                    'nn.Linear(y_2_local_len, self.len)')  # 729
+        self.y_3 = 'gnn.SAGEConv(self.len, self.len)'  # 714
+        self.y_4 = 'gnn.GCNConv(self.len, self.len)'  # 683
+        self.y_5 = 'gnn.SGConv(self.len, self.len, 2, False)'  # 77,759
+        self.y_6 = 'gnn.APPNP(K=10,alpha=0.1)'  # 781# TODO
+        self.y_7 = 'gnn.AGNNConv()'  # 734,686
+        self.y_8 = 'gnn.ARMAConv(self.len, self.len,num_stacks =2)'  # 612,556
+        self.y_9 = 'gnn.FeaStConv(self.len, self.len,2)'  # 2:728,693
+        self.y_10 = 'gnn.GENConv(self.len, self.len)'  # 722,67
+        self.y_11 = 'GMMConv(self.len, self.len,2,4)'  # 59,676
+        self.y_12 = 'gnn.GatedGraphConv(self.len,3)'
+
+        self.z1 = 'nn.Linear(self.len, nclass)'
+        self.z2 = 'nn.Linear(self.len, nclass)'
+        self.z3 = 'nn.Linear(self.len, nclass)'
+        self.z4 = 'nn.Linear(self.len, nclass)'
+        self.z5 = 'nn.Linear(self.len, nclass)'
+        self.z_1 = 'F.sigmoid'
+        self.z_2 = 'F.tanh'
+        self.z_3 = 'F.relu'
+        self.z_4 = 'F.softmax'
+        self.z_5 = 'nn.Identity()'
+
+
+        exec('self.x{}=eval(self.x{})'.format(self.supermask[0],self.supermask[0]))
+        exec('self.x_{}=eval(self.x_{})'.format(self.supermask[0],self.supermask[0]))
+        exec('self.z{}=eval(self.z{})'.format(self.supermask[7],self.supermask[7]))
+        exec('self.z_{}=eval(self.z_{})'.format(self.supermask[7],self.supermask[7]))
+
+        for i in range(1, 6 + 1):
+            tmp_mask = self.supermask[i]
+            if tmp_mask == 0:
+                break
+            layer = 'self.y{}{}_{}'.format(int((tmp_mask - 1) / 12), i, (tmp_mask - 1) % 12 + 1)
+            exec("{}=eval(self.y_{})".format(layer, (tmp_mask - 1) % 12 + 1))
+        return
+    def forward(self, x, edge_index):
+        supermask = self.supermask
+        x = self.x_blink(x) if supermask[0] == 0 else eval('self.x_{}'.format(supermask[0]))(
+            eval('self.x{}'.format(supermask[0]))(x))
+        if supermask[1] == 0:
+            return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
+                eval('self.z{}'.format(supermask[7]))(x))
+
+        l1_input = x
+        l1_output = eval('self.y01_{}'.format(supermask[1]))(l1_input, edge_index)
+        if supermask[2] == 0:
+            x = l1_output
+            return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
+                eval('self.z{}'.format(supermask[7]))(x))
+
+        l2_input = x if (1 <= supermask[2] and supermask[2] <= 12) else l1_output
+        l2_output = eval('self.y{}2_{}'.format(int((supermask[2] - 1) / 12), (supermask[2] - 1) % 12 + 1))(l2_input,
+                                                                                                           edge_index)
+        if supermask[3] == 0:
+            x = (l1_output + l2_output) / 2
+            return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
+                eval('self.z{}'.format(supermask[7]))(x))
+
+        l3_input = x if (1 <= supermask[3] and supermask[3] <= 12) else (
+            l1_output if (13 <= supermask[3] and supermask[3] <= 24) else l2_output)
+        l3_output = eval('self.y{}3_{}'.format(int((supermask[3] - 1) / 12), (supermask[3] - 1) % 12 + 1))(l3_input,
+                                                                                                           edge_index)
+        if supermask[4] == 0:
+            x = (l1_output + l2_output + l3_output) / 3
+            return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
+                eval('self.z{}'.format(supermask[7]))(x))
+
+        l4_input = x if (supermask[4] in [1, 12]) else (l1_output if (supermask[4] in [12 + 1, 12 * 2]) else (
+            l2_output if (supermask[4] in [24 + 1, 12 * 3]) else l3_output))
+        l4_output = eval('self.y{}4_{}'.format(int((supermask[4] - 1) / 12), (supermask[4] - 1) % 12 + 1))(l4_input,
+                                                                                                           edge_index)
+        if supermask[5] == 0:
+            x = (l1_output + l2_output + l3_output + l4_output) / 4
+            return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
+                eval('self.z{}'.format(supermask[7]))(x))
+
+        l5_input = x if (supermask[5] in [1, 12]) else (l1_output if (supermask[5] in [12 + 1, 12 * 2]) else (
+            l2_output if (supermask[5] in [24 + 1, 12 * 3]) else (
+                l3_output if (supermask[5] in [36 + 1, 12 * 4]) else l4_output)))
+        l5_output = eval('self.y{}5_{}'.format(int((supermask[5] - 1) / 12), (supermask[5] - 1) % 12 + 1))(l5_input,
+                                                                                                           edge_index)
+        if supermask[6] == 0:
+            x = (l1_output + l2_output + l3_output + l4_output + l5_output) / 5
+            return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
+                eval('self.z{}'.format(supermask[7]))(x))
+
+        l6_input = x if (supermask[6] in [1, 12]) else (l1_output if (supermask[6] in [12 + 1, 12 * 2]) else (
+            l2_output if (supermask[6] in [24 + 1, 12 * 3]) else (l3_output if (supermask[6] in [36 + 1, 12 * 4]) else (
+                l4_output if (supermask[6] in [48 + 1, 12 * 5]) else l5_output))))
+        l6_output = eval('self.y{}6_{}'.format(int((supermask[6] - 1) / 12), (supermask[6] - 1) % 12 + 1))(l6_input,
+                                                                                                           edge_index)
+        x = (l1_output + l2_output + l3_output + l4_output + l5_output + l6_output) / 6
+
+        return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
+            eval('self.z{}'.format(supermask[7]))(x))
 
 class DynamicSonNet(nn.Module, Structure):
     def __init__(self,nfeat, nclass):
