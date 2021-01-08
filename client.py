@@ -3,7 +3,7 @@ from federal import *
 import torch.multiprocessing as mp
 
 
-parser = argparse.ArgumentParser(description='Search some files')
+parser = argparse.ArgumentParser(description='client end usage')
 parser.add_argument('--mode',
                     dest='mode',
                     action='store',
@@ -23,18 +23,6 @@ parser.add_argument('--client',
                     default=3,
                     help='the number of clients in the search')
 args = parser.parse_args()
-
-# clients = []
-# for j in range(args.client):
-#     clients.append(ClientCommonNet(j))
-# processes = []
-# for client in clients:
-#     process = mp.Process(target=client.work)
-#     process.start()
-#     processes.append(process)
-# for process in processes:
-#     process.join()
-# pass
 
 # start clients for evaluating a specific code
 if __name__ == '__main__':

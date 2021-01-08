@@ -1,7 +1,7 @@
 from federal import *
 import argparse
 import os
-parser = argparse.ArgumentParser(description='Search some files')
+parser = argparse.ArgumentParser(description='server end usage')
 
 parser.add_argument('--mode',
                     dest='mode',
@@ -59,15 +59,6 @@ elif args.dataset == 'citeseer':nfeat, nclass = 3703, 6
 elif args.dataset == 'pubmed':nfeat, nclass = 500, 3
 elif args.dataset == 'corafull':nfeat, nclass = 8710, 70
 elif args.dataset == 'physics':nfeat, nclass = 8415, 5
-
-
-# controller = ControllerCommonNet(args.client)
-# controller.configure('DynamicSonNet', 'cora', 1433, 7)
-# res = controller.work(epochs=50)
-# print('Test on sonnet of {}, get the result as\n{}'.format('cora', res))
-# controller.broadcast_with_waiting_res('ending')
-# controller.close()
-# pass
 
 controller = None
 if __name__ == '__main__':
