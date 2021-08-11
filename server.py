@@ -109,6 +109,8 @@ if __name__ == '__main__':
             supermask = model.parse_code(dummy_code)
             with open('tmp.pkl', 'wb') as f:
                 pickle.dump(supermask, f)
+            print('Dataset:{}~Supermask:{}\n'.format(
+                args.dataset, supermask))
             controller = ControllerCommonNet(args.client)
             controller.configure('SonNet', args.dataset, nfeat, nclass)
             res = controller.work(epochs=50)
