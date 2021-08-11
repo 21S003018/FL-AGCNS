@@ -1,6 +1,7 @@
 import argparse
 from federal import *
 import torch.multiprocessing as mp
+from models import EPOCHS
 
 
 parser = argparse.ArgumentParser(description='client end usage')
@@ -13,7 +14,7 @@ parser.add_argument('--mode',
 parser.add_argument('--model',
                     dest='model',
                     action='store',
-                    choices={'fl-agcns','fl-rl','fl-random','fl-darts'},
+                    choices={'fl-agcns', 'fl-rl', 'fl-random', 'fl-darts'},
                     default='fl-agcns',
                     help='search model')
 parser.add_argument('--client',
@@ -50,11 +51,27 @@ if __name__ == '__main__':
                 processes.append(process)
             for process in processes:
                 process.join()
+    elif args.model == "fl-graphnas":
+        for i in range(EPOCHS):
+            clients = []
+            for j in range(args.client):
+                clients.append(ClientCommonNet(j))
+            processes = []
+            for client in clients:
+                process = mp.Process(target=client.work)
+                process.start()
+                processes.append(process)
+            for process in processes:
+                process.join()
     else:
         clients = []
         for i in range(args.client):
-            if args.model == 'fl-agcns':clients.append(ClientSuperNet(i))
-            elif args.model == 'fl-darts':clients.append(ClientDarts(i))
+            if args.model == 'fl-agcns':
+                clients.append(ClientSuperNet(i))
+            elif args.model == 'fl-darts':
+                clients.append(ClientDarts(i))
+            elif args.model == 'fl-fednas':
+                clients.append()
         processes = []
         for client in clients:
             process = mp.Process(target=client.work)
