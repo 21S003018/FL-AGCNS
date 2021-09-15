@@ -14,7 +14,8 @@ IP_PORT = ('localhost', 5100)
 # BASE = 4
 # gpu = [5,6,7]
 BASE = 0
-gpu = [1, 2, 3]
+# gpu = [1, 2, 3]
+gpu = [0, 0, 0]
 COPY_NODE = False
 # hyper-parameter
 LR = 0.02
@@ -1007,158 +1008,158 @@ class ClientDarts(Client):
         return
 
 
-# class ControllerFedNas(Controller):
-#     def __init__(self, num_client):
-#         super(ControllerDarts, self).__init__(num_client)
-#         return
+class ControllerFedNas(Controller):
+    def __init__(self, num_client):
+        super(ControllerDarts, self).__init__(num_client)
+        return
 
-#     def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
-#         '''
-#         command sequence:
-#         supermasks
-#         loop:
-#             loop:train
-#             population
-#             loss
-#             val
-#         :param evo_epochs:
-#         :param sample_epochs:
-#         :param num_pop:
-#         :param sample_size:
-#         :return:
-#         '''
-#         Controller.work(self)
-#         for epoch in range(evo_epochs):
-#             st_time = time.time()
-#             # for sample_epoch in range(sample_epochs):
-#             self.broadcast_with_waiting_res('train')
-#             self.broadcast('get')
-#             grad_dicts = self.aggregate()
-#             self.broadcast(self.aggregate_grad(grad_dicts))
-#             self.blink_aggregate()
-#             # print('sample epoch~{}'.format(sample_epoch))
-#             # print('controller evoing')
-#             # loss
-#             self.broadcast_with_waiting_res('loss')
-#             self.broadcast('get')
-#             loss = 0
-#             losses = self.aggregate()
-#             for idx in range(self.num_client):
-#                 loss += losses[idx]
-#             print('train -epoch~{},loss={},use time:{}'.format(epoch,
-#                   loss, time.time() - st_time))
-#             if DEBUG:
-#                 self.broadcast_with_waiting_res('val')
-#                 self.broadcast('get')
-#                 accu = 0
-#                 accus = self.aggregate()
-#                 for idx in range(self.num_client):
-#                     accu += float(accus[idx])
-#                 print('accu {} on val dataset'.format(accu))
-#         return
+    def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
+        '''
+        command sequence:
+        supermasks
+        loop:
+            loop:train
+            population
+            loss
+            val
+        :param evo_epochs:
+        :param sample_epochs:
+        :param num_pop:
+        :param sample_size:
+        :return:
+        '''
+        Controller.work(self)
+        for epoch in range(evo_epochs):
+            st_time = time.time()
+            # for sample_epoch in range(sample_epochs):
+            self.broadcast_with_waiting_res('train')
+            self.broadcast('get')
+            grad_dicts = self.aggregate()
+            self.broadcast(self.aggregate_grad(grad_dicts))
+            self.blink_aggregate()
+            # print('sample epoch~{}'.format(sample_epoch))
+            # print('controller evoing')
+            # loss
+            self.broadcast_with_waiting_res('loss')
+            self.broadcast('get')
+            loss = 0
+            losses = self.aggregate()
+            for idx in range(self.num_client):
+                loss += losses[idx]
+            print('train -epoch~{},loss={},use time:{}'.format(epoch,
+                  loss, time.time() - st_time))
+            if DEBUG:
+                self.broadcast_with_waiting_res('val')
+                self.broadcast('get')
+                accu = 0
+                accus = self.aggregate()
+                for idx in range(self.num_client):
+                    accu += float(accus[idx])
+                print('accu {} on val dataset'.format(accu))
+        return
 
-#     def aggregate_accu(self, supermask):
-#         self.broadcast_with_waiting_res('val')
-#         self.broadcast(supermask)
-#         accu = 0
-#         accus = self.aggregate()
-#         for idx in range(self.num_client):
-#             accu += float(accus[idx])
-#         return accu
+    def aggregate_accu(self, supermask):
+        self.broadcast_with_waiting_res('val')
+        self.broadcast(supermask)
+        accu = 0
+        accus = self.aggregate()
+        for idx in range(self.num_client):
+            accu += float(accus[idx])
+        return accu
 
 
-# class ClientFedNas(Client):
-#     def __init__(self, id):
-#         Client.__init__(self, id)
-#         self.lambda = 0.1
-#         return
+class ClientFedNas(Client):
+    def __init__(self, id):
+        Client.__init__(self, id)
+        self.lamda = 0.1
+        return
 
-#     def process(self, command):
-#         Client.process(self, command)
-#         if command == 'model':
-#             self.process_model()
-#         if command == 'train':
-#             self.process_train()
-#         return
+    def process(self, command):
+        Client.process(self, command)
+        if command == 'model':
+            self.process_model()
+        if command == 'train':
+            self.process_train()
+        return
 
-#     def configure(self, model, dataset, copy_node=COPY_NODE):
-#         self.model = model
-#         self.optimizer = optim.Adam(
-#             model.parameters(), lr=LR, weight_decay=5e-6)
-#         self.a_optimizer = optim.Adam(
-#             model.get_arc_params(), lr=LR, weight_decay=5e-6)
-#         self.loss = None
-#         path = ''
-#         if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
-#             path = 'data/{}/{}_{}copynode.pkl'.format(
-#                 dataset, self.id, ''if copy_node else'un')
-#             with open(path, 'rb') as f:
-#                 self.data = pickle.load(f).to(self.device)
-#             print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
-#                   self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
-#         elif dataset.lower() == 'reddit':
-#             path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
-#                 dataset, self.id, ''if copy_node else'un')
-#             with open(path, 'rb') as f:
-#                 self.data = pickle.load(f)
-#                 for idx in range(len(self.data)):
-#                     self.data[idx].to(self.device)
-#         self.cal_rate(copy_node)
-#         return
+    def configure(self, model, dataset, copy_node=COPY_NODE):
+        self.model = model
+        self.optimizer = optim.Adam(
+            model.parameters(), lr=LR, weight_decay=5e-6)
+        self.a_optimizer = optim.Adam(
+            model.get_arc_params(), lr=LR, weight_decay=5e-6)
+        self.loss = None
+        path = ''
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+            path = 'data/{}/{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
+                self.data = pickle.load(f).to(self.device)
+            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
+                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
+        elif dataset.lower() == 'reddit':
+            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
+                self.data = pickle.load(f)
+                for idx in range(len(self.data)):
+                    self.data[idx].to(self.device)
+        self.cal_rate(copy_node)
+        return
 
-#     def process_train(self):
-#         self.model.train()
-#         self.recv()  # ;print('client~{} get supermasks'.format(self.id))
+    def process_train(self):
+        self.model.train()
+        self.recv()  # ;print('client~{} get supermasks'.format(self.id))
 
-#         # calculate the loss of training data
-#         y_predict = self.model(self.data.x, self.data.edge_index)
-#         loss = F.cross_entropy(
-#             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
-#         self.optimizer.zero_grad()
-#         loss.backward()  # ;print(time.time()-st_time)
+        # calculate the loss of training data
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+        self.optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
 
-#         y_predict = self.model(self.data.x, self.data.edge_index)
-#         loss = F.cross_entropy(
-#             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
-#         self.a_optimizer.zero_grad()
-#         loss.backward()  # ;print(time.time()-st_time)
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+        self.a_optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
 
-#         grads = self.get_grad_dict()
+        grads = self.get_grad_dict()
 
-#         # calculate the loss of the eval data
-#         y_predict = self.model(self.data.x, self.data.edge_index)
-#         loss = F.cross_entropy(
-#             y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
-#         self.optimizer.zero_grad()
-#         loss.backward()  # ;print(time.time()-st_time)
+        # calculate the loss of the eval data
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
+        self.optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
 
-#         y_predict = self.model(self.data.x, self.data.edge_index)
-#         loss = F.cross_entropy(
-#             y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
-#         self.a_optimizer.zero_grad()
-#         loss.backward()  # ;print(time.time()-st_time)
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
+        self.a_optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
 
-#         grad_eval = self.get_grad_dict()
+        grad_eval = self.get_grad_dict()
 
-#         # merge the grad of training data and val data
-#         for name, grad in grads.items():
-#             if grads[name] == None:
-#                 continue
-#             else:
-#                 grads[name] += self.lambda * grad_eval[name]
+        # merge the grad of training data and val data
+        for name, grad in grads.items():
+            if grads[name] == None:
+                continue
+            else:
+                grads[name] += self.lamda * grad_eval[name]
 
-#         self.send(grads)  # ;print('client~{} send out grad'.format(self.id))
-#         aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
-#         self.update_grad(aggr_grad)
-#         # self.end_analyse()
-#         self.loss = loss.item()
-#         # print('client~{} has loss:{}'.format(self.id,loss.item()))
-#         return
+        self.send(grads)  # ;print('client~{} send out grad'.format(self.id))
+        aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
+        self.update_grad(aggr_grad)
+        # self.end_analyse()
+        self.loss = loss.item()
+        # print('client~{} has loss:{}'.format(self.id,loss.item()))
+        return
 
-#     def process_val(self):
-#         self.recv()
-#         self.model.eval()
-#         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],
-#                               self.data.y[self.data.val_mask])
-#         self.send(accu * self.val_rate)
-#         return
+    def process_val(self):
+        self.recv()
+        self.model.eval()
+        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],
+                              self.data.y[self.data.val_mask])
+        self.send(accu * self.val_rate)
+        return

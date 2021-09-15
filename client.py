@@ -14,7 +14,8 @@ parser.add_argument('--mode',
 parser.add_argument('--model',
                     dest='model',
                     action='store',
-                    choices={'fl-agcns', 'fl-rl', 'fl-random', 'fl-darts'},
+                    choices={'fl-agcns', 'fl-rl', 'fl-random',
+                             'fl-darts', 'fl-graphnas', "fl-fednas"},
                     default='fl-agcns',
                     help='search model')
 parser.add_argument('--client',
@@ -63,6 +64,7 @@ if __name__ == '__main__':
                 processes.append(process)
             for process in processes:
                 process.join()
+            # break
     else:
         clients = []
         for i in range(args.client):
@@ -71,7 +73,7 @@ if __name__ == '__main__':
             elif args.model == 'fl-darts':
                 clients.append(ClientDarts(i))
             elif args.model == 'fl-fednas':
-                clients.append()
+                clients.append(ClientFedNas(i))
         processes = []
         for client in clients:
             process = mp.Process(target=client.work)

@@ -6,6 +6,7 @@ import utils
 from torch import optim
 from torch.autograd import Variable
 import pickle
+import numpy as np
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -14,7 +15,7 @@ warnings.filterwarnings("ignore")
 HIDDENSIZE = 32
 INPUT_SIZE = HIDDENSIZE
 LAYERS = 1
-LR = 0.02
+LR_GRAPHNAS = 0.00035
 EPOCHS = 100
 
 
@@ -765,7 +766,11 @@ class GraphNas(nn.Module):
         return
 
     def generate_code(self):
-        h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE))).cpu()
+        h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE)))
+        if torch.cuda.is_available():
+            h_state = h_state.cuda()
+        else:
+            h_state = h_state.cpu()
         x = h_state
         res = []
         for i in range(1, 8 + 1):
@@ -780,9 +785,10 @@ class GraphNas(nn.Module):
         idx = 1
         for code in dummy_code:
             exec(
-                "loss{} = loss{} + (torch.log(torch.max(code))*({} - self.b))".format(idx, idx - 1, R))
+                "loss{} = loss{} + (-torch.log(torch.max(code))*({} - self.b))".format(idx, idx - 1, R))
             idx += 1
         self.b = self.beta * self.b + (1 - self.beta) * R
+        print("reward~R:{},b:{}".format(R, self.b))
         return eval("loss{}".format(len(dummy_code)))
 
     def parse_code(self, dummy_code):
@@ -790,8 +796,8 @@ class GraphNas(nn.Module):
         idx = 1
         for code in dummy_code:
             if idx == 1 or idx == 8:
-                supermask.append(np.argmax(code) + 1)
+                supermask.append(int(torch.argmax(code) + 1))
             else:
-                supermask.append(np.argmax(code))
+                supermask.append(int(torch.argmax(code)))
             idx += 1
         return supermask
