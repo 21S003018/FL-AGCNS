@@ -6,11 +6,22 @@ import utils
 from torch import optim
 from torch.autograd import Variable
 import pickle
+import numpy as np
 
 import warnings
 warnings.filterwarnings("ignore")
 
 
+<<<<<<< HEAD
+=======
+HIDDENSIZE = 32
+INPUT_SIZE = HIDDENSIZE
+LAYERS = 1
+LR_GRAPHNAS = 0.00035
+EPOCHS = 100
+
+
+>>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
 class Identity(nn.Module):
     """
     A Simple PyTorch Implementation of Logistic Regression.
@@ -630,6 +641,116 @@ class Darts(nn.Module, Structure):
         return supermask
 
 
+<<<<<<< HEAD
+=======
+class FedNas(nn.Module, Structure):
+    def __init__(self, nfeat, nclass):
+        super(Darts, self).__init__()
+        self.len = 64
+        self.x_blink = nn.Identity()
+        self.z_blink = nn.Identity()
+
+        self.x1 = nn.Linear(nfeat, self.len)
+        self.x2 = nn.Linear(nfeat, self.len)
+        self.x3 = nn.Linear(nfeat, self.len)
+        self.x4 = nn.Linear(nfeat, self.len)
+        self.x5 = nn.Linear(nfeat, self.len)
+        self.x_1 = F.sigmoid
+        self.x_2 = F.tanh
+        self.x_3 = F.relu
+        self.x_4 = F.softmax
+        self.x_5 = nn.Identity()
+
+        Structure.set_y(self)
+
+        for j in range(1, 6 + 1):
+            for i in range(0, j):
+                for t in range(1, 12 + 1):
+                    layer = 'self.y{}{}_{}'.format(i, j, t)
+                    exec("{}=eval(self.y_{})".format(layer, t))
+
+        self.z1 = nn.Linear(self.len, nclass)
+        self.z2 = nn.Linear(self.len, nclass)
+        self.z3 = nn.Linear(self.len, nclass)
+        self.z4 = nn.Linear(self.len, nclass)
+        self.z5 = nn.Linear(self.len, nclass)
+        self.z_1 = F.sigmoid
+        self.z_2 = F.tanh
+        self.z_3 = F.relu
+        self.z_4 = F.softmax
+        self.z_5 = nn.Identity()
+
+        self.tau = 10
+        self.register_parameter('alpha', nn.Parameter(
+            Variable(torch.ones(5)/2, requires_grad=True)))
+        self.register_parameter('gamma', nn.Parameter(
+            Variable(torch.ones(5)/2, requires_grad=True)))
+        for j in range(1, 7):
+            self.register_parameter('beta{}'.format(j), nn.Parameter(
+                eval('Variable(torch.ones({})/2,requires_grad=True)'.format(j*12+1))))
+        return
+
+    def forward(self, x, edge_index):
+        device = self.alpha.device
+        tmp_lis = []
+        tmp_alpha = F.softmax(self.alpha)
+        for i in range(5):
+            tmp_lis.append(
+                eval('tmp_alpha[{}] * self.x_{}(self.x{}(x))'.format(i, i+1, i+1)))
+        x = torch.sum(torch.stack(tmp_lis, axis=0), dim=0)
+        y0 = x
+        for j in range(1, 6 + 1):
+            tmp_lis = []
+            exec('tmp_beta{} = torch.rand(j*12+1)'.format(j))
+            for i in range(j):
+                exec('tmp_beta{}[{}:{}] = F.softmax(self.beta{}[{}:{}])'.format(
+                    j, i*12+1, i*12+13, j, i*12+1, i*12+13))
+            for i in range(1, j*12+1):
+                tmp_lis.append(eval('self.y{}{}_{}(y{},edge_index)*tmp_beta{}[i]'.format(
+                    int((i-1)/12), j, (i-1) % 12+1, int((i-1)/12), j)))
+            exec(
+                'y{} = torch.sum(torch.stack(tmp_lis,axis=0),dim=0) + 0*self.beta{}[0]**2'.format(j, j))
+        x = eval('y1') + eval('y2') + eval('y3') + \
+            eval('y4') + eval('y5') + eval('y6')
+        tmp_lis = []
+        tmp_gamma = F.softmax(self.gamma)
+        for i in range(5):
+            tmp_lis.append(
+                eval('tmp_gamma[{}] * self.z_{}(self.z{}(x))'.format(i, i + 1, i + 1)))
+        x = torch.sum(torch.stack(tmp_lis, axis=0), dim=0)
+        return x
+
+    def generate_supermask(self):
+        device = self.alpha.device
+        supermask = [0, 0, 0, 0, 0, 0, 0, 0]
+        max_alpha = torch.Tensor([-1000000]).to(device)
+        arg_max_alpha = None
+        for idx in range(5):
+            if eval('torch.abs(self.alpha[{}])'.format(idx)) > max_alpha:
+                max_alpha = eval('torch.abs(self.alpha[{}])'.format(idx))
+                arg_max_alpha = idx
+        supermask[0] = arg_max_alpha + 1
+
+        max_alpha = torch.Tensor([-1000000]).to(device)
+        arg_max_alpha = None
+        for idx in range(5):
+            if eval('torch.abs(self.gamma[{}])'.format(idx)) > max_alpha:
+                max_alpha = eval('torch.abs(self.gamma[{}])'.format(idx))
+                arg_max_alpha = idx
+        supermask[7] = arg_max_alpha + 1
+
+        for j in range(1, 6 + 1):
+            max_alpha = torch.Tensor([-1000000]).to(device)
+            arg_max_alpha = None
+            for i in range(j*12+1):
+                if eval('torch.abs(self.beta{}[{}])'.format(j, i)) > max_alpha:
+                    max_alpha = eval('torch.abs(self.beta{}[{}])'.format(j, i))
+                    arg_max_alpha = i
+            supermask[j] = arg_max_alpha
+        return supermask
+
+
+>>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
 class GraphNas(nn.Module):
     def __init__(self, INPUT_SIZE):
         super(GraphNas, self).__init__()
@@ -651,7 +772,15 @@ class GraphNas(nn.Module):
         return
 
     def generate_code(self):
+<<<<<<< HEAD
         h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE))).cpu()
+=======
+        h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE)))
+        if torch.cuda.is_available():
+            h_state = h_state.cuda()
+        else:
+            h_state = h_state.cpu()
+>>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
         x = h_state
         res = []
         for i in range(1, 8 + 1):
@@ -666,9 +795,16 @@ class GraphNas(nn.Module):
         idx = 1
         for code in dummy_code:
             exec(
+<<<<<<< HEAD
                 "loss{} = loss{} + (torch.log(torch.max(code))*({} - self.b))".format(idx, idx - 1, R))
             idx += 1
         self.b = self.beta * self.b + (1 - self.beta) * R
+=======
+                "loss{} = loss{} + (-torch.log(torch.max(code))*({} - self.b))".format(idx, idx - 1, R))
+            idx += 1
+        self.b = self.beta * self.b + (1 - self.beta) * R
+        print("reward~R:{},b:{}".format(R, self.b))
+>>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
         return eval("loss{}".format(len(dummy_code)))
 
     def parse_code(self, dummy_code):
@@ -676,8 +812,14 @@ class GraphNas(nn.Module):
         idx = 1
         for code in dummy_code:
             if idx == 1 or idx == 8:
+<<<<<<< HEAD
                 supermask.append(np.argmax(code) + 1)
             else:
                 supermask.append(np.argmax(code))
+=======
+                supermask.append(int(torch.argmax(code) + 1))
+            else:
+                supermask.append(int(torch.argmax(code)))
+>>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
             idx += 1
         return supermask

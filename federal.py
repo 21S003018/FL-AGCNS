@@ -10,11 +10,12 @@ from numpy.random import randint
 import numpy as np
 
 # static configuration
-IP_PORT = ('localhost',5100)
+IP_PORT = ('localhost', 5100)
 # BASE = 4
 # gpu = [5,6,7]
 BASE = 0
-gpu = [1,2,3]
+# gpu = [1, 2, 3]
+gpu = [0, 0, 0]
 COPY_NODE = False
 # hyper-parameter
 LR = 0.02
@@ -25,21 +26,23 @@ SAMPLE_SIZE = 20
 # mode
 DEBUG = False
 
+
 class Controller():
-    def __init__(self,num_client):
+    def __init__(self, num_client):
         '''
         static configuration for num of clients, socket, device
         :param num_client:
         '''
         self.num_client = num_client
         # self.device = torch.device('cpu')
-        self.device = torch.device('cuda:{}'.format(BASE) if torch.cuda.is_available() else 'cpu')
+        self.device = torch.device('cuda:{}'.format(
+            BASE) if torch.cuda.is_available() else 'cpu')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(utils.get_ip_port())
         self.socket.listen(3)
         return
 
-    def configure(self,model_name,dataset,nfeat,nclass):
+    def configure(self, model_name, dataset, nfeat, nclass):
         '''
         dynamic configuration for model,dataset,optimizer
         accept the connect request from client
@@ -49,15 +52,18 @@ class Controller():
         :param nclass:
         :return:
         '''
-        self.model = eval(model_name)(nfeat,nclass).to(self.device);self.nfeat=nfeat;self.nclass=nclass
+        self.model = eval(model_name)(nfeat, nclass).to(self.device)
+        self.nfeat = nfeat
+        self.nclass = nclass
         self.model_name = model_name
         self.dataset = dataset
-        self.optimizer = optim.Adam(self.model.parameters(), lr=LR,weight_decay=5e-6)
+        self.optimizer = optim.Adam(
+            self.model.parameters(), lr=LR, weight_decay=5e-6)
         # log
         print('controller configures over, waiting for connect request from clients')
         self.clients = []
         for idx in range(self.num_client):
-            client,addr = self.socket.accept()
+            client, addr = self.socket.accept()
             self.clients.append(client)
         return
 
@@ -72,17 +78,20 @@ class Controller():
         '''
         # configure
         self.broadcast_with_waiting_res('dataset')
-        self.broadcast_with_waiting_res(self.dataset);print('controller broadcasts datasetname:{} over'.format(self.dataset))
+        self.broadcast_with_waiting_res(self.dataset)
+        print('controller broadcasts datasetname:{} over'.format(self.dataset))
         # time.sleep(1)
         self.broadcast_with_waiting_res('model')
         self.broadcast_with_waiting_res(self.model_name)
         # self.broadcast_with_waiting_res(utils.serialize_model(self.model));print('controller broadcasts model over')
-        self.broadcast(utils.serialize_model(self.model));self.blink_aggregate();print('controller broadcasts model over')
+        self.broadcast(utils.serialize_model(self.model))
+        self.blink_aggregate()
+        print('controller broadcasts model over')
         # train
         # ...
         return
 
-    def broadcast(self,message):
+    def broadcast(self, message):
         '''
         broadcast the message to clients
         without waiting for the response
@@ -93,7 +102,7 @@ class Controller():
             utils.socket_send(socket, message)
         return
 
-    def broadcast_with_waiting_res(self,message):
+    def broadcast_with_waiting_res(self, message):
         '''
         send out the message and waiting for okk as response
         :param message:
@@ -124,7 +133,7 @@ class Controller():
             socket.recv(1024)
         return
 
-    def aggregate_grad(self,grad_dicts):
+    def aggregate_grad(self, grad_dicts):
         '''
         aggregate the gradient
         :param grad_dicts:
@@ -135,31 +144,33 @@ class Controller():
             # print(name,grad_dicts[0][name],grad_dicts[1][name],grad_dicts[2][name])
             if not grad_dicts[0][name] == None:
                 avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
-                                      + grad_dicts[1][name].to(self.device)\
-                                      + grad_dicts[2][name].to(self.device)
+                    + grad_dicts[1][name].to(self.device)\
+                    + grad_dicts[2][name].to(self.device)
             else:
                 avg_grad_dict[name] = None
         self.update_grad(avg_grad_dict)
         return avg_grad_dict
 
-    def update_grad(self,grad_dict):
+    def update_grad(self, grad_dict):
         '''
         update the model with grad_dict
         :param grad_dict:
         :return:
         '''
-        for name,grad in grad_dict.items():
-            if not name.__contains__('.') and (name in ['alpha','gamma'] or name.__contains__('beta')):
+        for name, grad in grad_dict.items():
+            if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
                 exec('self.model.{}.grad = grad'.format(name))
                 continue
 
             name += 'ending'
             slots = name.split('.')
-            layer = name.replace('.{}'.format(slots[len(slots)-1]),'')
+            layer = name.replace('.{}'.format(slots[len(slots)-1]), '')
             if slots[len(slots)-2].isdigit():
-                layer = layer.replace('.{}'.format(slots[len(slots)-2]),'[{}]'.format(slots[len(slots)-2]))
-            label = slots[len(slots)-1].replace('ending','')
-            exec("self.model.{}._parameters['{}'].grad = grad".format(layer, label))
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            label = slots[len(slots)-1].replace('ending', '')
+            exec("self.model.{}._parameters['{}'].grad = grad".format(
+                layer, label))
         self.optimizer.step()
         return
 
@@ -181,8 +192,9 @@ class Controller():
         self.socket.close()
         return
 
+
 class Client(Contacter):
-    def __init__(self,id):
+    def __init__(self, id):
         '''
         static configuration for device, socket
         :param id:
@@ -190,12 +202,13 @@ class Client(Contacter):
         super(Client, self).__init__()
         self.id = id
         # self.device = torch.device('cpu')
-        self.device = torch.device('cuda:{}'.format(gpu[id]) if torch.cuda.is_available() else 'cpu')
+        self.device = torch.device('cuda:{}'.format(
+            gpu[id]) if torch.cuda.is_available() else 'cpu')
         self.ip_port = utils.get_ip_port(self.id)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         return
 
-    def configure(self,model,dataset,copy_node=COPY_NODE):
+    def configure(self, model, dataset, copy_node=COPY_NODE):
         '''
         dynamic configuration for model,optimizer,rate,dataset
         :param model: nn.Module
@@ -204,18 +217,21 @@ class Client(Contacter):
         :return:
         '''
         self.model = model
-        self.optimizer = optim.Adam(model.parameters(), lr=LR,weight_decay=5e-6)
-        self.loss=None
+        self.optimizer = optim.Adam(
+            model.parameters(), lr=LR, weight_decay=5e-6)
+        self.loss = None
         path = ''
-        if dataset.lower() in ['cora','citeseer','pubmed','corafull','physics']:
-            path = 'data/{}/{}_{}copynode.pkl'.format(dataset,self.id,''if copy_node else'un')
-            with open(path,'rb') as f:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+            path = 'data/{}/{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
                 self.data = pickle.load(f).to(self.device)
-            print(self.data.x.device,self.data.y.device,self.data.edge_index.device,
-                  self.data.train_mask.device,self.data.val_mask.device,self.data.test_mask.device)
+            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
+                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
         elif dataset.lower() == 'reddit':
-            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(dataset,self.id,''if copy_node else'un')
-            with open(path,'rb') as f:
+            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
                 self.data = pickle.load(f)
                 for idx in range(len(self.data)):
                     self.data[idx].to(self.device)
@@ -232,13 +248,16 @@ class Client(Contacter):
         command = None
         while self.is_continue(command):
             # print('client{} get {}'.format(self.id,command))
-            command = self.recv_with_res()#;print('client{} recv "{}",processing...'.format(self.id,command))
-            self.process(command)#;print('client{} processes "{}" over'.format(self.id,command))
-        self.socket.close();print('client{} closes'.format(self.id))
+            # ;print('client{} recv "{}",processing...'.format(self.id,command))
+            command = self.recv_with_res()
+            # ;print('client{} processes "{}" over'.format(self.id,command))
+            self.process(command)
+        self.socket.close()
+        print('client{} closes'.format(self.id))
         # self.end_analyse()
         return
 
-    def is_continue(self,command):
+    def is_continue(self, command):
         '''
         'ending' denotes the end of connection
         :param command:
@@ -250,7 +269,7 @@ class Client(Contacter):
             return False
         return True
 
-    def process(self,command):
+    def process(self, command):
         if command == 'dataset':
             self.process_dataset()
         elif command == 'val':
@@ -268,28 +287,28 @@ class Client(Contacter):
         if self.dataset_name.lower() == 'cora':
             self.nfeat, self.nclass = 1433, 7
             self.nnode = 2708
-            self.num_train_node,self.num_val_node,self.num_test_node = 140,500,1000
+            self.num_train_node, self.num_val_node, self.num_test_node = 140, 500, 1000
         elif self.dataset_name.lower() == 'citeseer':
             self.nfeat, self.nclass = 3703, 6
             self.nnode = 3327
-            self.num_train_node,self.num_val_node,self.num_test_node = 120,500,1000
+            self.num_train_node, self.num_val_node, self.num_test_node = 120, 500, 1000
         elif self.dataset_name.lower() == 'pubmed':
             self.nfeat, self.nclass = 500, 3
             self.nnode = 19717
-            self.num_train_node,self.num_val_node,self.num_test_node = 60,500,1000
+            self.num_train_node, self.num_val_node, self.num_test_node = 60, 500, 1000
         elif self.dataset_name.lower() == 'corafull':
             self.nfeat, self.nclass = 8710, 70
             self.nnode = 19793
-            self.num_train_node,self.num_val_node,self.num_test_node = 1395,500,1000
+            self.num_train_node, self.num_val_node, self.num_test_node = 1395, 500, 1000
         elif self.dataset_name.lower() == 'physics':
-            self.nfeat, self.nclass = 8415,5
+            self.nfeat, self.nclass = 8415, 5
             self.nnode = 34493
-            self.num_train_node,self.num_val_node,self.num_test_node = 100,500,1000
+            self.num_train_node, self.num_val_node, self.num_test_node = 100, 500, 1000
 
         elif self.dataset_name.lower() == 'reddit':
             self.nfeat, self.nclass = 602, 41
             self.nnode = 232965
-            self.num_train_node,self.num_val_node,self.num_test_node = 153431,23831,55703
+            self.num_train_node, self.num_val_node, self.num_test_node = 153431, 23831, 55703
         return
 
     def process_model(self):
@@ -299,44 +318,53 @@ class Client(Contacter):
         '''
         print('process model')
         model_name = self.recv_with_res()
-        model = eval(model_name)(self.nfeat,self.nclass)
+        model = eval(model_name)(self.nfeat, self.nclass)
         param_dict = self.recv_with_res()
         # chuange the parameters of model
-        for name,param in param_dict.items():
-            if not name.__contains__('.') and (name in ['alpha','gamma'] or name.__contains__('beta')):
+        for name, param in param_dict.items():
+            if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
                 exec('model.{} = param'.format(name))
                 continue
             name += 'ending'
-            slots = name.split('.')#;print('slots',slots)
-            layer = name.replace('.{}'.format(slots[len(slots)-1]),'')#;print('layer',layer)
+            slots = name.split('.')  # ;print('slots',slots)
+            # ;print('layer',layer)
+            layer = name.replace('.{}'.format(slots[len(slots)-1]), '')
             if slots[len(slots)-2].isdigit():
-                layer = layer.replace('.{}'.format(slots[len(slots)-2]),'[{}]'.format(slots[len(slots)-2]))
-            label = slots[len(slots)-1].replace('ending','')
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            label = slots[len(slots)-1].replace('ending', '')
             exec("model.{}._parameters['{}'] = param".format(layer, label))
         model = model.to(self.device)
-        self.configure(model,self.dataset_name)
+        self.configure(model, self.dataset_name)
         return
 
-    def cal_rate(self,copy_node):
+    def cal_rate(self, copy_node):
         '''
         calculate the proportion of the {train,val,test} set and the complete dataset's
         :param copy_node:
         :return:
         '''
-        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed','corafull','physics']:
+        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
             # path = 'data/reddit/subg_{}copynode.pkl'.format('' if copy_node else 'un')
             # with open(path, 'rb') as f:
             #     data = pickle.load(f)
-            self.train_rate = float(torch.sum(self.data.train_mask))/self.num_train_node
-            self.val_rate = float(torch.sum(self.data.val_mask))/self.num_val_node
-            self.test_rate = float(torch.sum(self.data.test_mask))/self.num_test_node
+            self.train_rate = float(
+                torch.sum(self.data.train_mask))/self.num_train_node
+            self.val_rate = float(
+                torch.sum(self.data.val_mask))/self.num_val_node
+            self.test_rate = float(
+                torch.sum(self.data.test_mask))/self.num_test_node
         elif self.dataset_name.lower() == 'reddit':
-            path = 'data/reddit/subg_{}copynode.pkl'.format(''if copy_node else'un')
-            with open(path,'rb') as f:
+            path = 'data/reddit/subg_{}copynode.pkl'.format(
+                ''if copy_node else'un')
+            with open(path, 'rb') as f:
                 data = pickle.load(f)
-            self.train_rate = float(torch.sum(data[self.id].train_mask)) / self.num_train_node
-            self.val_rate = float(torch.sum(data[self.id].val_mask)) / self.num_val_node
-            self.test_rate = float(torch.sum(data[self.id].test_mask)) / self.num_test_node
+            self.train_rate = float(
+                torch.sum(data[self.id].train_mask)) / self.num_train_node
+            self.val_rate = float(
+                torch.sum(data[self.id].val_mask)) / self.num_val_node
+            self.test_rate = float(
+                torch.sum(data[self.id].test_mask)) / self.num_test_node
         # print(self.train_rate,self.val_rate,self.test_rate)
         # print(torch.sum(self.data.test_mask))
         return
@@ -345,36 +373,42 @@ class Client(Contacter):
         '''as the name of function'''
         grad = {}
         for name, params in self.model.named_parameters():
-            if not name.__contains__('.') and (name in ['alpha','gamma'] or name.__contains__('beta')):
+            if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
                 grad[name] = eval('self.model.{}.grad'.format(name))
                 continue
 
             name += 'ending'
             slots = name.split('.')
-            layer = name.replace('.{}'.format(slots[len(slots)-1]),'');name = name.replace('ending','')
+            layer = name.replace('.{}'.format(slots[len(slots)-1]), '')
+            name = name.replace('ending', '')
             if slots[len(slots)-2].isdigit():
-                layer = layer.replace('.{}'.format(slots[len(slots)-2]),'[{}]'.format(slots[len(slots)-2]))
-            label = slots[len(slots)-1].replace('ending','')
-            grad[name] = eval("self.model.{}._parameters['{}'].grad".format(layer,label))
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            label = slots[len(slots)-1].replace('ending', '')
+            grad[name] = eval(
+                "self.model.{}._parameters['{}'].grad".format(layer, label))
             if not grad[name] == None:
                 grad[name] *= self.train_rate
         return grad
-    def update_grad(self,grad_dict):
-        for name,grad in grad_dict.items():
+
+    def update_grad(self, grad_dict):
+        for name, grad in grad_dict.items():
             if not grad == None:
                 grad = grad.to(self.device)
 
-            if not name.__contains__('.') and (name in ['alpha','gamma'] or name.__contains__('beta')):
+            if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
                 exec('self.model.{}.grad = grad'.format(name))
                 continue
 
             name += 'ending'
             slots = name.split('.')
-            layer = name.replace('.{}'.format(slots[len(slots)-1]),'')
+            layer = name.replace('.{}'.format(slots[len(slots)-1]), '')
             if slots[len(slots)-2].isdigit():
-                layer = layer.replace('.{}'.format(slots[len(slots)-2]),'[{}]'.format(slots[len(slots)-2]))
-            label = slots[len(slots)-1].replace('ending','')
-            exec("self.model.{}._parameters['{}'].grad = grad".format(layer, label))
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            label = slots[len(slots)-1].replace('ending', '')
+            exec("self.model.{}._parameters['{}'].grad = grad".format(
+                layer, label))
         self.optimizer.step()
         return
 
@@ -402,10 +436,11 @@ class Client(Contacter):
 
 
 class ControllerSuperNet(Controller):
-    def __init__(self,num_client):
+    def __init__(self, num_client):
         super(ControllerSuperNet, self).__init__(num_client)
         return
-    def work(self,evo_epochs=EVO_EPOCH,sample_epochs=SAMPLE_EPOCH,num_pop=NUM_POP,sample_size=SAMPLE_SIZE):
+
+    def work(self, evo_epochs=EVO_EPOCH, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
         '''
         command sequence:
         supermasks
@@ -437,12 +472,13 @@ class ControllerSuperNet(Controller):
                 self.blink_aggregate()
                 print('sample epoch~{}'.format(sample_epoch))
             self.broadcast_with_waiting_res('population')
-            self.broadcast('get')#;print('client processing pop')
+            self.broadcast('get')  # ;print('client processing pop')
             populations = self.aggregate()
             print('controller evoing')
-            self.evo()#;print('controller evo over')
+            self.evo()  # ;print('controller evo over')
             # self.update_pop(populations)
-            self.update_pop2(0.5*pow(0.99,epoch),populations)#;print('updating pop over')
+            # ;print('updating pop over')
+            self.update_pop2(0.5*pow(0.99, epoch), populations)
             # loss
             self.broadcast_with_waiting_res('loss')
             self.broadcast('get')
@@ -450,7 +486,8 @@ class ControllerSuperNet(Controller):
             losses = self.aggregate()
             for idx in range(self.num_client):
                 loss += losses[idx]
-            print('train evo-epoch~{},loss={},use time:{}'.format(epoch, loss, time.time() - st_time))
+            print('train evo-epoch~{},loss={},use time:{}'.format(epoch,
+                  loss, time.time() - st_time))
             if DEBUG:
                 for supermask in self.supermasks:
                     self.broadcast_with_waiting_res('val')
@@ -459,11 +496,12 @@ class ControllerSuperNet(Controller):
                     accus = self.aggregate()
                     for idx in range(self.num_client):
                         accu += float(accus[idx])
-                    print('use sonnet {} with accu {} on val dataset'.format(supermask, accu))
+                    print('use sonnet {} with accu {} on val dataset'.format(
+                        supermask, accu))
         self.get_best_supermask()
         return
 
-    def aggregate_accu(self,supermask):
+    def aggregate_accu(self, supermask):
         self.broadcast_with_waiting_res('val')
         self.broadcast(supermask)
         accu = 0
@@ -517,7 +555,7 @@ class ControllerSuperNet(Controller):
         # self.send(self.supermasks[0:int(self.train_rate * len(self.supermasks)) + 1])
         return
 
-    def update_pop2(self,d,populations):
+    def update_pop2(self, d, populations):
         # get the supermask from the controller
         num_reserved = int((1-d) * len(self.supermasks)) + 1
         candidates = utils.setalize(self.supermasks)
@@ -539,11 +577,14 @@ class ControllerSuperNet(Controller):
         upper = len(self.supermasks)
         while num < upper:
             if idx < len(pop1):
-                candidates.append(pop1[idx]);num+=1
+                candidates.append(pop1[idx])
+                num += 1
             if idx < len(pop2):
-                candidates.append(pop2[idx]);num+=1
+                candidates.append(pop2[idx])
+                num += 1
             if idx < len(pop3):
-                candidates.append(pop3[idx]);num+=1
+                candidates.append(pop3[idx])
+                num += 1
             idx += 1
         candidate = candidates_from_controller + utils.setalize(candidates)
         self.supermasks = candidate[0:len(self.supermasks)]
@@ -559,11 +600,14 @@ class ControllerSuperNet(Controller):
         upper = len(self.supermasks)
         while num < upper:
             if idx < len(pop1):
-                candidate.append(pop1[idx]);num+=1
+                candidate.append(pop1[idx])
+                num += 1
             if idx < len(pop2):
-                candidate.append(pop2[idx]);num+=1
+                candidate.append(pop2[idx])
+                num += 1
             if idx < len(pop3):
-                candidate.append(pop3[idx]);num+=1
+                candidate.append(pop3[idx])
+                num += 1
             idx += 1
         self.supermasks = candidate[0:len(self.supermasks)]
         return
@@ -587,12 +631,14 @@ class ControllerSuperNet(Controller):
     #     self.output = self.supermasks
     #     return
 
+
 class ClientSuperNet(Client):
-    def __init__(self,id):
-        Client.__init__(self,id)
+    def __init__(self, id):
+        Client.__init__(self, id)
         return
-    def process(self,command):
-        Client.process(self,command)
+
+    def process(self, command):
+        Client.process(self, command)
         if command == 'model':
             self.process_model()
         if command == 'supermasks':
@@ -609,24 +655,28 @@ class ClientSuperNet(Client):
 
     def process_train(self):
         self.model.train()
-        supermasks = self.recv()#;print('client~{} get supermasks'.format(self.id))
-        sm_idx = 0#;st_time=time.time()
+        supermasks = self.recv()  # ;print('client~{} get supermasks'.format(self.id))
+        sm_idx = 0  # ;st_time=time.time()
         for supermask in supermasks:
-            y_predict = self.model(self.data.x, self.data.edge_index, supermask)
+            y_predict = self.model(
+                self.data.x, self.data.edge_index, supermask)
             if sm_idx == 0:
-                exec('loss_{}=F.cross_entropy(y_predict[self.data.train_mask],self.data.y[self.data.train_mask])'.format(sm_idx))
+                exec('loss_{}=F.cross_entropy(y_predict[self.data.train_mask],self.data.y[self.data.train_mask])'.format(
+                    sm_idx))
             else:
                 exec(
                     'loss_{}=loss_{} + F.cross_entropy(y_predict[self.data.train_mask],self.data.y[self.data.train_mask])'.format(sm_idx, sm_idx - 1))
             sm_idx += 1
         # loss = eval('loss_{}'.format(sm_idx - 1)) / len(supermasks)
-        factor = len(supermasks)#;print('factor{}'.format(factor),time.time()-st_time)
-        loss = eval('loss_{}'.format(sm_idx - 1))/ factor#;st_time=time.time()
+        # ;print('factor{}'.format(factor),time.time()-st_time)
+        factor = len(supermasks)
+        loss = eval('loss_{}'.format(sm_idx - 1)) / \
+            factor  # ;st_time=time.time()
         self.optimizer.zero_grad()
-        loss.backward()#;print(time.time()-st_time)
+        loss.backward()  # ;print(time.time()-st_time)
         grad = self.get_grad_dict()
-        self.send(grad)#;print('client~{} send out grad'.format(self.id))
-        aggr_grad = self.recv_with_res()#;print('client~{} recv grad'.format(self.id))
+        self.send(grad)  # ;print('client~{} send out grad'.format(self.id))
+        aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
         self.update_grad(aggr_grad)
         # self.end_analyse()
         self.loss = loss.item()
@@ -636,7 +686,7 @@ class ClientSuperNet(Client):
     def process_population(self):
         def val(supermask):
             self.model.eval()
-            return utils.accuracy(self.model(self.data.x, self.data.edge_index, supermask)[self.data.val_mask],self.data.y[self.data.val_mask])
+            return utils.accuracy(self.model(self.data.x, self.data.edge_index, supermask)[self.data.val_mask], self.data.y[self.data.val_mask])
         self.recv()
         supermasks = self.supermasks
         num_pop = len(supermasks)
@@ -680,32 +730,36 @@ class ClientSuperNet(Client):
         # if DEBUG:
         #     # print(self.supermasks)
         #     print([performance[idx] for idx in result])
-        self.send(self.supermasks[0:int(self.train_rate * len(self.supermasks)) + 1])
+        self.send(self.supermasks[0:int(
+            self.train_rate * len(self.supermasks)) + 1])
         return
 
     def process_val(self):
         supermask = self.recv()
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index, supermask)[self.data.val_mask],
-                       self.data.y[self.data.val_mask])
+                              self.data.y[self.data.val_mask])
         # print(accu,self.val_rate)
         self.send(accu * self.val_rate)
         return
 
+
 class ControllerCommonNet(Controller):
-    def __init__(self,num_client):
+    def __init__(self, num_client):
         super(ControllerCommonNet, self).__init__(num_client)
         return
-    def work(self,epochs=200):
+
+    def work(self, epochs=200):
         Controller.work(self)
         optval = -1
         for epoch in range(epochs):
             self.broadcast_with_waiting_res('train')
             # self.broadcast(pickle.dumps('train'))#;print('controller broadcasts command:"{}" over'.format('train'))
             self.broadcast('get')
-            grad_dicts = self.aggregate()#;print('controller aggregates grads over')
+            grad_dicts = self.aggregate()  # ;print('controller aggregates grads over')
             # self.broadcast_with_waiting_res(self.aggregate_grad(grad_dicts))#;print('controller broadcasts grads over')
-            self.broadcast(self.aggregate_grad(grad_dicts));self.blink_aggregate()#;print('controller broadcasts grads over')
+            self.broadcast(self.aggregate_grad(grad_dicts))
+            self.blink_aggregate()  # ;print('controller broadcasts grads over')
 
             # save model
             self.broadcast_with_waiting_res('val')
@@ -716,7 +770,7 @@ class ControllerCommonNet(Controller):
                 accu += float(accus[idx])
             if accu > optval:
                 optval = accu
-                torch.save(self.model.state_dict(),'model.pth')
+                torch.save(self.model.state_dict(), 'model.pth')
 
             # val
             if DEBUG:
@@ -733,7 +787,8 @@ class ControllerCommonNet(Controller):
                     losses = self.aggregate()
                     for idx in range(self.num_client):
                         loss += losses[idx]
-                    print('train epoch~{} with accu {} on val dataset,loss={}'.format(epoch,accu,loss))
+                    print('train epoch~{} with accu {} on val dataset,loss={}'.format(
+                        epoch, accu, loss))
 
         self.model.load_state_dict(torch.load('model.pth'))
         # get metrics
@@ -766,13 +821,14 @@ class ControllerCommonNet(Controller):
         res['num_params'] = num_params
         return res
 
+
 class ClientCommonNet(Client):
-    def __init__(self,id):
-        Client.__init__(self,id)
+    def __init__(self, id):
+        Client.__init__(self, id)
         return
 
-    def process(self,command):
-        answer = Client.process(self,command)
+    def process(self, command):
+        answer = Client.process(self, command)
         if command == 'model':
             self.process_model()
         elif command == 'train':
@@ -783,15 +839,20 @@ class ClientCommonNet(Client):
 
     def process_train(self):
         self.recv()
-        self.model.train()#;print('client{} change state to train'.format(self.id))
-        y_predict = self.model(self.data.x, self.data.edge_index)#;print('client{} get output of model'.format(self.id))
-        loss = F.cross_entropy(y_predict[self.data.train_mask],self.data.y[self.data.train_mask])#;print('client{} get loss'.format(self.id))
-        self.optimizer.zero_grad()#;print('client{} zero grad'.format(self.id))
-        loss.backward()#;print('client{} backward'.format(self.id))
-        grad = self.get_grad_dict()#;print('client{} get grad'.format(self.id))
-        self.send(grad)#;print('client{} upload grad'.format(self.id))
-        aggr_grad = self.recv_with_res()#;print('client{} get aggr_grad'.format(self.id))
-        self.update_grad(aggr_grad)#;print('client{} update model'.format(self.id))
+        self.model.train()  # ;print('client{} change state to train'.format(self.id))
+        # ;print('client{} get output of model'.format(self.id))
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        # ;print('client{} get loss'.format(self.id))
+        loss = F.cross_entropy(
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+        self.optimizer.zero_grad()  # ;print('client{} zero grad'.format(self.id))
+        loss.backward()  # ;print('client{} backward'.format(self.id))
+        grad = self.get_grad_dict()  # ;print('client{} get grad'.format(self.id))
+        self.send(grad)  # ;print('client{} upload grad'.format(self.id))
+        # ;print('client{} get aggr_grad'.format(self.id))
+        aggr_grad = self.recv_with_res()
+        # ;print('client{} update model'.format(self.id))
+        self.update_grad(aggr_grad)
         self.loss = loss.item()
         # print('client~{} has loss:{}'.format(self.id,loss.item()))
         return
@@ -799,24 +860,28 @@ class ClientCommonNet(Client):
     def process_val(self):
         self.recv()
         self.model.eval()
-        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],self.data.y[self.data.val_mask])
-        print(accu,self.val_rate)
+        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
+                              self.data.val_mask], self.data.y[self.data.val_mask])
+        print(accu, self.val_rate)
         self.send(accu * self.val_rate)
         return
 
     def process_test(self):
         self.recv()
         self.model.eval()
-        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.test_mask],self.data.y[self.data.test_mask])
+        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
+                              self.data.test_mask], self.data.y[self.data.test_mask])
         # print(utils.num_correct(self.model(self.data.x, self.data.edge_index)[self.data.test_mask],self.data.y[self.data.test_mask]))
         self.send(accu * self.test_rate)
         return
 
+
 class ControllerDarts(Controller):
-    def __init__(self,num_client):
+    def __init__(self, num_client):
         super(ControllerDarts, self).__init__(num_client)
         return
-    def work(self,evo_epochs=125,sample_epochs=SAMPLE_EPOCH,num_pop=NUM_POP,sample_size=SAMPLE_SIZE):
+
+    def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
         '''
         command sequence:
         supermasks
@@ -849,7 +914,8 @@ class ControllerDarts(Controller):
             losses = self.aggregate()
             for idx in range(self.num_client):
                 loss += losses[idx]
-            print('train -epoch~{},loss={},use time:{}'.format(epoch, loss, time.time() - st_time))
+            print('train -epoch~{},loss={},use time:{}'.format(epoch,
+                  loss, time.time() - st_time))
             if DEBUG:
                 self.broadcast_with_waiting_res('val')
                 self.broadcast('get')
@@ -860,7 +926,7 @@ class ControllerDarts(Controller):
                 print('accu {} on val dataset'.format(accu))
         return
 
-    def aggregate_accu(self,supermask):
+    def aggregate_accu(self, supermask):
         self.broadcast_with_waiting_res('val')
         self.broadcast(supermask)
         accu = 0
@@ -869,33 +935,39 @@ class ControllerDarts(Controller):
             accu += float(accus[idx])
         return accu
 
+
 class ClientDarts(Client):
-    def __init__(self,id):
-        Client.__init__(self,id)
+    def __init__(self, id):
+        Client.__init__(self, id)
         return
-    def process(self,command):
-        Client.process(self,command)
+
+    def process(self, command):
+        Client.process(self, command)
         if command == 'model':
             self.process_model()
         if command == 'train':
             self.process_train()
         return
 
-    def configure(self,model,dataset,copy_node=COPY_NODE):
+    def configure(self, model, dataset, copy_node=COPY_NODE):
         self.model = model
-        self.optimizer = optim.Adam(model.parameters(), lr=LR,weight_decay=5e-6)
-        self.a_optimizer = optim.Adam(model.get_arc_params(), lr=LR,weight_decay=5e-6)
-        self.loss=None
+        self.optimizer = optim.Adam(
+            model.parameters(), lr=LR, weight_decay=5e-6)
+        self.a_optimizer = optim.Adam(
+            model.get_arc_params(), lr=LR, weight_decay=5e-6)
+        self.loss = None
         path = ''
-        if dataset.lower() in ['cora','citeseer','pubmed','corafull','physics']:
-            path = 'data/{}/{}_{}copynode.pkl'.format(dataset,self.id,''if copy_node else'un')
-            with open(path,'rb') as f:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+            path = 'data/{}/{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
                 self.data = pickle.load(f).to(self.device)
-            print(self.data.x.device,self.data.y.device,self.data.edge_index.device,
-                  self.data.train_mask.device,self.data.val_mask.device,self.data.test_mask.device)
+            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
+                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
         elif dataset.lower() == 'reddit':
-            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(dataset,self.id,''if copy_node else'un')
-            with open(path,'rb') as f:
+            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
                 self.data = pickle.load(f)
                 for idx in range(len(self.data)):
                     self.data[idx].to(self.device)
@@ -904,21 +976,23 @@ class ClientDarts(Client):
 
     def process_train(self):
         self.model.train()
-        self.recv()#;print('client~{} get supermasks'.format(self.id))
+        self.recv()  # ;print('client~{} get supermasks'.format(self.id))
 
         y_predict = self.model(self.data.x, self.data.edge_index)
-        loss = F.cross_entropy(y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+        loss = F.cross_entropy(
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
         self.optimizer.zero_grad()
-        loss.backward()#;print(time.time()-st_time)
+        loss.backward()  # ;print(time.time()-st_time)
 
         y_predict = self.model(self.data.x, self.data.edge_index)
-        loss = F.cross_entropy(y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+        loss = F.cross_entropy(
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
         self.a_optimizer.zero_grad()
-        loss.backward()#;print(time.time()-st_time)
+        loss.backward()  # ;print(time.time()-st_time)
 
         grad = self.get_grad_dict()
-        self.send(grad)#;print('client~{} send out grad'.format(self.id))
-        aggr_grad = self.recv_with_res()#;print('client~{} recv grad'.format(self.id))
+        self.send(grad)  # ;print('client~{} send out grad'.format(self.id))
+        aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
         self.update_grad(aggr_grad)
         # self.end_analyse()
         self.loss = loss.item()
@@ -929,6 +1003,163 @@ class ClientDarts(Client):
         self.recv()
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],
-                       self.data.y[self.data.val_mask])
+                              self.data.y[self.data.val_mask])
+        self.send(accu * self.val_rate)
+        return
+
+
+class ControllerFedNas(Controller):
+    def __init__(self, num_client):
+        super(ControllerDarts, self).__init__(num_client)
+        return
+
+    def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
+        '''
+        command sequence:
+        supermasks
+        loop:
+            loop:train
+            population
+            loss
+            val
+        :param evo_epochs:
+        :param sample_epochs:
+        :param num_pop:
+        :param sample_size:
+        :return:
+        '''
+        Controller.work(self)
+        for epoch in range(evo_epochs):
+            st_time = time.time()
+            # for sample_epoch in range(sample_epochs):
+            self.broadcast_with_waiting_res('train')
+            self.broadcast('get')
+            grad_dicts = self.aggregate()
+            self.broadcast(self.aggregate_grad(grad_dicts))
+            self.blink_aggregate()
+            # print('sample epoch~{}'.format(sample_epoch))
+            # print('controller evoing')
+            # loss
+            self.broadcast_with_waiting_res('loss')
+            self.broadcast('get')
+            loss = 0
+            losses = self.aggregate()
+            for idx in range(self.num_client):
+                loss += losses[idx]
+            print('train -epoch~{},loss={},use time:{}'.format(epoch,
+                  loss, time.time() - st_time))
+            if DEBUG:
+                self.broadcast_with_waiting_res('val')
+                self.broadcast('get')
+                accu = 0
+                accus = self.aggregate()
+                for idx in range(self.num_client):
+                    accu += float(accus[idx])
+                print('accu {} on val dataset'.format(accu))
+        return
+
+    def aggregate_accu(self, supermask):
+        self.broadcast_with_waiting_res('val')
+        self.broadcast(supermask)
+        accu = 0
+        accus = self.aggregate()
+        for idx in range(self.num_client):
+            accu += float(accus[idx])
+        return accu
+
+
+class ClientFedNas(Client):
+    def __init__(self, id):
+        Client.__init__(self, id)
+        self.lamda = 0.1
+        return
+
+    def process(self, command):
+        Client.process(self, command)
+        if command == 'model':
+            self.process_model()
+        if command == 'train':
+            self.process_train()
+        return
+
+    def configure(self, model, dataset, copy_node=COPY_NODE):
+        self.model = model
+        self.optimizer = optim.Adam(
+            model.parameters(), lr=LR, weight_decay=5e-6)
+        self.a_optimizer = optim.Adam(
+            model.get_arc_params(), lr=LR, weight_decay=5e-6)
+        self.loss = None
+        path = ''
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+            path = 'data/{}/{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
+                self.data = pickle.load(f).to(self.device)
+            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
+                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
+        elif dataset.lower() == 'reddit':
+            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
+                dataset, self.id, ''if copy_node else'un')
+            with open(path, 'rb') as f:
+                self.data = pickle.load(f)
+                for idx in range(len(self.data)):
+                    self.data[idx].to(self.device)
+        self.cal_rate(copy_node)
+        return
+
+    def process_train(self):
+        self.model.train()
+        self.recv()  # ;print('client~{} get supermasks'.format(self.id))
+
+        # calculate the loss of training data
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+        self.optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
+
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+        self.a_optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
+
+        grads = self.get_grad_dict()
+
+        # calculate the loss of the eval data
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
+        self.optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
+
+        y_predict = self.model(self.data.x, self.data.edge_index)
+        loss = F.cross_entropy(
+            y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
+        self.a_optimizer.zero_grad()
+        loss.backward()  # ;print(time.time()-st_time)
+
+        grad_eval = self.get_grad_dict()
+
+        # merge the grad of training data and val data
+        for name, grad in grads.items():
+            if grads[name] == None:
+                continue
+            else:
+                grads[name] += self.lamda * grad_eval[name]
+
+        self.send(grads)  # ;print('client~{} send out grad'.format(self.id))
+        aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
+        self.update_grad(aggr_grad)
+        # self.end_analyse()
+        self.loss = loss.item()
+        # print('client~{} has loss:{}'.format(self.id,loss.item()))
+        return
+
+    def process_val(self):
+        self.recv()
+        self.model.eval()
+        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],
+                              self.data.y[self.data.val_mask])
         self.send(accu * self.val_rate)
         return

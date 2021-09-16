@@ -89,4 +89,8 @@ def train(EPOCHS=100):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
+=======
+    print(torch.__version__)
+>>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
     pass
