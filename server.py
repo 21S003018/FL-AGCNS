@@ -19,13 +19,14 @@ parser.add_argument('--code',
 parser.add_argument('--model',
                     dest='model',
                     action='store',
-                    choices={'fl-agcns','fl-rl','fl-random','fl-darts'},
+                    choices={'fl-agcns', 'fl-rl', 'fl-random', 'fl-darts'},
                     default='fl-agcns',
                     help='search model')
 parser.add_argument('--dataset',
                     dest='dataset',
                     action='store',
-                    choices={'cora','citeseer','pubmed','corafull','physics'},
+                    choices={'cora', 'citeseer',
+                             'pubmed', 'corafull', 'physics'},
                     default='cora',
                     help='used dataset')
 # parser.add_argument('--round',
@@ -54,11 +55,16 @@ parser.add_argument('--save_dir',
 args = parser.parse_args()
 
 nfeat, nclass = 0, 0
-if args.dataset == 'cora':nfeat, nclass = 1433, 7
-elif args.dataset == 'citeseer':nfeat, nclass = 3703, 6
-elif args.dataset == 'pubmed':nfeat, nclass = 500, 3
-elif args.dataset == 'corafull':nfeat, nclass = 8710, 70
-elif args.dataset == 'physics':nfeat, nclass = 8415, 5
+if args.dataset == 'cora':
+    nfeat, nclass = 1433, 7
+elif args.dataset == 'citeseer':
+    nfeat, nclass = 3703, 6
+elif args.dataset == 'pubmed':
+    nfeat, nclass = 500, 3
+elif args.dataset == 'corafull':
+    nfeat, nclass = 8710, 70
+elif args.dataset == 'physics':
+    nfeat, nclass = 8415, 5
 
 controller = None
 if __name__ == '__main__':
@@ -67,8 +73,8 @@ if __name__ == '__main__':
         if args.supermask == None:
             print('there is not code')
             pass
-        with open('tmp.pkl','wb') as f:
-            pickle.dump(args.supermask,f)
+        with open('tmp.pkl', 'wb') as f:
+            pickle.dump(args.supermask, f)
         controller = ControllerCommonNet(args.client)
         controller.configure('SonNet', args.dataset, nfeat, nclass)
         res = controller.work(epochs=50)
@@ -84,9 +90,12 @@ if __name__ == '__main__':
             controller.configure('SonNet', args.dataset, nfeat, nclass)
             res = controller.work(epochs=50)
             print('Random search {}th rounds on {} with code:{}, get the result as\n{}'.
-                  format(i,args.dataset,tmp_supermask,res))
+                  format(i, args.dataset, tmp_supermask, res))
             controller.broadcast_with_waiting_res('ending')
             controller.close()
+        pass
+    elif args.model == "fl-graphnas":
+
         pass
     else:
         if args.model == 'fl-agcns':
@@ -98,14 +107,18 @@ if __name__ == '__main__':
         controller.work()
         controller.broadcast_with_waiting_res('ending')
         controller.close()
-        if args.model == 'fl-agcns':print('{} gives "opt supermask:{}" on {}.'.format(args.model, controller.output, args.dataset))
-        elif args.model == 'fl-darts':print('{} gives "opt supermask:{}" on {}.'.format(args.model, controller.model.generate_supermask(), args.dataset))
+        if args.model == 'fl-agcns':
+            print('{} gives "opt supermask:{}" on {}.'.format(
+                args.model, controller.output, args.dataset))
+        elif args.model == 'fl-darts':
+            print('{} gives "opt supermask:{}" on {}.'.format(
+                args.model, controller.model.generate_supermask(), args.dataset))
         if not args.save_dir == '':
             if not os.path.exists(args.save_dir):
                 os.makedirs(args.save_dir)
-            path = '{}/{}_optpop.pkl'.format(args.save_dir,args.dataset)
+            path = '{}/{}_optpop.pkl'.format(args.save_dir, args.dataset)
             with open(path, 'wb') as f:
                 pickle.dump(controller.supermasks, f)
-            path = '{}/{}_optson.pkl'.format(args.save_dir,args.dataset)
+            path = '{}/{}_optson.pkl'.format(args.save_dir, args.dataset)
             with open(path, 'wb') as f:
                 pickle.dump(controller.output, f)
