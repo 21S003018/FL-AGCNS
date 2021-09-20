@@ -28,7 +28,7 @@ parser.add_argument('--dataset',
                     dest='dataset',
                     action='store',
                     choices={'cora', 'citeseer',
-                             'pubmed', 'corafull', 'physics'},
+                             'pubmed', 'corafull', 'Physics'},
                     default='cora',
                     help='used dataset')
 # parser.add_argument('--round',
@@ -65,7 +65,7 @@ elif args.dataset == 'pubmed':
     nfeat, nclass = 500, 3
 elif args.dataset == 'corafull':
     nfeat, nclass = 8710, 70
-elif args.dataset == 'physics':
+elif args.dataset == 'Physics':
     nfeat, nclass = 8415, 5
 
 controller = None
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         if args.model == 'fl-agcns':
             print('{} gives "opt supermask:{}" on {}.'.format(
                 args.model, controller.output, args.dataset))
-        elif args.model == 'fl-darts':
+        elif args.model in ['fl-darts', "fl-fednas"]:
             print('{} gives "opt supermask:{}" on {}.'.format(
                 args.model, controller.model.generate_supermask(), args.dataset))
         if not args.save_dir == '':

@@ -1,0 +1,2 @@
+nohup python server.py --client 4 --model fl-agcns --dataset corafull 2>&1 >> log/fl-agcns_corafull_server.log &
+nohup python client.py --client 4 --model fl-agcns 2>&1 >> log/fl-agcns_corafull_client.log &

@@ -12,27 +12,27 @@ def change_machine_of_data(data, id=''):
     return
 
 
-IP_PORT_BASE = 6000
+IP_PORT_BASE = 7000
 
 
 def reset_ipport():
-    for label in ['', '0', '1', '2']:
-        path = 'ip_oprt{}.pkl'.format(label)
+    for label in ['', '0', '1', '2', '3', '4', '5', '6', '7']:
+        path = 'addr/ip_oprt{}.pkl'.format(label)
         with open(path, 'wb') as f:
             pickle.dump(('localhost', IP_PORT_BASE + 100), f)
     return
 
 
 def read_ipport():
-    for label in ['', '0', '1', '2']:
-        path = 'ip_oprt{}.pkl'.format(label)
+    for label in ['', '0', '1', '2', '3', '4', '5', '6', '7']:
+        path = 'addr/ip_oprt{}.pkl'.format(label)
         with open(path, 'rb') as f:
             print(pickle.load(f))
     return
 
 
 def get_ip_port(id=''):
-    path = 'ip_oprt{}.pkl'.format(id)
+    path = 'addr/ip_oprt{}.pkl'.format(id)
     with open(path, 'rb') as f:
         ans = pickle.load(f)
     if ans[1] >= IP_PORT_BASE + 1000:
@@ -68,10 +68,13 @@ def socket_recv_with_response(socket):
     data = b''
     while True:
         packet = socket.recv(1024*4)
-        if packet.__contains__(OBJ_END.encode()):
-            data += packet.replace(OBJ_END.encode(), b'')
-            break
+        # if packet.__contains__(OBJ_END.encode()):
+        #     data += packet.replace(OBJ_END.encode(), b'')
+        #     break
         data += packet
+        if data[-9:].__contains__(OBJ_END.encode()):
+            data = data[:-9]
+            break
     socket.send('okk'.encode())
     if data.__sizeof__() >= 5*1024*1024:
         print('recv big obj:{:.2f}M'.format(data.__sizeof__()/(1024*1024)))
@@ -101,10 +104,13 @@ def socket_recv(socket):
     data = b''
     while True:
         packet = socket.recv(1024*4)
-        if packet.__contains__(OBJ_END.encode()):
-            data += packet.replace(OBJ_END.encode(), b'')
-            break
+        # if packet.__contains__(OBJ_END.encode()):
+        #     data += packet.replace(OBJ_END.encode(), b'')
+        #     break
         data += packet
+        if data[-9:].__contains__(OBJ_END.encode()):
+            data = data[:-9]
+            break
     if data.__sizeof__() >= 5*1024*1024:
         print('recv big obj:{:.2f}M'.format(data.__sizeof__()/(1024*1024)))
     return pickle.loads(data)
@@ -217,8 +223,8 @@ class PartitionTool():
         :return:
         '''
         cluster = ClusterData(data, k)
-        print(type(cluster.perm))
-        cluster.perm = torch.Tensor(np.random.shuffle(np.array(cluster.perm)))
+        print(len(cluster.perm))
+        # cluster.perm = torch.Tensor(np.random.shuffle(np.array(cluster.perm)))
         # return
         # cluster.perm =
         for i in range(k):

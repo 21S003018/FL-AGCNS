@@ -14,8 +14,9 @@ IP_PORT = ('localhost', 5100)
 # BASE = 4
 # gpu = [5,6,7]
 BASE = 0
-# gpu = [1, 2, 3]
-gpu = [0, 0, 0]
+gpu = [0, 1, 2, 3, 0, 1]
+# CLIENTBASE = 1
+# gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
 # hyper-parameter
 LR = 0.02
@@ -40,6 +41,8 @@ class Controller():
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(utils.get_ip_port())
         self.socket.listen(3)
+        self.best_supermask = None
+        self.best_accu = 0
         return
 
     def configure(self, model_name, dataset, nfeat, nclass):
@@ -143,9 +146,21 @@ class Controller():
         for name in grad_dicts[0].keys():
             # print(name,grad_dicts[0][name],grad_dicts[1][name],grad_dicts[2][name])
             if not grad_dicts[0][name] == None:
-                avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
-                    + grad_dicts[1][name].to(self.device)\
-                    + grad_dicts[2][name].to(self.device)
+                for i in range(self.num_client):
+                    if avg_grad_dict.__contains__(name):
+                        avg_grad_dict[name] += grad_dicts[i][name].to(
+                            self.device)
+                    else:
+                        avg_grad_dict[name] = grad_dicts[i][name].to(
+                            self.device)
+                # avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
+                #     + grad_dicts[1][name].to(self.device)\
+                #     + grad_dicts[2][name].to(self.device)
+                # + grad_dicts[3][name].to(self.device)
+                # + grad_dicts[4][name].to(self.device)\
+                # + grad_dicts[5][name].to(self.device)\
+                # + grad_dicts[6][name].to(self.device)\
+                # + grad_dicts[7][name].to(self.device)
             else:
                 avg_grad_dict[name] = None
         self.update_grad(avg_grad_dict)
@@ -486,8 +501,8 @@ class ControllerSuperNet(Controller):
             losses = self.aggregate()
             for idx in range(self.num_client):
                 loss += losses[idx]
-            print('train evo-epoch~{},loss={},use time:{}'.format(epoch,
-                  loss, time.time() - st_time))
+            print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{}\n'.format(epoch,
+                  loss, time.time() - st_time, self.best_supermask, self.best_accu))
             if DEBUG:
                 for supermask in self.supermasks:
                     self.broadcast_with_waiting_res('val')
@@ -542,7 +557,12 @@ class ControllerSuperNet(Controller):
         result_supermasks = utils.setalize(result_supermasks)
         performance = []
         for supermask in result_supermasks:
-            performance.append(self.aggregate_accu(supermask))
+            accu = self.aggregate_accu(supermask)
+            if accu > self.best_accu:
+                self.best_accu, self.best_supermask = accu, supermask
+            performance.append(accu)
+            print("supermask:{},accu:{}".format(supermask, accu), end=";")
+        print()
         result = sorted(range(len(performance)), key=lambda k: performance[k])
         result.reverse()
         result = result[: num_pop]
@@ -558,14 +578,15 @@ class ControllerSuperNet(Controller):
     def update_pop2(self, d, populations):
         # get the supermask from the controller
         num_reserved = int((1-d) * len(self.supermasks)) + 1
-        candidates = utils.setalize(self.supermasks)
-        performance = []
-        for supermask in candidates:
-            performance.append(self.aggregate_accu(supermask))
-        result = sorted(range(len(performance)), key=lambda k: performance[k])
-        result.reverse()
-        result = result[: num_reserved]
-        candidates_from_controller = [candidates[idx] for idx in result]
+        # candidates = utils.setalize(self.supermasks)
+        # performance = []
+        # for supermask in candidates:
+        #     performance.append(self.aggregate_accu(supermask))
+        # result = sorted(range(len(performance)), key=lambda k: performance[k])
+        # result.reverse()
+        # result = result[: num_reserved]
+        # candidates_from_controller = [candidates[idx] for idx in result]
+        candidates_from_controller = self.supermasks[:num_reserved]
 
         # get the supermask from the clients
         pop1 = populations[0]
@@ -952,7 +973,7 @@ class ClientDarts(Client):
     def configure(self, model, dataset, copy_node=COPY_NODE):
         self.model = model
         self.optimizer = optim.Adam(
-            model.parameters(), lr=LR, weight_decay=5e-6)
+            model.get_parameters(), lr=LR, weight_decay=5e-6)
         self.a_optimizer = optim.Adam(
             model.get_arc_params(), lr=LR, weight_decay=5e-6)
         self.loss = None
@@ -1010,7 +1031,7 @@ class ClientDarts(Client):
 
 class ControllerFedNas(Controller):
     def __init__(self, num_client):
-        super(ControllerDarts, self).__init__(num_client)
+        super(ControllerFedNas, self).__init__(num_client)
         return
 
     def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
@@ -1056,6 +1077,7 @@ class ControllerFedNas(Controller):
                 for idx in range(self.num_client):
                     accu += float(accus[idx])
                 print('accu {} on val dataset'.format(accu))
+
         return
 
     def aggregate_accu(self, supermask):
