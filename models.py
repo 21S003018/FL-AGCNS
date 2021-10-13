@@ -17,7 +17,7 @@ HIDDENSIZE = 32
 INPUT_SIZE = HIDDENSIZE
 LAYERS = 1
 LR_GRAPHNAS = 0.00035
-EPOCHS = 100
+EPOCHS = 200
 
 
 class Identity(nn.Module):
@@ -816,18 +816,19 @@ class FedNas(nn.Module, Structure):
 
 
 class GraphNas(nn.Module):
-    def __init__(self, INPUT_SIZE):
+    def __init__(self, input_size):
         super(GraphNas, self).__init__()
+        self.input_size = input_size
         self.rnn = nn.RNN(
-            input_size=INPUT_SIZE,
+            input_size=input_size,
             hidden_size=HIDDENSIZE,
             num_layers=LAYERS,
             # batch_first=True
         )
         self.lstm = nn.LSTM(
-            input_size=INPUT_SIZE,
+            input_size=input_size,
             hidden_size=HIDDENSIZE,
-            num_layers=LAYERS,
+            # num_layers=LAYERS,
         )
 
         self.out1 = nn.Linear(HIDDENSIZE, 5)
@@ -841,31 +842,47 @@ class GraphNas(nn.Module):
         return
 
     def generate_code(self):
-        h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE))).cpu()
+        h_state = [torch.FloatTensor(np.zeros((1, 1, self.input_size))),
+                   torch.FloatTensor(np.zeros((1, 1, self.input_size)))]
         if torch.cuda.is_available():
-            h_state = h_state.cuda()
-        else:
-            h_state = h_state.cpu()
-        x = h_state
+            h_state[0] = h_state[0].cuda()
+            h_state[1] = h_state[1].cuda()
+        x = h_state[0]
         res = []
         for i in range(1, 8 + 1):
             r_out, h_state = self.lstm(x, h_state)
             res.append(
                 F.softmax(eval("self.out{}".format(i))(r_out[0]), dim=1))
-            x = h_state
+            x = h_state[0]
         return res
 
+    def parse_code(self, dummy_code):
+        supermask = []
+        idx = 1
+        for code in dummy_code:
+            tmp = code.multinomial(num_samples=1).cpu().numpy()
+            tmp = tmp[0][0]
+            if idx == 1 or idx == 8:
+                supermask.append(tmp + 1)
+            else:
+                supermask.append(tmp)
+            idx += 1
+        # supermask = dummy_code.multinomial(
+        #     num_samples=1).reshape(len(dummy_code))
+        # supermask[1:-1] += 1
+        return supermask
+
     def get_loss(self, dummy_code, supermask, R):
-        code = dummy_code[0]
+        # code = dummy_code[0]
         # loss = torch.log(torch.max(code)) * (R - self.b)
         # loss.backward()
         # loss_sum += loss.item()
         losses = []
         for i in range(len(dummy_code)):
             index = supermask[i]
-            if i not in [0, 7]:
+            if i in [0, 7]:
                 index -= 1
-            losses.append(torch.log(code[index]) * (R - self.b))
+            losses.append(torch.log(dummy_code[i][0][index]) * (R - self.b))
         # idx = 1
         # for code in dummy_code:
         #     exec(
@@ -874,22 +891,14 @@ class GraphNas(nn.Module):
         self.b = self.beta * self.b + (1 - self.beta) * R
         return torch.stack(losses).mean()
 
-    def parse_code(self, dummy_code):
-        # supermask = []
-        # idx = 1
-        # for code in dummy_code:
-        #     if idx == 1 or idx == 8:
-        #         supermask.append(np.argmax(code) + 1)
-        #     else:
-        #         supermask.append(np.argmax(code))
-        #     idx += 1
-        supermask = dummy_code.multinomial(
-            num_samples=1).reshape(len(dummy_code))
-        supermask[1:-1] += 1
-        return supermask
-
 
 if __name__ == "__main__":
-    model = GraphNas(3)
-    model.parameters()
+    model = GraphNas(32)
+    # model.parameters()
+    if torch.cuda.is_available():
+        model.cuda()
+    dummy_code = model.generate_code()
+    supermask = model.parse_code(dummy_code)
+    print(dummy_code)
+    print(supermask)
     pass

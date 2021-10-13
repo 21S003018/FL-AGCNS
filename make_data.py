@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # maker.partition("corafull", copy_node=True)
     # maker.partition("corafull")
     # maker.partition("Physics")
-    # maker.partition("corafull", k=4, copy_node=False)
+    # maker.partition("corafull", k=3, copy_node=False)
     # maker.partition("corafull", k=4, copy_node=True)
-    maker.partition("Physics", k=6, copy_node=False)
+    maker.partition("Physics", k=8, copy_node=False)
     pass

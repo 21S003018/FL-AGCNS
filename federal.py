@@ -8,13 +8,17 @@ import time
 import pickle
 from numpy.random import randint
 import numpy as np
+import logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # static configuration
 IP_PORT = ('localhost', 5100)
-# BASE = 4
-# gpu = [5,6,7]
-BASE = 0
-gpu = [0, 1, 2, 3, 0, 1]
+# BASE = 2
+# gpu = [3, 4, 5]
+BASE = 2
+gpu = [2, 3, 4, 5, 6, 7, 7, 5]
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
@@ -485,24 +489,29 @@ class ControllerSuperNet(Controller):
                 # self.broadcast_with_waiting_res(self.aggregate_grad(grad_dicts))
                 self.broadcast(self.aggregate_grad(grad_dicts))
                 self.blink_aggregate()
+                # logger.info('sample epoch~{}'.format(sample_epoch))
                 print('sample epoch~{}'.format(sample_epoch))
             self.broadcast_with_waiting_res('population')
             self.broadcast('get')  # ;print('client processing pop')
             populations = self.aggregate()
             print('controller evoing')
-            self.evo()  # ;print('controller evo over')
-            # self.update_pop(populations)
-            # ;print('updating pop over')
+            self.evo()
+            # print('controller evo over')
             self.update_pop2(0.5*pow(0.99, epoch), populations)
             # loss
+            # print("brocasting loss")
             self.broadcast_with_waiting_res('loss')
+            # print("brocast loss over")
             self.broadcast('get')
+            # print("broadcase get")
             loss = 0
             losses = self.aggregate()
+            # print("aggregate loss over")
             for idx in range(self.num_client):
                 loss += losses[idx]
-            print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{}\n'.format(epoch,
-                  loss, time.time() - st_time, self.best_supermask, self.best_accu))
+            print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{}\n'.format(
+                epoch, loss, time.time() - st_time, self.best_supermask, self.best_accu))
+
             if DEBUG:
                 for supermask in self.supermasks:
                     self.broadcast_with_waiting_res('val')
@@ -589,23 +598,18 @@ class ControllerSuperNet(Controller):
         candidates_from_controller = self.supermasks[:num_reserved]
 
         # get the supermask from the clients
-        pop1 = populations[0]
-        pop2 = populations[1]
-        pop3 = populations[2]
+        # pop1 = populations[0]
+        # pop2 = populations[1]
+        # pop3 = populations[2]
         candidates = []
         num = 0
         idx = 0
         upper = len(self.supermasks)
         while num < upper:
-            if idx < len(pop1):
-                candidates.append(pop1[idx])
-                num += 1
-            if idx < len(pop2):
-                candidates.append(pop2[idx])
-                num += 1
-            if idx < len(pop3):
-                candidates.append(pop3[idx])
-                num += 1
+            for i in range(self.num_client):
+                if idx < len(populations[i]):
+                    candidates.append(populations[i][idx])
+                    num += 1
             idx += 1
         candidate = candidates_from_controller + utils.setalize(candidates)
         self.supermasks = candidate[0:len(self.supermasks)]
@@ -792,6 +796,7 @@ class ControllerCommonNet(Controller):
             if accu > optval:
                 optval = accu
                 torch.save(self.model.state_dict(), 'model.pth')
+            print(epoch)
 
             # val
             if DEBUG:
@@ -1034,7 +1039,7 @@ class ControllerFedNas(Controller):
         super(ControllerFedNas, self).__init__(num_client)
         return
 
-    def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
+    def work(self, evo_epochs=250, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
         '''
         command sequence:
         supermasks
