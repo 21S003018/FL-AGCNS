@@ -1,0 +1,11600 @@
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:1~Dataset:cora~Supermask:[2, 6, 4, 2, 2, 5, 8, 2]
+result as
+{'accu': 0.3420000000000001, 'time': 0.9183156490325928, 'num_params': 146332}
+time long:148.29847168922424
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:2~Dataset:cora~Supermask:[1, 1, 10, 11, 3, 12, 11, 2]
+result as
+{'accu': 0.139, 'time': 0.9085566997528076, 'num_params': 146332}
+time long:142.40549302101135
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:3~Dataset:cora~Supermask:[3, 2, 10, 2, 5, 7, 3, 2]
+result as
+{'accu': 0.156, 'time': 0.6681642532348633, 'num_params': 146332}
+time long:144.24672746658325
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:4~Dataset:cora~Supermask:[5, 0, 8, 2, 1, 11, 6, 2]
+result as
+{'accu': 0.17300000000000001, 'time': 0.99371337890625, 'num_params': 146332}
+time long:145.32772755622864
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:5~Dataset:cora~Supermask:[3, 3, 5, 10, 11, 3, 8, 2]
+result as
+{'accu': 0.336, 'time': 0.9525198936462402, 'num_params': 146332}
+time long:147.90762853622437
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:6~Dataset:cora~Supermask:[5, 11, 7, 5, 1, 11, 2, 4]
+result as
+{'accu': 0.256, 'time': 0.8603227138519287, 'num_params': 146332}
+time long:151.88385677337646
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:7~Dataset:cora~Supermask:[4, 1, 12, 0, 1, 7, 5, 5]
+result as
+{'accu': 0.379, 'time': 0.9165875911712646, 'num_params': 146332}
+time long:160.18058156967163
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:8~Dataset:cora~Supermask:[2, 10, 7, 10, 2, 10, 1, 4]
+result as
+{'accu': 0.20900000000000005, 'time': 0.9299297332763672, 'num_params': 146332}
+time long:146.01911544799805
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:9~Dataset:cora~Supermask:[2, 0, 5, 4, 1, 1, 5, 1]
+result as
+{'accu': 0.16100000000000003, 'time': 0.7949028015136719, 'num_params': 146332}
+time long:147.20729231834412
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:10~Dataset:cora~Supermask:[5, 7, 0, 4, 1, 0, 10, 2]
+result as
+{'accu': 0.13200000000000003, 'time': 0.9626171588897705, 'num_params': 146332}
+time long:140.0748450756073
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:11~Dataset:cora~Supermask:[5, 1, 0, 1, 2, 11, 11, 1]
+result as
+{'accu': 0.22200000000000003, 'time': 0.9529886245727539, 'num_params': 146332}
+time long:148.85595083236694
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:12~Dataset:cora~Supermask:[3, 11, 4, 7, 2, 3, 12, 4]
+result as
+{'accu': 0.147, 'time': 0.7231230735778809, 'num_params': 146332}
+time long:142.58662915229797
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:13~Dataset:cora~Supermask:[2, 9, 8, 6, 6, 7, 8, 3]
+result as
+{'accu': 0.394, 'time': 0.7928369045257568, 'num_params': 146332}
+time long:151.8299503326416
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:14~Dataset:cora~Supermask:[4, 1, 2, 9, 8, 3, 1, 2]
+result as
+{'accu': 0.371, 'time': 0.9791224002838135, 'num_params': 146332}
+time long:149.80572605133057
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:15~Dataset:cora~Supermask:[1, 5, 9, 9, 1, 10, 7, 3]
+result as
+{'accu': 0.258, 'time': 0.735602617263794, 'num_params': 146332}
+time long:150.99621272087097
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:16~Dataset:cora~Supermask:[2, 9, 6, 6, 4, 10, 5, 3]
+result as
+{'accu': 0.377, 'time': 0.8568902015686035, 'num_params': 146332}
+time long:148.24031972885132
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:17~Dataset:cora~Supermask:[4, 11, 12, 10, 1, 2, 5, 3]
+result as
+{'accu': 0.384, 'time': 0.8787579536437988, 'num_params': 146332}
+time long:146.70947909355164
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:18~Dataset:cora~Supermask:[4, 5, 8, 3, 8, 6, 3, 5]
+result as
+{'accu': 0.14800000000000002, 'time': 0.8272280693054199, 'num_params': 146332}
+time long:141.91320514678955
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:19~Dataset:cora~Supermask:[5, 5, 11, 3, 7, 12, 1, 5]
+result as
+{'accu': 0.20400000000000001, 'time': 0.7889530658721924, 'num_params': 146332}
+time long:147.71296954154968
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:20~Dataset:cora~Supermask:[3, 7, 5, 6, 6, 12, 5, 5]
+result as
+{'accu': 0.161, 'time': 0.8334550857543945, 'num_params': 146332}
+time long:140.06720399856567
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:21~Dataset:cora~Supermask:[4, 8, 11, 0, 2, 1, 10, 5]
+result as
+{'accu': 0.20600000000000002, 'time': 0.8287103176116943, 'num_params': 146332}
+time long:139.33914589881897
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:22~Dataset:cora~Supermask:[5, 0, 8, 10, 5, 10, 11, 5]
+result as
+{'accu': 0.28200000000000003, 'time': 1.025334119796753, 'num_params': 146332}
+time long:139.4830539226532
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:23~Dataset:cora~Supermask:[1, 1, 10, 5, 3, 12, 2, 1]
+result as
+{'accu': 0.252, 'time': 0.9213347434997559, 'num_params': 146332}
+time long:148.00074100494385
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:24~Dataset:cora~Supermask:[2, 1, 9, 8, 2, 9, 1, 2]
+result as
+{'accu': 0.31500000000000006, 'time': 0.9043917655944824, 'num_params': 146332}
+time long:147.1422688961029
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:25~Dataset:cora~Supermask:[2, 3, 8, 2, 9, 8, 12, 2]
+result as
+{'accu': 0.269, 'time': 0.7685041427612305, 'num_params': 146332}
+time long:146.49801898002625
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:26~Dataset:cora~Supermask:[5, 5, 6, 6, 7, 6, 12, 4]
+result as
+{'accu': 0.29400000000000004, 'time': 0.9298126697540283, 'num_params': 146332}
+time long:142.9917733669281
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:27~Dataset:cora~Supermask:[5, 11, 1, 2, 11, 9, 6, 4]
+result as
+{'accu': 0.30600000000000005, 'time': 0.9745981693267822, 'num_params': 146332}
+time long:152.4171838760376
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:28~Dataset:cora~Supermask:[1, 1, 5, 11, 4, 7, 7, 5]
+result as
+{'accu': 0.276, 'time': 1.0370850563049316, 'num_params': 146332}
+time long:156.67539286613464
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:29~Dataset:cora~Supermask:[2, 4, 7, 8, 8, 4, 0, 2]
+result as
+{'accu': 0.38500000000000006, 'time': 0.8823902606964111, 'num_params': 146332}
+time long:144.7968282699585
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:30~Dataset:cora~Supermask:[3, 8, 4, 11, 12, 3, 11, 2]
+result as
+{'accu': 0.134, 'time': 0.8268113136291504, 'num_params': 146332}
+time long:140.13368487358093
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:31~Dataset:cora~Supermask:[5, 7, 9, 5, 5, 8, 6, 3]
+result as
+{'accu': 0.34900000000000003, 'time': 0.8166265487670898, 'num_params': 146332}
+time long:136.64937448501587
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:32~Dataset:cora~Supermask:[2, 5, 12, 0, 6, 7, 6, 2]
+result as
+{'accu': 0.21200000000000002, 'time': 0.9244468212127686, 'num_params': 146332}
+time long:148.63335061073303
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:33~Dataset:cora~Supermask:[1, 11, 1, 3, 2, 11, 10, 4]
+result as
+{'accu': 0.31100000000000005, 'time': 0.7929716110229492, 'num_params': 146332}
+time long:145.88997745513916
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:34~Dataset:cora~Supermask:[5, 6, 3, 6, 0, 5, 7, 5]
+result as
+{'accu': 0.20600000000000002, 'time': 0.8373000621795654, 'num_params': 146332}
+time long:137.28316569328308
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:35~Dataset:cora~Supermask:[1, 2, 9, 6, 8, 7, 6, 3]
+result as
+{'accu': 0.22599999999999998, 'time': 0.8864820003509521, 'num_params': 146332}
+time long:143.61907410621643
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:36~Dataset:cora~Supermask:[5, 8, 2, 6, 4, 7, 6, 1]
+result as
+{'accu': 0.21700000000000003, 'time': 1.0576248168945312, 'num_params': 146332}
+time long:157.888530254364
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:37~Dataset:cora~Supermask:[5, 1, 4, 6, 11, 6, 4, 5]
+result as
+{'accu': 0.17, 'time': 0.8427159786224365, 'num_params': 146332}
+time long:145.09855794906616
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:38~Dataset:cora~Supermask:[5, 2, 1, 3, 11, 11, 0, 4]
+result as
+{'accu': 0.43900000000000006, 'time': 0.8941802978515625, 'num_params': 146332}
+time long:141.83767771720886
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:39~Dataset:cora~Supermask:[3, 6, 3, 0, 2, 5, 4, 2]
+result as
+{'accu': 0.236, 'time': 0.8272953033447266, 'num_params': 146332}
+time long:146.8939859867096
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:40~Dataset:cora~Supermask:[2, 8, 2, 2, 1, 4, 1, 3]
+result as
+{'accu': 0.465, 'time': 0.8833420276641846, 'num_params': 146332}
+time long:142.1694905757904
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:41~Dataset:cora~Supermask:[1, 5, 2, 5, 11, 0, 4, 1]
+result as
+{'accu': 0.23700000000000002, 'time': 0.8176271915435791, 'num_params': 146332}
+time long:150.11286401748657
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:42~Dataset:cora~Supermask:[5, 5, 11, 10, 1, 7, 3, 4]
+result as
+{'accu': 0.23700000000000002, 'time': 1.1061432361602783, 'num_params': 146332}
+time long:148.44454336166382
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:43~Dataset:cora~Supermask:[4, 9, 7, 8, 10, 1, 5, 4]
+result as
+{'accu': 0.31100000000000005, 'time': 1.0415992736816406, 'num_params': 146332}
+time long:152.70109748840332
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:44~Dataset:cora~Supermask:[1, 9, 0, 11, 5, 5, 12, 1]
+result as
+{'accu': 0.261, 'time': 0.839292049407959, 'num_params': 146332}
+time long:159.44929337501526
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:45~Dataset:cora~Supermask:[3, 10, 4, 8, 11, 0, 0, 5]
+result as
+{'accu': 0.382, 'time': 0.88863205909729, 'num_params': 146332}
+time long:153.7106683254242
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:46~Dataset:cora~Supermask:[3, 10, 0, 8, 2, 2, 4, 2]
+result as
+{'accu': 0.29400000000000004, 'time': 0.9735233783721924, 'num_params': 146332}
+time long:150.79299807548523
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:47~Dataset:cora~Supermask:[4, 0, 1, 0, 2, 10, 2, 1]
+result as
+{'accu': 0.18200000000000002, 'time': 0.9431278705596924, 'num_params': 146332}
+time long:154.40713620185852
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:48~Dataset:cora~Supermask:[2, 7, 9, 0, 7, 9, 7, 4]
+result as
+{'accu': 0.30700000000000005, 'time': 0.8723201751708984, 'num_params': 146332}
+time long:151.82556128501892
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:49~Dataset:cora~Supermask:[5, 11, 3, 9, 0, 7, 5, 2]
+result as
+{'accu': 0.214, 'time': 0.7685263156890869, 'num_params': 146332}
+time long:142.3769657611847
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:50~Dataset:cora~Supermask:[5, 9, 8, 11, 4, 12, 12, 2]
+result as
+{'accu': 0.37800000000000006, 'time': 1.026759386062622, 'num_params': 146332}
+time long:145.31456589698792
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:51~Dataset:cora~Supermask:[5, 6, 7, 9, 2, 1, 1, 1]
+result as
+{'accu': 0.22, 'time': 0.7443528175354004, 'num_params': 146332}
+time long:159.7941014766693
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:52~Dataset:cora~Supermask:[1, 10, 6, 3, 1, 8, 5, 2]
+result as
+{'accu': 0.20400000000000001, 'time': 0.8501710891723633, 'num_params': 146332}
+time long:151.98269772529602
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:53~Dataset:cora~Supermask:[5, 4, 8, 10, 1, 4, 5, 3]
+result as
+{'accu': 0.36500000000000005, 'time': 0.8847465515136719, 'num_params': 146332}
+time long:147.77650547027588
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:54~Dataset:cora~Supermask:[5, 9, 7, 0, 3, 7, 7, 3]
+result as
+{'accu': 0.23900000000000002, 'time': 0.9363479614257812, 'num_params': 146332}
+time long:154.1461250782013
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:55~Dataset:cora~Supermask:[3, 8, 12, 6, 10, 8, 1, 5]
+result as
+{'accu': 0.21000000000000002, 'time': 0.9032511711120605, 'num_params': 146332}
+time long:148.6249053478241
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:56~Dataset:cora~Supermask:[2, 9, 5, 5, 2, 7, 4, 3]
+result as
+{'accu': 0.308, 'time': 0.9238624572753906, 'num_params': 146332}
+time long:143.74074840545654
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:57~Dataset:cora~Supermask:[4, 4, 1, 8, 6, 2, 1, 2]
+result as
+{'accu': 0.202, 'time': 0.8999004364013672, 'num_params': 146332}
+time long:153.9952142238617
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:58~Dataset:cora~Supermask:[1, 10, 6, 5, 8, 0, 12, 2]
+result as
+{'accu': 0.532, 'time': 0.8309478759765625, 'num_params': 146332}
+time long:146.71430921554565
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:59~Dataset:cora~Supermask:[1, 9, 0, 3, 4, 11, 3, 2]
+result as
+{'accu': 0.132, 'time': 0.8277852535247803, 'num_params': 146332}
+time long:139.73438024520874
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:60~Dataset:cora~Supermask:[3, 6, 2, 1, 5, 5, 9, 2]
+result as
+{'accu': 0.246, 'time': 1.005544662475586, 'num_params': 146332}
+time long:142.5751175880432
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:61~Dataset:cora~Supermask:[3, 11, 2, 3, 2, 12, 11, 3]
+result as
+{'accu': 0.516, 'time': 1.0004918575286865, 'num_params': 146332}
+time long:153.4313395023346
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:62~Dataset:cora~Supermask:[2, 2, 5, 11, 7, 0, 9, 2]
+result as
+{'accu': 0.21500000000000002, 'time': 0.9090352058410645, 'num_params': 146332}
+time long:150.17780184745789
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:63~Dataset:cora~Supermask:[2, 9, 11, 8, 3, 2, 8, 3]
+result as
+{'accu': 0.169, 'time': 0.909339189529419, 'num_params': 146332}
+time long:138.60832977294922
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:64~Dataset:cora~Supermask:[1, 2, 1, 3, 7, 4, 3, 3]
+result as
+{'accu': 0.19000000000000003, 'time': 0.8602168560028076, 'num_params': 146332}
+time long:144.51530170440674
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:65~Dataset:cora~Supermask:[4, 1, 7, 7, 8, 5, 1, 2]
+result as
+{'accu': 0.21500000000000002, 'time': 0.965503454208374, 'num_params': 146332}
+time long:137.28873991966248
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:66~Dataset:cora~Supermask:[1, 8, 12, 7, 11, 4, 10, 4]
+result as
+{'accu': 0.20800000000000002, 'time': 0.9856669902801514, 'num_params': 146332}
+time long:144.16121673583984
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:67~Dataset:cora~Supermask:[2, 5, 12, 11, 2, 2, 11, 3]
+result as
+{'accu': 0.30200000000000005, 'time': 0.8457214832305908, 'num_params': 146332}
+time long:152.59303879737854
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:68~Dataset:cora~Supermask:[1, 6, 4, 2, 2, 2, 2, 2]
+result as
+{'accu': 0.232, 'time': 0.9444828033447266, 'num_params': 146332}
+time long:147.96633744239807
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:69~Dataset:cora~Supermask:[1, 3, 0, 8, 3, 5, 6, 3]
+result as
+{'accu': 0.192, 'time': 0.864504337310791, 'num_params': 146332}
+time long:142.17167687416077
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:70~Dataset:cora~Supermask:[4, 5, 6, 8, 5, 0, 8, 5]
+result as
+{'accu': 0.30200000000000005, 'time': 0.9053826332092285, 'num_params': 146332}
+time long:152.40966749191284
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:71~Dataset:cora~Supermask:[3, 2, 1, 2, 6, 7, 2, 4]
+result as
+{'accu': 0.41800000000000004, 'time': 0.8966562747955322, 'num_params': 146332}
+time long:134.96343564987183
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:72~Dataset:cora~Supermask:[1, 8, 5, 2, 1, 1, 5, 4]
+result as
+{'accu': 0.28400000000000003, 'time': 0.9504618644714355, 'num_params': 146332}
+time long:142.1410276889801
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:73~Dataset:cora~Supermask:[5, 11, 0, 1, 12, 4, 9, 4]
+result as
+{'accu': 0.49400000000000005, 'time': 0.9054510593414307, 'num_params': 146332}
+time long:139.44993591308594
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:74~Dataset:cora~Supermask:[2, 7, 6, 5, 2, 12, 9, 4]
+result as
+{'accu': 0.22200000000000003, 'time': 0.94693922996521, 'num_params': 146332}
+time long:143.59708261489868
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:75~Dataset:cora~Supermask:[2, 0, 1, 0, 12, 6, 0, 1]
+result as
+{'accu': 0.24600000000000002, 'time': 1.0115408897399902, 'num_params': 146332}
+time long:141.66759276390076
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:76~Dataset:cora~Supermask:[2, 4, 7, 6, 0, 3, 2, 3]
+result as
+{'accu': 0.326, 'time': 0.7655706405639648, 'num_params': 146332}
+time long:144.34403538703918
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:77~Dataset:cora~Supermask:[5, 5, 4, 10, 8, 4, 8, 1]
+result as
+{'accu': 0.26500000000000007, 'time': 0.9541378021240234, 'num_params': 146332}
+time long:148.3107521533966
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:78~Dataset:cora~Supermask:[1, 7, 6, 8, 9, 4, 5, 4]
+result as
+{'accu': 0.16900000000000004, 'time': 0.8466372489929199, 'num_params': 146332}
+time long:146.33186268806458
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:79~Dataset:cora~Supermask:[3, 0, 0, 9, 8, 10, 11, 1]
+result as
+{'accu': 0.3500000000000001, 'time': 1.0079350471496582, 'num_params': 146332}
+time long:147.32663869857788
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:80~Dataset:cora~Supermask:[2, 7, 9, 6, 2, 12, 12, 2]
+result as
+{'accu': 0.36800000000000005, 'time': 0.6983215808868408, 'num_params': 146332}
+time long:149.29000997543335
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:81~Dataset:cora~Supermask:[4, 8, 0, 11, 4, 5, 8, 4]
+result as
+{'accu': 0.34400000000000003, 'time': 0.8500523567199707, 'num_params': 146332}
+time long:141.83130812644958
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:82~Dataset:cora~Supermask:[3, 10, 8, 11, 3, 7, 10, 1]
+result as
+{'accu': 0.164, 'time': 0.8928329944610596, 'num_params': 146332}
+time long:144.45514011383057
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:83~Dataset:cora~Supermask:[4, 6, 12, 5, 7, 2, 4, 3]
+result as
+{'accu': 0.176, 'time': 0.9161186218261719, 'num_params': 146332}
+time long:141.13123488426208
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:84~Dataset:cora~Supermask:[5, 0, 5, 8, 1, 7, 3, 3]
+result as
+{'accu': 0.317, 'time': 1.068655014038086, 'num_params': 146332}
+time long:150.99754214286804
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:85~Dataset:cora~Supermask:[4, 11, 11, 8, 0, 8, 11, 5]
+result as
+{'accu': 0.15400000000000003, 'time': 0.8627796173095703, 'num_params': 146332}
+time long:145.73353004455566
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:86~Dataset:cora~Supermask:[4, 7, 2, 7, 9, 9, 11, 5]
+result as
+{'accu': 0.19300000000000003, 'time': 0.8701236248016357, 'num_params': 146332}
+time long:145.3530466556549
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:87~Dataset:cora~Supermask:[5, 2, 12, 11, 7, 4, 0, 5]
+result as
+{'accu': 0.36, 'time': 0.9012055397033691, 'num_params': 146332}
+time long:154.69239568710327
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:88~Dataset:cora~Supermask:[2, 10, 0, 1, 5, 0, 7, 5]
+result as
+{'accu': 0.165, 'time': 0.9173369407653809, 'num_params': 146332}
+time long:152.16006112098694
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:89~Dataset:cora~Supermask:[4, 9, 2, 0, 2, 8, 1, 4]
+result as
+{'accu': 0.38700000000000007, 'time': 0.880173921585083, 'num_params': 146332}
+time long:140.84004521369934
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:90~Dataset:cora~Supermask:[4, 7, 1, 7, 5, 5, 0, 1]
+result as
+{'accu': 0.21900000000000003, 'time': 0.894279956817627, 'num_params': 146332}
+time long:134.90450882911682
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:91~Dataset:cora~Supermask:[4, 2, 12, 11, 8, 4, 10, 2]
+result as
+{'accu': 0.45600000000000007, 'time': 0.7279608249664307, 'num_params': 146332}
+time long:140.9640998840332
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:92~Dataset:cora~Supermask:[3, 6, 1, 4, 6, 3, 2, 5]
+result as
+{'accu': 0.196, 'time': 0.634361743927002, 'num_params': 146332}
+time long:149.94727206230164
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:93~Dataset:cora~Supermask:[4, 8, 11, 10, 1, 10, 0, 2]
+result as
+{'accu': 0.16500000000000004, 'time': 0.7907345294952393, 'num_params': 146332}
+time long:146.993182182312
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:94~Dataset:cora~Supermask:[3, 4, 2, 3, 9, 3, 4, 1]
+result as
+{'accu': 0.26, 'time': 0.8674821853637695, 'num_params': 146332}
+time long:146.98637294769287
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:95~Dataset:cora~Supermask:[1, 1, 7, 9, 11, 3, 7, 5]
+result as
+{'accu': 0.17300000000000004, 'time': 0.8470909595489502, 'num_params': 146332}
+time long:157.3894865512848
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:96~Dataset:cora~Supermask:[4, 7, 0, 3, 0, 8, 11, 4]
+result as
+{'accu': 0.267, 'time': 0.929492712020874, 'num_params': 146332}
+time long:152.3066906929016
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:97~Dataset:cora~Supermask:[1, 4, 2, 1, 6, 12, 4, 2]
+result as
+{'accu': 0.29700000000000004, 'time': 0.9489412307739258, 'num_params': 146332}
+time long:152.46820282936096
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:98~Dataset:cora~Supermask:[4, 7, 10, 10, 3, 5, 5, 1]
+result as
+{'accu': 0.149, 'time': 0.9279043674468994, 'num_params': 146332}
+time long:156.0864074230194
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:99~Dataset:cora~Supermask:[4, 8, 6, 12, 11, 7, 5, 3]
+result as
+{'accu': 0.251, 'time': 1.034409999847412, 'num_params': 146332}
+time long:150.8229537010193
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:100~Dataset:cora~Supermask:[2, 10, 5, 4, 1, 5, 3, 2]
+result as
+{'accu': 0.155, 'time': 1.027303695678711, 'num_params': 146332}
+time long:145.82399106025696
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:101~Dataset:cora~Supermask:[4, 11, 5, 7, 8, 1, 10, 3]
+result as
+{'accu': 0.41700000000000004, 'time': 0.758509635925293, 'num_params': 146332}
+time long:148.1460988521576
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:102~Dataset:cora~Supermask:[3, 7, 4, 10, 11, 5, 10, 5]
+result as
+{'accu': 0.266, 'time': 0.9320178031921387, 'num_params': 146332}
+time long:144.5401051044464
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:103~Dataset:cora~Supermask:[4, 8, 2, 0, 4, 0, 2, 4]
+result as
+{'accu': 0.336, 'time': 0.7482719421386719, 'num_params': 146332}
+time long:150.70210981369019
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:104~Dataset:cora~Supermask:[3, 8, 7, 9, 6, 12, 8, 5]
+result as
+{'accu': 0.159, 'time': 0.9160962104797363, 'num_params': 146332}
+time long:138.43375086784363
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:105~Dataset:cora~Supermask:[3, 10, 9, 6, 2, 8, 5, 2]
+result as
+{'accu': 0.17800000000000002, 'time': 0.8507535457611084, 'num_params': 146332}
+time long:142.67176628112793
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:106~Dataset:cora~Supermask:[4, 11, 2, 12, 0, 11, 7, 3]
+result as
+{'accu': 0.15200000000000002, 'time': 0.7182652950286865, 'num_params': 146332}
+time long:144.61704802513123
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:107~Dataset:cora~Supermask:[5, 9, 6, 8, 6, 4, 12, 5]
+result as
+{'accu': 0.34299999999999997, 'time': 0.8042902946472168, 'num_params': 146332}
+time long:155.4108099937439
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:108~Dataset:cora~Supermask:[3, 6, 10, 5, 4, 7, 11, 3]
+result as
+{'accu': 0.16900000000000004, 'time': 0.8858640193939209, 'num_params': 146332}
+time long:162.98924255371094
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:109~Dataset:cora~Supermask:[5, 8, 10, 7, 6, 8, 5, 2]
+result as
+{'accu': 0.256, 'time': 0.9170913696289062, 'num_params': 146332}
+time long:142.56045079231262
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:110~Dataset:cora~Supermask:[5, 4, 4, 9, 1, 1, 11, 1]
+result as
+{'accu': 0.30300000000000005, 'time': 0.8306310176849365, 'num_params': 146332}
+time long:134.7449254989624
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:111~Dataset:cora~Supermask:[1, 2, 7, 12, 1, 8, 4, 2]
+result as
+{'accu': 0.273, 'time': 0.8364863395690918, 'num_params': 146332}
+time long:138.05961561203003
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:112~Dataset:cora~Supermask:[2, 10, 9, 6, 9, 4, 2, 4]
+result as
+{'accu': 0.267, 'time': 0.7462365627288818, 'num_params': 146332}
+time long:138.28142380714417
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:113~Dataset:cora~Supermask:[1, 9, 6, 7, 6, 11, 12, 1]
+result as
+{'accu': 0.168, 'time': 0.9682660102844238, 'num_params': 146332}
+time long:142.76712274551392
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:114~Dataset:cora~Supermask:[1, 2, 3, 2, 10, 4, 10, 1]
+result as
+{'accu': 0.18100000000000002, 'time': 0.8737144470214844, 'num_params': 146332}
+time long:140.73536133766174
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:115~Dataset:cora~Supermask:[2, 7, 6, 8, 3, 10, 8, 1]
+result as
+{'accu': 0.21700000000000003, 'time': 0.9285585880279541, 'num_params': 146332}
+time long:146.9939684867859
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:116~Dataset:cora~Supermask:[2, 10, 10, 2, 5, 8, 6, 4]
+result as
+{'accu': 0.278, 'time': 0.919175386428833, 'num_params': 146332}
+time long:161.15500378608704
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:117~Dataset:cora~Supermask:[5, 8, 8, 11, 12, 10, 6, 3]
+result as
+{'accu': 0.28700000000000003, 'time': 0.8928816318511963, 'num_params': 146332}
+time long:153.89157152175903
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:118~Dataset:cora~Supermask:[4, 0, 6, 4, 3, 1, 1, 1]
+result as
+{'accu': 0.17200000000000004, 'time': 0.8165428638458252, 'num_params': 146332}
+time long:155.15348052978516
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:119~Dataset:cora~Supermask:[1, 1, 2, 4, 7, 10, 5, 1]
+result as
+{'accu': 0.28500000000000003, 'time': 0.8906693458557129, 'num_params': 146332}
+time long:144.86866688728333
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:120~Dataset:cora~Supermask:[1, 6, 4, 6, 4, 6, 7, 5]
+result as
+{'accu': 0.269, 'time': 0.9378032684326172, 'num_params': 146332}
+time long:155.34342885017395
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:121~Dataset:cora~Supermask:[3, 11, 0, 12, 2, 7, 1, 3]
+result as
+{'accu': 0.30100000000000005, 'time': 0.9665296077728271, 'num_params': 146332}
+time long:151.5432732105255
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:122~Dataset:cora~Supermask:[2, 10, 3, 1, 11, 8, 10, 3]
+result as
+{'accu': 0.32, 'time': 0.7985103130340576, 'num_params': 146332}
+time long:145.9650740623474
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:123~Dataset:cora~Supermask:[5, 2, 8, 9, 11, 0, 10, 2]
+result as
+{'accu': 0.322, 'time': 0.7160346508026123, 'num_params': 146332}
+time long:144.51077270507812
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:124~Dataset:cora~Supermask:[2, 5, 5, 11, 8, 10, 11, 3]
+result as
+{'accu': 0.23700000000000002, 'time': 0.8091862201690674, 'num_params': 146332}
+time long:145.02013421058655
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:125~Dataset:cora~Supermask:[1, 11, 5, 9, 11, 6, 4, 5]
+result as
+{'accu': 0.19900000000000004, 'time': 0.7510428428649902, 'num_params': 146332}
+time long:145.20497870445251
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:126~Dataset:cora~Supermask:[1, 3, 12, 11, 4, 9, 2, 3]
+result as
+{'accu': 0.366, 'time': 0.9599173069000244, 'num_params': 146332}
+time long:152.82042598724365
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:127~Dataset:cora~Supermask:[5, 9, 9, 3, 2, 0, 10, 1]
+result as
+{'accu': 0.151, 'time': 0.7748641967773438, 'num_params': 146332}
+time long:148.99493384361267
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:128~Dataset:cora~Supermask:[2, 11, 0, 11, 12, 2, 7, 3]
+result as
+{'accu': 0.15000000000000002, 'time': 0.8991446495056152, 'num_params': 146332}
+time long:141.83832502365112
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:129~Dataset:cora~Supermask:[3, 3, 11, 12, 2, 1, 6, 2]
+result as
+{'accu': 0.20900000000000002, 'time': 0.9047279357910156, 'num_params': 146332}
+time long:149.54436707496643
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:130~Dataset:cora~Supermask:[4, 0, 10, 5, 6, 4, 5, 4]
+result as
+{'accu': 0.253, 'time': 0.926995038986206, 'num_params': 146332}
+time long:141.35441851615906
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:131~Dataset:cora~Supermask:[4, 8, 5, 8, 3, 4, 12, 3]
+result as
+{'accu': 0.468, 'time': 0.9702303409576416, 'num_params': 146332}
+time long:141.30526733398438
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:132~Dataset:cora~Supermask:[3, 9, 2, 7, 8, 6, 5, 4]
+result as
+{'accu': 0.174, 'time': 0.8962588310241699, 'num_params': 146332}
+time long:146.82016324996948
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:133~Dataset:cora~Supermask:[3, 6, 2, 9, 2, 3, 0, 3]
+result as
+{'accu': 0.267, 'time': 0.7799515724182129, 'num_params': 146332}
+time long:145.7451205253601
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:134~Dataset:cora~Supermask:[4, 11, 9, 1, 5, 0, 11, 5]
+result as
+{'accu': 0.22000000000000003, 'time': 0.9731161594390869, 'num_params': 146332}
+time long:142.44674801826477
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:135~Dataset:cora~Supermask:[5, 10, 9, 0, 9, 6, 12, 2]
+result as
+{'accu': 0.167, 'time': 0.7682716846466064, 'num_params': 146332}
+time long:147.43958735466003
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:136~Dataset:cora~Supermask:[5, 3, 9, 8, 5, 8, 8, 5]
+result as
+{'accu': 0.197, 'time': 0.8405277729034424, 'num_params': 146332}
+time long:144.95773482322693
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:137~Dataset:cora~Supermask:[5, 0, 9, 8, 4, 7, 9, 1]
+result as
+{'accu': 0.22400000000000003, 'time': 0.9363749027252197, 'num_params': 146332}
+time long:142.76100707054138
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:138~Dataset:cora~Supermask:[1, 10, 1, 10, 1, 8, 3, 3]
+result as
+{'accu': 0.14800000000000002, 'time': 0.8611354827880859, 'num_params': 146332}
+time long:144.26950693130493
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:139~Dataset:cora~Supermask:[3, 10, 6, 7, 11, 4, 0, 4]
+result as
+{'accu': 0.23299999999999998, 'time': 0.9151713848114014, 'num_params': 146332}
+time long:141.67255687713623
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:140~Dataset:cora~Supermask:[4, 5, 1, 11, 9, 9, 5, 4]
+result as
+{'accu': 0.31, 'time': 0.885141134262085, 'num_params': 146332}
+time long:139.21156358718872
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:141~Dataset:cora~Supermask:[5, 7, 2, 3, 5, 3, 5, 5]
+result as
+{'accu': 0.23100000000000004, 'time': 0.697242259979248, 'num_params': 146332}
+time long:136.06988835334778
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:142~Dataset:cora~Supermask:[2, 7, 6, 3, 9, 5, 1, 1]
+result as
+{'accu': 0.27, 'time': 1.0274138450622559, 'num_params': 146332}
+time long:133.61176943778992
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:143~Dataset:cora~Supermask:[5, 11, 1, 10, 4, 2, 7, 3]
+result as
+{'accu': 0.187, 'time': 0.6947834491729736, 'num_params': 146332}
+time long:142.95383977890015
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:144~Dataset:cora~Supermask:[4, 2, 2, 11, 1, 4, 2, 2]
+result as
+{'accu': 0.276, 'time': 0.8738183975219727, 'num_params': 146332}
+time long:144.03268599510193
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:145~Dataset:cora~Supermask:[1, 10, 0, 10, 6, 1, 11, 4]
+result as
+{'accu': 0.179, 'time': 1.0086002349853516, 'num_params': 146332}
+time long:140.97349667549133
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:146~Dataset:cora~Supermask:[2, 6, 0, 10, 0, 1, 1, 5]
+result as
+{'accu': 0.19000000000000003, 'time': 0.853142499923706, 'num_params': 146332}
+time long:138.2113435268402
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:147~Dataset:cora~Supermask:[5, 0, 10, 1, 4, 1, 8, 1]
+result as
+{'accu': 0.34500000000000003, 'time': 0.8248734474182129, 'num_params': 146332}
+time long:153.9032940864563
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:148~Dataset:cora~Supermask:[5, 6, 7, 3, 4, 1, 5, 4]
+result as
+{'accu': 0.20700000000000002, 'time': 0.9227242469787598, 'num_params': 146332}
+time long:150.79379844665527
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:149~Dataset:cora~Supermask:[2, 1, 2, 3, 2, 12, 3, 2]
+result as
+{'accu': 0.161, 'time': 0.8569555282592773, 'num_params': 146332}
+time long:137.40874600410461
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:150~Dataset:cora~Supermask:[3, 1, 3, 8, 0, 7, 6, 4]
+result as
+{'accu': 0.19000000000000003, 'time': 0.9282770156860352, 'num_params': 146332}
+time long:137.08272004127502
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:151~Dataset:cora~Supermask:[2, 6, 1, 6, 0, 10, 12, 3]
+result as
+{'accu': 0.24800000000000003, 'time': 0.8540656566619873, 'num_params': 146332}
+time long:142.03601813316345
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:152~Dataset:cora~Supermask:[4, 9, 3, 12, 9, 12, 10, 3]
+result as
+{'accu': 0.18, 'time': 0.9734029769897461, 'num_params': 146332}
+time long:143.79248595237732
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:153~Dataset:cora~Supermask:[2, 2, 11, 3, 12, 1, 6, 1]
+result as
+{'accu': 0.218, 'time': 0.8887350559234619, 'num_params': 146332}
+time long:146.843688249588
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:154~Dataset:cora~Supermask:[2, 9, 2, 10, 12, 7, 7, 1]
+result as
+{'accu': 0.246, 'time': 1.0087146759033203, 'num_params': 146332}
+time long:142.83639788627625
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:155~Dataset:cora~Supermask:[5, 0, 11, 10, 11, 5, 8, 3]
+result as
+{'accu': 0.169, 'time': 0.8130702972412109, 'num_params': 146332}
+time long:146.8108446598053
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:156~Dataset:cora~Supermask:[1, 3, 10, 1, 2, 8, 11, 4]
+result as
+{'accu': 0.181, 'time': 0.8810162544250488, 'num_params': 146332}
+time long:141.3062515258789
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:157~Dataset:cora~Supermask:[2, 10, 2, 4, 2, 11, 8, 3]
+result as
+{'accu': 0.503, 'time': 1.0637080669403076, 'num_params': 146332}
+time long:142.8979790210724
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:158~Dataset:cora~Supermask:[4, 10, 11, 4, 3, 9, 6, 3]
+result as
+{'accu': 0.29600000000000004, 'time': 0.8781061172485352, 'num_params': 146332}
+time long:143.0327606201172
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:159~Dataset:cora~Supermask:[1, 0, 6, 0, 0, 6, 5, 5]
+result as
+{'accu': 0.337, 'time': 0.9981400966644287, 'num_params': 146332}
+time long:144.6540367603302
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:160~Dataset:cora~Supermask:[1, 4, 6, 5, 2, 9, 12, 5]
+result as
+{'accu': 0.42700000000000005, 'time': 0.8463230133056641, 'num_params': 146332}
+time long:146.48771810531616
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:161~Dataset:cora~Supermask:[4, 10, 4, 10, 7, 7, 2, 4]
+result as
+{'accu': 0.154, 'time': 0.8120059967041016, 'num_params': 146332}
+time long:141.2872874736786
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:162~Dataset:cora~Supermask:[5, 8, 0, 3, 8, 6, 0, 4]
+result as
+{'accu': 0.17200000000000001, 'time': 0.9033198356628418, 'num_params': 146332}
+time long:150.87703442573547
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:163~Dataset:cora~Supermask:[5, 8, 9, 8, 1, 8, 6, 4]
+result as
+{'accu': 0.22500000000000003, 'time': 0.9775631427764893, 'num_params': 146332}
+time long:152.24693632125854
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:164~Dataset:cora~Supermask:[1, 1, 6, 4, 2, 3, 12, 5]
+result as
+{'accu': 0.16, 'time': 1.010740041732788, 'num_params': 146332}
+time long:156.98374605178833
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:165~Dataset:cora~Supermask:[5, 0, 12, 5, 9, 9, 4, 3]
+result as
+{'accu': 0.38500000000000006, 'time': 1.0113980770111084, 'num_params': 146332}
+time long:146.1770555973053
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:166~Dataset:cora~Supermask:[5, 6, 3, 9, 0, 4, 8, 2]
+result as
+{'accu': 0.241, 'time': 0.9783017635345459, 'num_params': 146332}
+time long:153.7644305229187
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:167~Dataset:cora~Supermask:[2, 4, 6, 2, 12, 10, 5, 3]
+result as
+{'accu': 0.29100000000000004, 'time': 0.8903048038482666, 'num_params': 146332}
+time long:160.05291891098022
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:168~Dataset:cora~Supermask:[5, 3, 11, 5, 10, 8, 2, 2]
+result as
+{'accu': 0.201, 'time': 1.2365128993988037, 'num_params': 146332}
+time long:157.5485634803772
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:169~Dataset:cora~Supermask:[2, 6, 2, 0, 11, 7, 1, 3]
+result as
+{'accu': 0.31100000000000005, 'time': 0.9258532524108887, 'num_params': 146332}
+time long:159.67451190948486
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:170~Dataset:cora~Supermask:[3, 3, 6, 8, 1, 2, 2, 1]
+result as
+{'accu': 0.273, 'time': 0.8244493007659912, 'num_params': 146332}
+time long:152.19989156723022
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:171~Dataset:cora~Supermask:[2, 3, 3, 10, 7, 10, 3, 2]
+result as
+{'accu': 0.3980000000000001, 'time': 0.903188943862915, 'num_params': 146332}
+time long:142.36113166809082
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:172~Dataset:cora~Supermask:[5, 1, 4, 3, 12, 3, 6, 2]
+result as
+{'accu': 0.23600000000000002, 'time': 0.8660573959350586, 'num_params': 146332}
+time long:149.10986638069153
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:173~Dataset:cora~Supermask:[1, 9, 1, 0, 3, 11, 0, 1]
+result as
+{'accu': 0.243, 'time': 0.9278454780578613, 'num_params': 146332}
+time long:145.8206627368927
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:174~Dataset:cora~Supermask:[4, 3, 12, 7, 9, 0, 1, 5]
+result as
+{'accu': 0.45, 'time': 1.04715895652771, 'num_params': 146332}
+time long:142.87224411964417
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:175~Dataset:cora~Supermask:[3, 9, 9, 10, 8, 1, 6, 1]
+result as
+{'accu': 0.171, 'time': 0.7789022922515869, 'num_params': 146332}
+time long:152.76367568969727
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:176~Dataset:cora~Supermask:[4, 5, 1, 10, 10, 5, 3, 3]
+result as
+{'accu': 0.35300000000000004, 'time': 0.8636136054992676, 'num_params': 146332}
+time long:139.7038857936859
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:177~Dataset:cora~Supermask:[1, 10, 12, 5, 5, 0, 9, 1]
+result as
+{'accu': 0.136, 'time': 0.8750181198120117, 'num_params': 146332}
+time long:158.47178435325623
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:178~Dataset:cora~Supermask:[1, 1, 11, 6, 2, 2, 9, 2]
+result as
+{'accu': 0.24500000000000002, 'time': 1.0627753734588623, 'num_params': 146332}
+time long:158.23934626579285
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:179~Dataset:cora~Supermask:[5, 3, 9, 4, 8, 8, 11, 1]
+result as
+{'accu': 0.133, 'time': 1.0380902290344238, 'num_params': 146332}
+time long:146.64103198051453
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:180~Dataset:cora~Supermask:[1, 11, 7, 1, 7, 10, 11, 3]
+result as
+{'accu': 0.14900000000000002, 'time': 0.9994068145751953, 'num_params': 146332}
+time long:150.65397596359253
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:181~Dataset:cora~Supermask:[2, 4, 12, 1, 4, 0, 10, 3]
+result as
+{'accu': 0.165, 'time': 0.8852689266204834, 'num_params': 146332}
+time long:147.34484577178955
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:182~Dataset:cora~Supermask:[2, 9, 9, 10, 8, 12, 4, 1]
+result as
+{'accu': 0.252, 'time': 0.8272013664245605, 'num_params': 146332}
+time long:143.604572057724
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:183~Dataset:cora~Supermask:[2, 1, 2, 9, 0, 11, 1, 4]
+result as
+{'accu': 0.355, 'time': 0.6880877017974854, 'num_params': 146332}
+time long:147.16796207427979
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:184~Dataset:cora~Supermask:[2, 6, 0, 0, 9, 10, 6, 2]
+result as
+{'accu': 0.251, 'time': 0.8742101192474365, 'num_params': 146332}
+time long:156.42123889923096
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:185~Dataset:cora~Supermask:[4, 6, 2, 6, 7, 4, 5, 5]
+result as
+{'accu': 0.17600000000000002, 'time': 0.8829770088195801, 'num_params': 146332}
+time long:146.76566338539124
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:186~Dataset:cora~Supermask:[3, 0, 10, 4, 12, 3, 11, 3]
+result as
+{'accu': 0.29000000000000004, 'time': 0.8421666622161865, 'num_params': 146332}
+time long:140.52304244041443
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:187~Dataset:cora~Supermask:[2, 3, 10, 9, 0, 11, 1, 3]
+result as
+{'accu': 0.196, 'time': 0.8255283832550049, 'num_params': 146332}
+time long:152.14651250839233
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:188~Dataset:cora~Supermask:[4, 6, 5, 6, 12, 11, 4, 1]
+result as
+{'accu': 0.21100000000000002, 'time': 0.9469757080078125, 'num_params': 146332}
+time long:150.67763566970825
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:189~Dataset:cora~Supermask:[2, 7, 11, 8, 6, 11, 0, 4]
+result as
+{'accu': 0.2, 'time': 1.209350347518921, 'num_params': 146332}
+time long:150.17314338684082
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:190~Dataset:cora~Supermask:[1, 7, 0, 4, 2, 1, 7, 1]
+result as
+{'accu': 0.41100000000000003, 'time': 0.9069185256958008, 'num_params': 146332}
+time long:148.42053413391113
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:191~Dataset:cora~Supermask:[2, 10, 2, 12, 7, 10, 5, 5]
+result as
+{'accu': 0.334, 'time': 0.9620897769927979, 'num_params': 146332}
+time long:149.38156414031982
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:192~Dataset:cora~Supermask:[1, 8, 5, 8, 12, 12, 7, 3]
+result as
+{'accu': 0.18000000000000002, 'time': 0.8353943824768066, 'num_params': 146332}
+time long:146.81666946411133
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:193~Dataset:cora~Supermask:[2, 8, 12, 5, 12, 8, 6, 2]
+result as
+{'accu': 0.36100000000000004, 'time': 0.8243725299835205, 'num_params': 146332}
+time long:142.31456780433655
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:194~Dataset:cora~Supermask:[2, 7, 5, 8, 4, 4, 9, 2]
+result as
+{'accu': 0.18300000000000002, 'time': 1.2180180549621582, 'num_params': 146332}
+time long:144.31673789024353
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:195~Dataset:cora~Supermask:[4, 5, 6, 10, 10, 11, 7, 3]
+result as
+{'accu': 0.277, 'time': 0.8721601963043213, 'num_params': 146332}
+time long:145.90010809898376
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:196~Dataset:cora~Supermask:[1, 4, 5, 7, 5, 8, 3, 3]
+result as
+{'accu': 0.268, 'time': 0.899627685546875, 'num_params': 146332}
+time long:144.27106165885925
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:197~Dataset:cora~Supermask:[2, 4, 4, 0, 4, 6, 0, 1]
+result as
+{'accu': 0.17400000000000002, 'time': 0.9048607349395752, 'num_params': 146332}
+time long:144.23056960105896
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:198~Dataset:cora~Supermask:[3, 4, 10, 5, 11, 9, 5, 1]
+result as
+{'accu': 0.24500000000000005, 'time': 0.9435369968414307, 'num_params': 146332}
+time long:140.32066893577576
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:199~Dataset:cora~Supermask:[1, 6, 4, 6, 6, 12, 3, 2]
+result as
+{'accu': 0.30700000000000005, 'time': 0.9402289390563965, 'num_params': 146332}
+time long:142.3256528377533
+
+controller configures over, waiting for connect request from clients
+controller broadcasts datasetname:cora over
+controller broadcasts model over
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+Epoch:200~Dataset:cora~Supermask:[4, 6, 9, 1, 6, 11, 3, 2]
+result as
+{'accu': 0.28700000000000003, 'time': 0.7471780776977539, 'num_params': 146332}
+time long:147.34447526931763
+
