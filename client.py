@@ -9,7 +9,7 @@ parser.add_argument('--mode',
                     dest='mode',
                     action='store',
                     # type=bool,
-                    default='train',
+                    default=None,
                     help='test mode or not')
 parser.add_argument('--model',
                     dest='model',
@@ -29,7 +29,7 @@ args = parser.parse_args()
 # start clients for evaluating a specific code
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    if args.mode == 'test':
+    if args.mode == 'test' or args.mode == "eval":
         clients = []
         for j in range(args.client):
             clients.append(ClientCommonNet(j))
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         for process in processes:
             process.join()
     elif args.model == 'fl-random':
-        for i in range(50):
+        for i in range(5):
             clients = []
             for j in range(args.client):
                 clients.append(ClientCommonNet(j))
