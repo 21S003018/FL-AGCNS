@@ -12,9 +12,9 @@ rd:4 5 0 3 0 53 69 1
 rd:4 1 21 0 13 26 24 2
 agcns:2 9 0 0 0 0 37 4
 
-python server.py --client 3 --mode test --code 1 10 6 5 8 0 12 2 --dataset cora
+python server.py --client 3 --mode test --code 1 10 6 5 0 0 12 2 --dataset cora
 python client.py --client 3 --mode test
-graphnas|cora:1 10 6 5 8 0 12 2
+graphnas|cora:1 10 6 5 8 0 12 2|3 11 2 3 0 12 11 3|2 10 2 4 2 11 8 3|5 11 0 1 12 4 9 4
 
 
 random模型:
