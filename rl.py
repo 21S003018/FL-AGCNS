@@ -253,61 +253,39 @@ def read_model():
 
 
 if __name__ == '__main__':
-    # start server function and client function
-
-    # [1, 5], [1, 12], [1, 24], [1, 36], [1, 48], [1, 60], [1, 72], [1, 5]
-    # supermask = [2, 7, 15, 6, 13, 0, 59, 2]
-    # readResult()
-    pid = 0
     startTime = time.time()
     mp.set_start_method('spawn')
     random.seed(719)
 
-    #bug:[4, 3, 21, 27, 22, 57, 8, 3]
     shape = [[1, 5], [2, 12], [3, 24], [4, 36],
              [5, 48], [6, 60], [7, 72], [8, 5]]
     model = q_learning(shape)
     envi = env(shape)
     episodes = 1000
 
-    # envi, model = read_model()[100]
-
     for i in range(episodes):
         print("RL: episodes = {}".format(i))
-        # start state
         state = envi.reset()
-        # epsilon f: e^(-i*(ln10)/(episodes-1)) not linear
-        # epsilon = 2.7182 ** (-i*math.log1p(10)/(episodes-1))
-        # epsilon f: y = -0.9/k*x + 1 linear
-        #epsilon = (-0.9)/episodes*i+1
-        # epsilon f: x^2-like-function
-        # epsilon = 0.9/(episodes ** 2) * (episodes **2 - i**2) + 0.1
         epsilon = epsilon = 0.9/(episodes ** 2) * (episodes ** 2 - i**2) + 0.1
         while True:
-            # get action
             action = model.get_action(state, epsilon=epsilon)
-            # interact with env
             envi.mov(action)
-            # update q table
             if envi.isShape:
                 model.update(envi.reward, state, action,
                              envi.state, envi.trace)
             else:
                 model.update(envi.reward, state, action, envi.state)
-            # whether end
             if envi.done == True:
                 break
             state = envi.state
 
         if i % 100 == 0:
-            # save model
             save_model(envi, model, i)
             print("{} step timeLength".format(i), time.time()-startTime)
         if time.time()-startTime - 10*(i+1) > 6*60*60:
             print("end episodes", i)
             break
 
-    # output
     envi.reset()
     state = (0, 0)
     actions = []

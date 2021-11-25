@@ -14,7 +14,7 @@ parser.add_argument('--mode',
 parser.add_argument('--model',
                     dest='model',
                     action='store',
-                    choices={'fl-agcns', 'fl-rl', 'fl-random',
+                    choices={'fl-agcns', 'fl-random',
                              'fl-darts', 'fl-graphnas', "fl-fednas"},
                     default='fl-agcns',
                     help='search model')

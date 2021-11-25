@@ -6,15 +6,26 @@ code验证:
 python server.py --client 8 --mode test --code 2 11 5 20 7 0 47 2 --dataset Physics
 python client.py --client 8 --mode test
 2 9 5 8 0 3 7 5
-rd:3 5 0 7 0 42 0 4(best code)
-agcns:2 9 5 0 8 0 0 4
+agcns:3 5 0 7 0 42 0 4(best code)
+rd:2 9 5 0 8 0 0 4
 rd:4 5 0 3 0 53 69 1
 rd:4 1 21 0 13 26 24 2
 agcns:2 9 0 0 0 0 37 4
 
 python server.py --client 3 --mode test --code 1 10 6 5 0 0 12 2 --dataset cora
 python client.py --client 3 --mode test
-graphnas|cora:1 10 6 5 8 0 12 2|3 11 2 3 0 12 11 3|2 10 2 4 2 11 8 3|5 11 0 1 12 4 9 4
+graphnas|cora:5 11 0 1 12 4 9 4
+fednas|cora:5 9 19 19 0 38 50
+graphnas|citeseer:2 4 9 11 0 8 8 4
+fednas|citeseer:5 9 0 0 0 11 11 2
+graphnas|pubmed:4 7 0 10 10 7 2 3
+fednas|pubmed:5 7 0 0 0 22 10 2
+graphnas|corafull:3 7 6 0 5 3 2 2
+fednas|corafull:4 7 19 0 19 19 10 2
+graphnas|physics:2 5 6 8 2 11 3 5
+fednas|physics:2 7 20 0 11 60 11 2
+
+
 
 
 random模型:
