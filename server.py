@@ -8,7 +8,7 @@ parser.add_argument('--mode',
                     dest='mode',
                     action='store',
                     # type=bool,
-                    default='train',
+                    default=None,
                     help='test mode or not')
 parser.add_argument('--code',
                     dest='supermask',
@@ -20,10 +20,14 @@ parser.add_argument('--code',
 parser.add_argument('--model',
                     dest='model',
                     action='store',
-                    choices={'fl-agcns', 'fl-rl', 'fl-random',
+                    choices={'fl-agcns', 'fl-random',
                              'fl-darts', "fl-graphnas", "fl-fednas"},
                     default='fl-agcns',
                     help='search model')
+parser.add_argument('--gcn_model',
+                    dest='gcn_model',
+                    default=None,
+                    choices={'Gat', 'Sage', 'Gcn', 'Sgc', 'Appnp', 'Agnn', 'Arma', 'Gated'})
 parser.add_argument('--dataset',
                     dest='dataset',
                     action='store',
@@ -71,7 +75,16 @@ elif args.dataset == 'Physics':
 controller = None
 if __name__ == '__main__':
     # evaluate a specific code
-    if args.mode == 'test':
+    if args.mode == "eval":  # eval gcn models
+        model = args.gcn_model
+        controller = ControllerCommonNet(args.client)
+        controller.configure(model, args.dataset, nfeat, nclass)
+        res = controller.work(epochs=50)
+        print('evaluate {} on {}, get the result as:\n{}'.format(
+            args.gcn_model, args.dataset, res))
+        controller.broadcast_with_waiting_res('ending')
+        controller.close()
+    elif args.mode == 'test':
         if args.supermask == None:
             print('there is not code')
             pass
@@ -84,7 +97,9 @@ if __name__ == '__main__':
         controller.broadcast_with_waiting_res('ending')
         controller.close()
     elif args.model == 'fl-random':
-        for i in range(50):
+        print(args.model)
+        begin = time.time()
+        for i in range(5):
             tmp_supermask = utils.random_supermask()
             with open('tmp.pkl', 'wb') as f:
                 pickle.dump(tmp_supermask, f)
@@ -95,6 +110,7 @@ if __name__ == '__main__':
                   format(i, args.dataset, tmp_supermask, res))
             controller.broadcast_with_waiting_res('ending')
             controller.close()
+        print("use time: {}".format(time.time() - begin))
         pass
     elif args.model == "fl-graphnas":
         model = GraphNas(INPUT_SIZE)

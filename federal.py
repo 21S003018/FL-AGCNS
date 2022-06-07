@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 
 # static configuration
 IP_PORT = ('localhost', 5100)
-# BASE = 2
-# gpu = [3, 4, 5]
-BASE = 2
-gpu = [2, 3, 4, 5, 6, 7, 7, 5]
+# BASE = 9
+# gpu = [9, 10, 11]
+BASE = 0
+gpu = [1, 2, 3, 4, 5, 6, 7, 8]
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
