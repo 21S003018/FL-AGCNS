@@ -12,7 +12,7 @@ hard：4 GPU
 usage: server.py [-h] [--mode MODE]
                  [--code SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK]
                  [--model {fl-rl,fl-darts,fl-agcns,fl-random}]
-                 [--dataset {citeseer,physics,pubmed,corafull,cora}]
+                 [--dataset {citeseer,Physics,pubmed,corafull,cora}]
                  [--client CLIENT] [--save_dir SAVE_DIR]
 
 optional arguments:
@@ -22,7 +22,7 @@ optional arguments:
                         code of son net
   --model {fl-rl,fl-darts,fl-agcns,fl-random}
                         search model
-  --dataset {citeseer,physics,pubmed,corafull,cora}
+  --dataset {citeseer,Physics,pubmed,corafull,cora}
                         used dataset
   --client CLIENT       the number of clients in the search
   --save_dir SAVE_DIR   the directory to save the best code and best population

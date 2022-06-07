@@ -71,7 +71,8 @@
 # federal.py-aggregate_grad函数家和次数
 # server epoch time
 
-ls = "gggeofeofeof"
+ls = "feofeof"
 end = "eofeofeof"
 if ls[-9:].encode().__contains__(end.encode()):
     print(1)
+print(ls[-9])
