@@ -12,8 +12,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-<<<<<<< HEAD
-=======
 HIDDENSIZE = 32
 INPUT_SIZE = HIDDENSIZE
 LAYERS = 1
@@ -21,7 +19,6 @@ LR_GRAPHNAS = 0.00035
 EPOCHS = 100
 
 
->>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
 class Identity(nn.Module):
     """
     A Simple PyTorch Implementation of Logistic Regression.
@@ -641,8 +638,6 @@ class Darts(nn.Module, Structure):
         return supermask
 
 
-<<<<<<< HEAD
-=======
 class FedNas(nn.Module, Structure):
     def __init__(self, nfeat, nclass):
         super(Darts, self).__init__()
@@ -750,7 +745,6 @@ class FedNas(nn.Module, Structure):
         return supermask
 
 
->>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
 class GraphNas(nn.Module):
     def __init__(self, INPUT_SIZE):
         super(GraphNas, self).__init__()
@@ -772,15 +766,11 @@ class GraphNas(nn.Module):
         return
 
     def generate_code(self):
-<<<<<<< HEAD
-        h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE))).cpu()
-=======
         h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE)))
         if torch.cuda.is_available():
             h_state = h_state.cuda()
         else:
             h_state = h_state.cpu()
->>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
         x = h_state
         res = []
         for i in range(1, 8 + 1):
@@ -795,16 +785,10 @@ class GraphNas(nn.Module):
         idx = 1
         for code in dummy_code:
             exec(
-<<<<<<< HEAD
-                "loss{} = loss{} + (torch.log(torch.max(code))*({} - self.b))".format(idx, idx - 1, R))
-            idx += 1
-        self.b = self.beta * self.b + (1 - self.beta) * R
-=======
                 "loss{} = loss{} + (-torch.log(torch.max(code))*({} - self.b))".format(idx, idx - 1, R))
             idx += 1
         self.b = self.beta * self.b + (1 - self.beta) * R
         print("reward~R:{},b:{}".format(R, self.b))
->>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
         return eval("loss{}".format(len(dummy_code)))
 
     def parse_code(self, dummy_code):
@@ -812,14 +796,8 @@ class GraphNas(nn.Module):
         idx = 1
         for code in dummy_code:
             if idx == 1 or idx == 8:
-<<<<<<< HEAD
-                supermask.append(np.argmax(code) + 1)
-            else:
-                supermask.append(np.argmax(code))
-=======
                 supermask.append(int(torch.argmax(code) + 1))
             else:
                 supermask.append(int(torch.argmax(code)))
->>>>>>> 987462733dd3e866d73c86bd0d3b09f8503372ae
             idx += 1
         return supermask
