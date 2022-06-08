@@ -76,5 +76,15 @@
 # if ls[-9:].encode().__contains__(end.encode()):
 #     print(1)
 # print(ls[-9])
-import utils
-utils.read_ipport()
+
+# import utils
+# utils.read_ipport()
+
+import pickle
+
+datas = []
+for i in range(100):
+    path = 'data/SBM/{}_uncopynode.pkl'.format(i)
+    with open(path, 'rb') as f:
+        datas.append(pickle.load(f).to('cuda:0'))
+input("ending?")

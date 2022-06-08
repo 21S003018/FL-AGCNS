@@ -18,7 +18,7 @@ IP_PORT = ('localhost', 5100)
 # BASE = 9
 # gpu = [9, 10, 11]
 BASE = 0
-gpu = [1, 5, 7, 3, 4, 5, 6, 7]*13
+gpu = [2, 2, 3, 1, 2, 3, 1, 2, 3]*13
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
@@ -486,6 +486,7 @@ class ControllerSuperNet(Controller):
         self.supermasks = supermasks
         self.broadcast_with_waiting_res('supermasks')
         self.broadcast_with_waiting_res(self.supermasks)
+        evo_epochs = 1
         for epoch in range(evo_epochs):
             st_time = time.time()
             for sample_epoch in range(sample_epochs):
@@ -571,7 +572,6 @@ class ControllerSuperNet(Controller):
 
         result_supermasks = supermasks + new_supermasks
         result_supermasks = utils.setalize(result_supermasks)
-        input('continue?')
         performance = []
         for supermask in result_supermasks:
             accu = self.aggregate_accu(supermask)
