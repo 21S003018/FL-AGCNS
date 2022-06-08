@@ -8,14 +8,19 @@ import time
 import pickle
 from numpy.random import randint
 import numpy as np
+import logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # static configuration
 IP_PORT = ('localhost', 5100)
-# BASE = 4
-# gpu = [5,6,7]
+# BASE = 9
+# gpu = [9, 10, 11]
 BASE = 0
-# gpu = [1, 2, 3]
-gpu = [0, 0, 0]
+gpu = [2, 2, 3, 1, 2, 3, 1, 2, 3]*13
+# CLIENTBASE = 1
+# gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
 # hyper-parameter
 LR = 0.02
@@ -40,6 +45,8 @@ class Controller():
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(utils.get_ip_port())
         self.socket.listen(3)
+        self.best_supermask = None
+        self.best_accu = 0
         return
 
     def configure(self, model_name, dataset, nfeat, nclass):
@@ -140,16 +147,31 @@ class Controller():
         :return:
         '''
         avg_grad_dict = {}
+        ret_avg_grad_dict = {}
         for name in grad_dicts[0].keys():
             # print(name,grad_dicts[0][name],grad_dicts[1][name],grad_dicts[2][name])
             if not grad_dicts[0][name] == None:
-                avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
-                    + grad_dicts[1][name].to(self.device)\
-                    + grad_dicts[2][name].to(self.device)
+                for i in range(self.num_client):
+                    if avg_grad_dict.__contains__(name):
+                        avg_grad_dict[name] += grad_dicts[i][name].to(
+                            self.device)
+                        ret_avg_grad_dict[name] += grad_dicts[i][name]
+                    else:
+                        avg_grad_dict[name] = grad_dicts[i][name].to(
+                            self.device)
+                        ret_avg_grad_dict[name] = grad_dicts[i][name]
+                # avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
+                #     + grad_dicts[1][name].to(self.device)\
+                #     + grad_dicts[2][name].to(self.device)
+                # + grad_dicts[3][name].to(self.device)
+                # + grad_dicts[4][name].to(self.device)\
+                # + grad_dicts[5][name].to(self.device)\
+                # + grad_dicts[6][name].to(self.device)\
+                # + grad_dicts[7][name].to(self.device)
             else:
                 avg_grad_dict[name] = None
         self.update_grad(avg_grad_dict)
-        return avg_grad_dict
+        return ret_avg_grad_dict
 
     def update_grad(self, grad_dict):
         '''
@@ -221,7 +243,7 @@ class Client(Contacter):
             model.parameters(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:
@@ -304,7 +326,10 @@ class Client(Contacter):
             self.nfeat, self.nclass = 8415, 5
             self.nnode = 34493
             self.num_train_node, self.num_val_node, self.num_test_node = 100, 500, 1000
-
+        elif self.dataset_name.lower() == "sbm":
+            self.nfeat, self.nclass = 6, 6
+            self.nnode = 1401803
+            self.num_train_node, self.num_val_node, self.num_test_node = 1168087, 116896, 116820
         elif self.dataset_name.lower() == 'reddit':
             self.nfeat, self.nclass = 602, 41
             self.nnode = 232965
@@ -344,7 +369,7 @@ class Client(Contacter):
         :param copy_node:
         :return:
         '''
-        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             # path = 'data/reddit/subg_{}copynode.pkl'.format('' if copy_node else 'un')
             # with open(path, 'rb') as f:
             #     data = pickle.load(f)
@@ -374,7 +399,8 @@ class Client(Contacter):
         grad = {}
         for name, params in self.model.named_parameters():
             if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
-                grad[name] = eval('self.model.{}.grad'.format(name))
+                grad[name] = eval(
+                    'self.model.{}.to(\'cpu\').grad'.format(name))
                 continue
 
             name += 'ending'
@@ -386,7 +412,7 @@ class Client(Contacter):
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
             label = slots[len(slots)-1].replace('ending', '')
             grad[name] = eval(
-                "self.model.{}._parameters['{}'].grad".format(layer, label))
+                "self.model.{}._parameters['{}'].to(\'cpu\').grad".format(layer, label))
             if not grad[name] == None:
                 grad[name] *= self.train_rate
         return grad
@@ -460,6 +486,7 @@ class ControllerSuperNet(Controller):
         self.supermasks = supermasks
         self.broadcast_with_waiting_res('supermasks')
         self.broadcast_with_waiting_res(self.supermasks)
+        evo_epochs = 1
         for epoch in range(evo_epochs):
             st_time = time.time()
             for sample_epoch in range(sample_epochs):
@@ -470,24 +497,29 @@ class ControllerSuperNet(Controller):
                 # self.broadcast_with_waiting_res(self.aggregate_grad(grad_dicts))
                 self.broadcast(self.aggregate_grad(grad_dicts))
                 self.blink_aggregate()
+                # logger.info('sample epoch~{}'.format(sample_epoch))
                 print('sample epoch~{}'.format(sample_epoch))
             self.broadcast_with_waiting_res('population')
             self.broadcast('get')  # ;print('client processing pop')
             populations = self.aggregate()
             print('controller evoing')
-            self.evo()  # ;print('controller evo over')
-            # self.update_pop(populations)
-            # ;print('updating pop over')
+            self.evo()
+            # print('controller evo over')
             self.update_pop2(0.5*pow(0.99, epoch), populations)
             # loss
+            # print("brocasting loss")
             self.broadcast_with_waiting_res('loss')
+            # print("brocast loss over")
             self.broadcast('get')
+            # print("broadcase get")
             loss = 0
             losses = self.aggregate()
+            # print("aggregate loss over")
             for idx in range(self.num_client):
                 loss += losses[idx]
-            print('train evo-epoch~{},loss={},use time:{}'.format(epoch,
-                  loss, time.time() - st_time))
+            print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{}\n'.format(
+                epoch, loss, time.time() - st_time, self.best_supermask, self.best_accu))
+
             if DEBUG:
                 for supermask in self.supermasks:
                     self.broadcast_with_waiting_res('val')
@@ -542,7 +574,12 @@ class ControllerSuperNet(Controller):
         result_supermasks = utils.setalize(result_supermasks)
         performance = []
         for supermask in result_supermasks:
-            performance.append(self.aggregate_accu(supermask))
+            accu = self.aggregate_accu(supermask)
+            if accu > self.best_accu:
+                self.best_accu, self.best_supermask = accu, supermask
+            performance.append(accu)
+            print("supermask:{},accu:{}".format(supermask, accu), end=";")
+        print()
         result = sorted(range(len(performance)), key=lambda k: performance[k])
         result.reverse()
         result = result[: num_pop]
@@ -558,33 +595,29 @@ class ControllerSuperNet(Controller):
     def update_pop2(self, d, populations):
         # get the supermask from the controller
         num_reserved = int((1-d) * len(self.supermasks)) + 1
-        candidates = utils.setalize(self.supermasks)
-        performance = []
-        for supermask in candidates:
-            performance.append(self.aggregate_accu(supermask))
-        result = sorted(range(len(performance)), key=lambda k: performance[k])
-        result.reverse()
-        result = result[: num_reserved]
-        candidates_from_controller = [candidates[idx] for idx in result]
+        # candidates = utils.setalize(self.supermasks)
+        # performance = []
+        # for supermask in candidates:
+        #     performance.append(self.aggregate_accu(supermask))
+        # result = sorted(range(len(performance)), key=lambda k: performance[k])
+        # result.reverse()
+        # result = result[: num_reserved]
+        # candidates_from_controller = [candidates[idx] for idx in result]
+        candidates_from_controller = self.supermasks[:num_reserved]
 
         # get the supermask from the clients
-        pop1 = populations[0]
-        pop2 = populations[1]
-        pop3 = populations[2]
+        # pop1 = populations[0]
+        # pop2 = populations[1]
+        # pop3 = populations[2]
         candidates = []
         num = 0
         idx = 0
         upper = len(self.supermasks)
         while num < upper:
-            if idx < len(pop1):
-                candidates.append(pop1[idx])
-                num += 1
-            if idx < len(pop2):
-                candidates.append(pop2[idx])
-                num += 1
-            if idx < len(pop3):
-                candidates.append(pop3[idx])
-                num += 1
+            for i in range(self.num_client):
+                if idx < len(populations[i]):
+                    candidates.append(populations[i][idx])
+                    num += 1
             idx += 1
         candidate = candidates_from_controller + utils.setalize(candidates)
         self.supermasks = candidate[0:len(self.supermasks)]
@@ -771,6 +804,7 @@ class ControllerCommonNet(Controller):
             if accu > optval:
                 optval = accu
                 torch.save(self.model.state_dict(), 'model.pth')
+            print(epoch)
 
             # val
             if DEBUG:
@@ -952,12 +986,12 @@ class ClientDarts(Client):
     def configure(self, model, dataset, copy_node=COPY_NODE):
         self.model = model
         self.optimizer = optim.Adam(
-            model.parameters(), lr=LR, weight_decay=5e-6)
+            model.get_parameters(), lr=LR, weight_decay=5e-6)
         self.a_optimizer = optim.Adam(
             model.get_arc_params(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:
@@ -1010,10 +1044,10 @@ class ClientDarts(Client):
 
 class ControllerFedNas(Controller):
     def __init__(self, num_client):
-        super(ControllerDarts, self).__init__(num_client)
+        super(ControllerFedNas, self).__init__(num_client)
         return
 
-    def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
+    def work(self, evo_epochs=250, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
         '''
         command sequence:
         supermasks
@@ -1056,6 +1090,7 @@ class ControllerFedNas(Controller):
                 for idx in range(self.num_client):
                     accu += float(accus[idx])
                 print('accu {} on val dataset'.format(accu))
+
         return
 
     def aggregate_accu(self, supermask):
@@ -1090,7 +1125,7 @@ class ClientFedNas(Client):
             model.get_arc_params(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:

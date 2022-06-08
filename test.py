@@ -51,8 +51,40 @@
 # args = parser.parse_args()
 #
 # print(args.supermask)
-import utils
-utils.reset_ipport()
+
 # print(1)
 # pass
 # print(2)
+
+# import torch
+# x = torch.Tensor([[1, 2, 3], [0, 2, 4], [3, 4, 5]])
+# z = x.multinomial(1).reshape(len(x))
+# y = torch.Tensor(z)
+# y[1:-1] += 1
+# print(z, y)
+
+
+# physic数据集的路径名字
+# sh client个数
+# ipport文件个数
+# gpu列表
+# federal.py-aggregate_grad函数家和次数
+# server epoch time
+
+# ls = "feofeof"
+# end = "eofeofeof"
+# if ls[-9:].encode().__contains__(end.encode()):
+#     print(1)
+# print(ls[-9])
+
+# import utils
+# utils.read_ipport()
+
+import pickle
+
+datas = []
+for i in range(100):
+    path = 'data/SBM/{}_uncopynode.pkl'.format(i)
+    with open(path, 'rb') as f:
+        datas.append(pickle.load(f).to('cuda:0'))
+input("ending?")

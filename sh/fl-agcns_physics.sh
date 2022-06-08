@@ -1,0 +1,2 @@
+nohup python -u server.py --client 8 --model fl-agcns --dataset Physics 2>&1 >> log/fl-agcns_physics_server.log &
+nohup python -u client.py --client 8 --model fl-agcns 2>&1 >> log/fl-agcns_physics_client.log &

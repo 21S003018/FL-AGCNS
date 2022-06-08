@@ -1,0 +1,2 @@
+nohup python server.py --client 3 --model fl-agcns --dataset citeseer 2>&1 >> log/fl-agcns_citeseer_server.log &
+nohup python client.py --client 3 --model fl-agcns 2>&1 >> log/fl-agcns_citeseer_client.log &
