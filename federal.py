@@ -18,7 +18,7 @@ IP_PORT = ('localhost', 5100)
 # BASE = 9
 # gpu = [9, 10, 11]
 BASE = 0
-gpu = [2, 2, 3, 1, 2, 3, 1, 2, 3]*13
+gpu = [3, 3, 3, 1, 2, 3, 1, 2, 3]*13
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
@@ -30,6 +30,7 @@ NUM_POP = 60
 SAMPLE_SIZE = 20
 # mode
 DEBUG = False
+NBCLIENT = 3
 
 
 class Controller():
@@ -243,20 +244,14 @@ class Client(Contacter):
             model.parameters(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
+        self.datas = []
         if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
-            path = 'data/{}/{}_{}copynode.pkl'.format(
-                dataset, self.id, ''if copy_node else'un')
-            with open(path, 'rb') as f:
-                self.data = pickle.load(f).to(self.device)
-            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
-                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
-        elif dataset.lower() == 'reddit':
-            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
-                dataset, self.id, ''if copy_node else'un')
-            with open(path, 'rb') as f:
-                self.data = pickle.load(f)
-                for idx in range(len(self.data)):
-                    self.data[idx].to(self.device)
+            for i in range(self.id*50, (self.id+1)*50):
+                path = 'data/{}/{}_{}copynode.pkl'.format(
+                    dataset, i, ''if copy_node else'un')
+                with open(path, 'rb') as f:
+                    self.datas.append(pickle.load(f).to(self.device))
+            print(f"Client {self.id} loads data over!")
         self.cal_rate(copy_node)
         return
 
@@ -370,28 +365,15 @@ class Client(Contacter):
         :return:
         '''
         if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
-            # path = 'data/reddit/subg_{}copynode.pkl'.format('' if copy_node else 'un')
-            # with open(path, 'rb') as f:
-            #     data = pickle.load(f)
-            self.train_rate = float(
-                torch.sum(self.data.train_mask))/self.num_train_node
-            self.val_rate = float(
-                torch.sum(self.data.val_mask))/self.num_val_node
-            self.test_rate = float(
-                torch.sum(self.data.test_mask))/self.num_test_node
-        elif self.dataset_name.lower() == 'reddit':
-            path = 'data/reddit/subg_{}copynode.pkl'.format(
-                ''if copy_node else'un')
-            with open(path, 'rb') as f:
-                data = pickle.load(f)
-            self.train_rate = float(
-                torch.sum(data[self.id].train_mask)) / self.num_train_node
-            self.val_rate = float(
-                torch.sum(data[self.id].val_mask)) / self.num_val_node
-            self.test_rate = float(
-                torch.sum(data[self.id].test_mask)) / self.num_test_node
-        # print(self.train_rate,self.val_rate,self.test_rate)
-        # print(torch.sum(self.data.test_mask))
+            # self.train_rate = sum([float(
+            # torch.sum(data.train_mask)) for data in self.datas])/self.num_train_node
+            self.train_rate = 1/3
+            # self.val_rate = sum([float(torch.sum(data.val_mask))
+            #                     for data in self.datas])/self.num_val_node
+            self.val_rate = 1/3
+            self.test_rate = sum([float(
+                torch.sum(data.test_mask)) for data in self.datas])/self.num_test_node
+            print(self.id, self.train_rate, self.val_rate, self.test_rate)
         return
 
     def get_grad_dict(self):
@@ -486,7 +468,6 @@ class ControllerSuperNet(Controller):
         self.supermasks = supermasks
         self.broadcast_with_waiting_res('supermasks')
         self.broadcast_with_waiting_res(self.supermasks)
-        evo_epochs = 1
         for epoch in range(evo_epochs):
             st_time = time.time()
             for sample_epoch in range(sample_epochs):
@@ -690,6 +671,7 @@ class ClientSuperNet(Client):
         self.model.train()
         supermasks = self.recv()  # ;print('client~{} get supermasks'.format(self.id))
         sm_idx = 0  # ;st_time=time.time()
+        self.data = self.datas[torch.randint(0, 50, [2])[0].item()]
         for supermask in supermasks:
             y_predict = self.model(
                 self.data.x, self.data.edge_index, supermask)
@@ -903,10 +885,13 @@ class ClientCommonNet(Client):
     def process_test(self):
         self.recv()
         self.model.eval()
-        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
-                              self.data.test_mask], self.data.y[self.data.test_mask])
-        # print(utils.num_correct(self.model(self.data.x, self.data.edge_index)[self.data.test_mask],self.data.y[self.data.test_mask]))
-        self.send(accu * self.test_rate)
+        num_correct = 0
+        num_total = 0
+        for data in self.datas:
+            num_correct += utils.num_correct(self.model(data.x, data.edge_index)[
+                                             data.test_mask], data.y[data.test_mask])
+            num_total += len(data.x)
+        self.send(num_correct/num_total * self.test_rate)
         return
 
 
