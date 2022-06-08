@@ -18,7 +18,7 @@ IP_PORT = ('localhost', 5100)
 # BASE = 9
 # gpu = [9, 10, 11]
 BASE = 0
-gpu = [1, 2, 3, 4, 5, 6, 7, 8]
+gpu = [1, 5, 7, 3, 4, 5, 6, 7]*13
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
@@ -147,6 +147,7 @@ class Controller():
         :return:
         '''
         avg_grad_dict = {}
+        ret_avg_grad_dict = {}
         for name in grad_dicts[0].keys():
             # print(name,grad_dicts[0][name],grad_dicts[1][name],grad_dicts[2][name])
             if not grad_dicts[0][name] == None:
@@ -154,9 +155,11 @@ class Controller():
                     if avg_grad_dict.__contains__(name):
                         avg_grad_dict[name] += grad_dicts[i][name].to(
                             self.device)
+                        ret_avg_grad_dict[name] += grad_dicts[i][name]
                     else:
                         avg_grad_dict[name] = grad_dicts[i][name].to(
                             self.device)
+                        ret_avg_grad_dict[name] = grad_dicts[i][name]
                 # avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
                 #     + grad_dicts[1][name].to(self.device)\
                 #     + grad_dicts[2][name].to(self.device)
@@ -168,7 +171,7 @@ class Controller():
             else:
                 avg_grad_dict[name] = None
         self.update_grad(avg_grad_dict)
-        return avg_grad_dict
+        return ret_avg_grad_dict
 
     def update_grad(self, grad_dict):
         '''
@@ -240,7 +243,7 @@ class Client(Contacter):
             model.parameters(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:
@@ -323,7 +326,10 @@ class Client(Contacter):
             self.nfeat, self.nclass = 8415, 5
             self.nnode = 34493
             self.num_train_node, self.num_val_node, self.num_test_node = 100, 500, 1000
-
+        elif self.dataset_name.lower() == "sbm":
+            self.nfeat, self.nclass = 6, 6
+            self.nnode = 1401803
+            self.num_train_node, self.num_val_node, self.num_test_node = 1168087, 116896, 116820
         elif self.dataset_name.lower() == 'reddit':
             self.nfeat, self.nclass = 602, 41
             self.nnode = 232965
@@ -363,7 +369,7 @@ class Client(Contacter):
         :param copy_node:
         :return:
         '''
-        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             # path = 'data/reddit/subg_{}copynode.pkl'.format('' if copy_node else 'un')
             # with open(path, 'rb') as f:
             #     data = pickle.load(f)
@@ -393,7 +399,8 @@ class Client(Contacter):
         grad = {}
         for name, params in self.model.named_parameters():
             if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
-                grad[name] = eval('self.model.{}.grad'.format(name))
+                grad[name] = eval(
+                    'self.model.{}.to(\'cpu\').grad'.format(name))
                 continue
 
             name += 'ending'
@@ -405,7 +412,7 @@ class Client(Contacter):
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
             label = slots[len(slots)-1].replace('ending', '')
             grad[name] = eval(
-                "self.model.{}._parameters['{}'].grad".format(layer, label))
+                "self.model.{}._parameters['{}'].to(\'cpu\').grad".format(layer, label))
             if not grad[name] == None:
                 grad[name] *= self.train_rate
         return grad
@@ -564,6 +571,7 @@ class ControllerSuperNet(Controller):
 
         result_supermasks = supermasks + new_supermasks
         result_supermasks = utils.setalize(result_supermasks)
+        input('continue?')
         performance = []
         for supermask in result_supermasks:
             accu = self.aggregate_accu(supermask)
@@ -983,7 +991,7 @@ class ClientDarts(Client):
             model.get_arc_params(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:
@@ -1117,7 +1125,7 @@ class ClientFedNas(Client):
             model.get_arc_params(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:

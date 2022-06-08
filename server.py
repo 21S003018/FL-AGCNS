@@ -32,7 +32,7 @@ parser.add_argument('--dataset',
                     dest='dataset',
                     action='store',
                     choices={'cora', 'citeseer',
-                             'pubmed', 'corafull', 'Physics'},
+                             'pubmed', 'corafull', 'Physics', 'SBM'},
                     default='cora',
                     help='used dataset')
 # parser.add_argument('--round',
@@ -71,6 +71,8 @@ elif args.dataset == 'corafull':
     nfeat, nclass = 8710, 70
 elif args.dataset == 'Physics':
     nfeat, nclass = 8415, 5
+elif args.dataset == 'SBM':
+    nfeat, nclass = 6, 6
 
 controller = None
 if __name__ == '__main__':

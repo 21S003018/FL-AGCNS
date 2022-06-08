@@ -21,7 +21,7 @@ ADDR = "addr"
 
 
 def reset_ipport():
-    for label in ['', '0', '1', '2', '3', '4', '5', '6', '7']:
+    for label in [''] + list(range(100)):
         path = '{}/ip_oprt{}.pkl'.format(ADDR, label)
         with open(path, 'wb') as f:
             pickle.dump(('localhost', IP_PORT_BASE + 100), f)
@@ -29,7 +29,7 @@ def reset_ipport():
 
 
 def read_ipport():
-    for label in ['', '0', '1', '2', '3', '4', '5', '6', '7']:
+    for label in [''] + list(range(100)):
         path = '{}/ip_oprt{}.pkl'.format(ADDR, label)
         with open(path, 'rb') as f:
             print(pickle.load(f))
@@ -146,7 +146,7 @@ def serialize_model(model):
     '''
     param_dict = {}
     for name, param in model.named_parameters():
-        param_dict[name] = param
+        param_dict[name] = param.to('cpu')
     # print(param_dict)
     return param_dict
 
@@ -552,7 +552,7 @@ def accuracy(output, labels):
     '''
     preds = output.max(1)[1].type_as(labels)
     correct = preds.eq(labels).double()
-    correct = correct.sum()
+    correct = correct.sum().item()
     return correct / len(labels)
 
 
@@ -565,7 +565,7 @@ def num_correct(output, labels):
     '''
     preds = output.max(1)[1].type_as(labels)
     correct = preds.eq(labels).double()
-    correct = correct.sum()
+    correct = correct.sum().item()
     return int(correct)
 
 
