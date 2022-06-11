@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid, Reddit
 from torch_geometric.data import ClusterData, Data, ClusterLoader
 from numpy.random import randint, random
@@ -144,7 +145,7 @@ def serialize_model(model):
     param_dict = {}
     for name, param in model.named_parameters():
         param_dict[name] = param.to('cpu')
-    # print(param_dict)
+    import utils
     return param_dict
 
 
@@ -203,17 +204,10 @@ def cal_edge_attr_for_gmmconv(edge_index):
     :param edge_index:
     :return:
     '''
-    message = edge_index[0]
-    ans = torch.ones(torch.max(edge_index) + 1)
-    for index in message:
-        ans[index] += 1
-    edge_attr = []
-    for i in range(len(edge_index[0])):
-        u, v = edge_index[0][i], edge_index[1][i]
-        edge_attr.append([1/np.sqrt(ans[u]), 1/np.sqrt(ans[v])])
-    # device = torch.device('cpu')
-    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    return torch.Tensor(edge_attr).to(edge_index.device)
+    embedding_matrix = torch.bincount(edge_index[0]).unsqueeze(1)
+    edge_attr = F.embedding(
+        edge_index, embedding_matrix).pow(-0.5).T.squeeze(0)
+    return edge_attr.to(edge_index.device)
 
 
 class PartitionTool():
@@ -748,6 +742,17 @@ def read_data(path):
 
 def generate_new_data(data, train_mask, val_mask, test_mask):
     return Data(x=data.x, y=data.y, edge_index=data.edge_index, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask)
+
+
+def num_params(model):
+    params = list(model.named_parameters())
+    k = 0
+    for _, i in params:
+        l = 1
+        for j in i.size():
+            l *= j
+        k = k + l
+    return k
 
 
 if __name__ == "__main__":

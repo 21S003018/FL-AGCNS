@@ -126,14 +126,7 @@ if __name__ == '__main__':
         for i in range(EPOCHS):
             begin = time.time()
             dummy_code = model.generate_code()
-            # for code in dummy_code:
-            #     print(code.data[0])
             supermask = model.parse_code(dummy_code)
-            # with open('tmp.pkl', 'wb') as f:
-            #     pickle.dump(supermask, f)
-            # print('Dataset:{}~Supermask:{}'.format(
-            #     args.dataset, supermask))
-            # print("generate time long:{}".format(time.time() - begin))
             controller = ControllerCommonNet(args.client)
             controller.configure('SonNet', args.dataset, nfeat, nclass)
             res = controller.work(epochs=50)
@@ -154,7 +147,6 @@ if __name__ == '__main__':
             controller.broadcast_with_waiting_res('ending')
             controller.close()
             print(f"time long:{time.time() - begin}\n")
-            # break
         pass
     else:
         if args.model == 'fl-agcns':
