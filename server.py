@@ -99,9 +99,8 @@ if __name__ == '__main__':
         controller.broadcast_with_waiting_res('ending')
         controller.close()
     elif args.model == 'fl-random':
-        print(args.model)
         begin = time.time()
-        for i in range(5):
+        for i in range(50):
             tmp_supermask = utils.random_supermask()
             with open('tmp.pkl', 'wb') as f:
                 pickle.dump(tmp_supermask, f)
@@ -127,18 +126,17 @@ if __name__ == '__main__':
             begin = time.time()
             dummy_code = model.generate_code()
             supermask = model.parse_code(dummy_code)
+            with open('tmp.pkl', 'wb') as f:
+                pickle.dump(supermask, f)
             controller = ControllerCommonNet(args.client)
             controller.configure('SonNet', args.dataset, nfeat, nclass)
             res = controller.work(epochs=50)
-            print('Epoch:{}~Dataset:{}~Supermask:{}\nresult as\n{}'.format(i+1,
-                                                                           args.dataset, supermask, res))
+            print('Epoch:{}~Dataset:{}~Supermask:{}\nresult as\n{}'.format(
+                i+1, args.dataset, supermask, res))
 
             controller.broadcast_with_waiting_res('val')
             controller.broadcast('get')
-            R = 0
-            accus = controller.aggregate()
-            for idx in range(controller.num_client):
-                R += float(accus[idx])
+            R = res['accu']
 
             loss = model.get_loss(dummy_code, supermask, R)
             optimizer.zero_grad()

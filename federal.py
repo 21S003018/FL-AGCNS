@@ -146,7 +146,6 @@ class Controller():
         avg_grad_dict = {}
         ret_avg_grad_dict = {}
         for name in grad_dicts[0].keys():
-            # print(name,grad_dicts[0][name],grad_dicts[1][name],grad_dicts[2][name])
             if not grad_dicts[0][name] == None:
                 for i in range(self.num_client):
                     if avg_grad_dict.__contains__(name):
@@ -157,14 +156,6 @@ class Controller():
                         avg_grad_dict[name] = grad_dicts[i][name].to(
                             self.device)
                         ret_avg_grad_dict[name] = grad_dicts[i][name]
-                # avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
-                #     + grad_dicts[1][name].to(self.device)\
-                #     + grad_dicts[2][name].to(self.device)
-                # + grad_dicts[3][name].to(self.device)
-                # + grad_dicts[4][name].to(self.device)\
-                # + grad_dicts[5][name].to(self.device)\
-                # + grad_dicts[6][name].to(self.device)\
-                # + grad_dicts[7][name].to(self.device)
             else:
                 avg_grad_dict[name] = None
         self.update_grad(avg_grad_dict)
@@ -475,12 +466,6 @@ class ControllerSuperNet(Controller):
             populations = self.aggregate()
             print('controller evoing')
             self.evo()
-<<<<<<< HEAD
-            self.update_pop2(0.5*pow(0.99, epoch), populations)
-            self.broadcast_with_waiting_res('loss')
-            self.broadcast('get')
-            loss = sum(self.aggregate())
-=======
             self.update_pop(0.5*pow(0.99, epoch), populations)
             # loss
             self.broadcast_with_waiting_res('loss')
@@ -488,7 +473,6 @@ class ControllerSuperNet(Controller):
             loss = 0
             losses = self.aggregate()
             loss = sum(losses)
->>>>>>> e01fe8566ebb0b2a22a45cf6f72b3d6e826da084
             print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{}\n'.format(
                 epoch, loss, time.time() - st_time, self.best_supermask, self.best_accu))
 
@@ -699,13 +683,8 @@ class ControllerCommonNet(Controller):
 
     def work(self, epochs=200):
         Controller.work(self)
-        optval = -1
         for epoch in range(epochs):
             self.broadcast_with_waiting_res('train')
-<<<<<<< HEAD
-=======
-
->>>>>>> e01fe8566ebb0b2a22a45cf6f72b3d6e826da084
             self.broadcast('get')
             grad_dicts = self.aggregate()
             self.broadcast(self.aggregate_grad(grad_dicts))
@@ -715,12 +694,8 @@ class ControllerCommonNet(Controller):
             self.broadcast('get')
             accu = 0
             accus = self.aggregate()
-            for idx in range(self.num_client):
-                accu += float(accus[idx])
-            if accu > optval:
-                optval = accu
-                torch.save(self.model.state_dict(), 'model.pth')
-            print(epoch)
+            accu = sum(accus)
+            print('Iter{}, accu:{}'.format(epoch+1, accu))
 
             # val
             if DEBUG:
@@ -740,18 +715,8 @@ class ControllerCommonNet(Controller):
                     print('train epoch~{} with accu {} on val dataset,loss={}'.format(
                         epoch, accu, loss))
 
-        self.model.load_state_dict(torch.load('model.pth'))
         # get metrics
         res = {}
-        st_time = time.time()
-        self.broadcast_with_waiting_res('test')
-        self.broadcast('get')
-        accu = 0
-        accus = self.aggregate()
-        ed_time = time.time()
-
-        for idx in range(self.num_client):
-            accu += float(accus[idx])
 
         params = list(self.model.named_parameters())
         k = 0
@@ -763,7 +728,6 @@ class ControllerCommonNet(Controller):
         num_params = k
 
         res['accu'] = accu
-        res['time'] = ed_time - st_time
         res['num_params'] = num_params
         return res
 
@@ -786,9 +750,10 @@ class ClientCommonNet(Client):
     def process_train(self):
         self.recv()
         self.model.train()
+        self.data = self.datas[torch.randint(0, 50, [2])[0].item()]
         y_predict = self.model(self.data.x, self.data.edge_index)
         loss = F.cross_entropy(
-            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask], self.data.weight)
         self.optimizer.zero_grad()
         loss.backward()
         grad = self.get_grad_dict()
@@ -803,20 +768,7 @@ class ClientCommonNet(Client):
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.val_mask], self.data.y[self.data.val_mask])
-        print(accu, self.val_rate)
         self.send(accu * self.val_rate)
-        return
-
-    def process_test(self):
-        self.recv()
-        self.model.eval()
-        num_correct = 0
-        num_total = 0
-        for data in self.datas:
-            num_correct += utils.num_correct(self.model(data.x, data.edge_index)[
-                                             data.test_mask], data.y[data.test_mask])
-            num_total += len(data.x)
-        self.send(num_correct/num_total * self.test_rate)
         return
 
 

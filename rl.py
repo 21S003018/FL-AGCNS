@@ -5,27 +5,14 @@ import pickle
 import os
 from federal import ControllerCommonNet, ClientCommonNet
 
-dataset_name = 'Physics'
+dataset_name = 'SBM'
 
 
-def server_run(supermask, epoch, dataset):
-    nfeat, nclass = 0, 0
-    if dataset == 'cora':
-        nfeat, nclass = 1433, 7
-    elif dataset == 'citeseer':
-        nfeat, nclass = 3703, 6
-    elif dataset == 'pubmed':
-        nfeat, nclass = 500, 3
-    elif dataset == 'corafull':
-        nfeat, nclass = 8710, 70
-    elif dataset == 'Physics':
-        nfeat, nclass = 8415, 5
-    client = 3
-    if dataset == "Physics":
-        client = 8
+def server_run(supermask, epoch, dataset='SBM'):
+    nfeat, nclass = 6, 6
     with open('tmp.pkl', 'wb') as f:
         pickle.dump(supermask, f)
-    controller = ControllerCommonNet(client)
+    controller = ControllerCommonNet(20)
     controller.configure('SonNet', dataset, nfeat, nclass)
     res = controller.work(epochs=epoch)
     print('Test on sonnet of {}, get the result as\n{}'.format(dataset, res))
@@ -39,9 +26,7 @@ def server_run(supermask, epoch, dataset):
 
 def client_run(dataset):
     clients = []
-    client = 3
-    if dataset == "Physics":
-        client = 8
+    client = 20
     for j in range(client):
         clients.append(ClientCommonNet(j))
     processes = []
@@ -266,7 +251,7 @@ if __name__ == '__main__':
     for i in range(episodes):
         print("RL: episodes = {}".format(i))
         state = envi.reset()
-        epsilon = epsilon = 0.9/(episodes ** 2) * (episodes ** 2 - i**2) + 0.1
+        epsilon = 0.9/(episodes ** 2) * (episodes ** 2 - i**2) + 0.1
         while True:
             action = model.get_action(state, epsilon=epsilon)
             envi.mov(action)
