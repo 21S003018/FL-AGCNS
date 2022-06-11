@@ -38,85 +38,100 @@ class GMMConv(nn.Module):
     Assuming the features have been preprocessed with k-step graph propagation.
     """
 
-    def __init__(self, insize, outsize, d, K, *args):
+    def __init__(self, insize, outsize):
         super(GMMConv, self).__init__()
-        self.gmmconv = gnn.GMMConv(insize, outsize, d, K)
-        # self.edge_attr = None
+        self.gmmconv = gnn.GMMConv(insize, outsize, 2, 4)
         return
 
     def forward(self, x, edge_index):
-        # if self.edge_attr == None:
         edge_attr = utils.cal_edge_attr_for_gmmconv(edge_index)
-        # print(x.size(),edge_index.size(),edge_attr.size())
-        # print('in gmm conv,type of machine:{}{}{}'.format(x.device,edge_index.device,edge_attr.device))
-        return self.gmmconv(x, edge_index, edge_attr)
+        x = x + F.relu(self.gmmconv(x, edge_index, edge_attr))
+        return x
+
+
+class GINConv(nn.Module):
+    """
+    A Simple PyTorch Implementation of Logistic Regression.
+    Assuming the features have been preprocessed with k-step graph propagation.
+    """
+
+    def __init__(self, nfeat, nclass):
+        super(GINConv, self).__init__()
+        self.ginconv = gnn.GINConv(
+            nn.Sequential(nn.Linear(nfeat, nfeat),
+                          nn.BatchNorm1d(nfeat),
+                          nn.ReLU(),
+                          nn.Linear(nfeat, nclass)),
+            train_eps=True)
+        return
+
+    def forward(self, x, edge_index):
+        x = x + F.relu(self.ginconv(x, edge_index))
+        return x
 
 
 class Gat(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Gat, self).__init__()
-        self.gat1 = gnn.GATConv(nfeat, 8, 8, True)
-        self.gat2 = gnn.GATConv(64, nclass)
+        self.gat1 = gnn.GATConv(nfeat, nfeat)
+        # self.gat2 = gnn.GATConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
-        x = self.gat1(x, edge_index)
-        x = F.elu(x)
-        x = self.gat2(x, edge_index)
+        x = x + F.elu(self.gat1(x, edge_index))
+        # x = x + F.elu(self.gat2(x, edge_index))
         return x
 
 
 class Sage(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Sage, self).__init__()
-        self.sage1 = gnn.SAGEConv(nfeat, 64)
-        self.sage2 = gnn.SAGEConv(64, nclass)
+        self.sage1 = gnn.SAGEConv(nfeat, nfeat)
+        # self.sage2 = gnn.SAGEConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
-        x = self.sage1(x, edge_index)
-        x = F.sigmoid(x)
-        x = self.sage2(x, edge_index)
+        x = x + F.relu(self.sage1(x, edge_index))
+        # x = x + F.relu(self.sage2(x, edge_index))
         return x
 
 
 class Gcn(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Gcn, self).__init__()
-        self.gcn1 = gnn.GCNConv(nfeat, 64)
-        self.gcn2 = gnn.GCNConv(64, nclass)
+        self.gcn1 = gnn.GCNConv(nfeat, nfeat)
+        # self.gcn2 = gnn.GCNConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
-        x = self.gcn1(x, edge_index)
-        x = F.relu(x)
-        x = self.gcn2(x, edge_index)
+        x = x + F.relu(self.gcn1(x, edge_index))
+        # x = x + F.relu(self.gcn2(x, edge_index))
         return x
 
 
 class Sgc(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Sgc, self).__init__()
-        self.sgc = gnn.SGConv(nfeat, nclass, 2, False)
+        self.sgc1 = gnn.SGConv(nfeat, nclass, 1, False)
+        # self.sgc2 = gnn.SGConv(nfeat, nclass, 1, False)
         return
 
     def forward(self, x, edge_index):
-        x = self.sgc(x, edge_index)
+        x = x + F.relu(self.sgc1(x, edge_index))
+        # x = x + F.relu(self.sgc2(x, edge_index))
         return x
 
 
 class Appnp(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Appnp, self).__init__()
-        self.linear = nn.Linear(nfeat, 64)
-        self.linear2 = nn.Linear(64, nclass)
-        self.appnp = gnn.APPNP(K=10, alpha=0.1)
+        self.appnp1 = gnn.APPNP(K=1, alpha=0.1)
+        # self.appnp2 = gnn.APPNP(K=1, alpha=0.1)
         return
 
     def forward(self, x, edge_index):
-        x = F.relu(self.linear(x))
-        x = self.linear2(x)
-        x = self.appnp(x, edge_index)
+        x = x + F.relu(self.appnp1(x, edge_index))
+        # x = x + F.relu(self.appnp2(x, edge_index))
         return x
 
 
@@ -124,28 +139,64 @@ class Agnn(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Agnn, self).__init__()
         self.agnn1 = gnn.AGNNConv()
-        self.agnn2 = gnn.AGNNConv()
-        self.agnn3 = gnn.AGNNConv()
-        self.agnn4 = gnn.AGNNConv()
+        # self.agnn2 = gnn.AGNNConv()
         return
 
     def forward(self, x, edge_index):
-        x = self.agnn1(x, edge_index)
-        x = self.agnn2(x, edge_index)
-        x = self.agnn3(x, edge_index)
+        x = x + F.relu(self.agnn1(x, edge_index))
+        # x = x + F.relu(self.agnn2(x, edge_index))
         return x
 
 
 class Arma(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Arma, self).__init__()
-        self.arma1 = gnn.ARMAConv(nfeat, 16, num_stacks=2)
-        self.arma2 = gnn.ARMAConv(16, nclass, num_stacks=2)
+        self.arma1 = gnn.ARMAConv(nfeat, nfeat, num_stacks=2)
+        # self.arma2 = gnn.ARMAConv(nfeat, nclass, num_stacks=2)
         return
 
     def forward(self, x, edge_index):
-        x = self.arma1(x, edge_index)
-        x = self.arma2(x, edge_index)
+        x = x + F.relu(self.arma1(x, edge_index))
+        # x = x + F.relu(self.arma2(x, edge_index))
+        return x
+
+
+class FeaStConv(nn.Module):
+    def __init__(self, nfeat, nclass):
+        super(FeaStConv, self).__init__()
+        self.feastconv1 = gnn.FeaStConv(nfeat, nfeat, 2)
+        # self.feastconv2 = gnn.FeaStConv(nfeat, nclass, 2)
+        return
+
+    def forward(self, x, edge_index):
+        x = x + F.relu(self.feastconv1(x, edge_index))
+        # x = x + F.relu(self.feastconv2(x, edge_index))
+        return x
+
+
+class GENConv(nn.Module):
+    def __init__(self, nfeat, nclass):
+        super(GENConv, self).__init__()
+        self.genconv1 = gnn.GENConv(nfeat, nfeat)
+        # self.genconv2 = gnn.GENConv(nfeat, nclass)
+        return
+
+    def forward(self, x, edge_index):
+        x = x + F.relu(self.genconv1(x, edge_index))
+        # x = x + F.relu(self.genconv2(x, edge_index))
+        return x
+
+
+class GatedGraphConv(nn.Module):
+    def __init__(self, nfeat, nclass):
+        super(GatedGraphConv, self).__init__()
+        self.gatedgraph1 = gnn.GatedGraphConv(nfeat, 1)
+        # self.gatedgraph2 = gnn.GatedGraphConv(nfeat, 1)
+        return
+
+    def forward(self, x, edge_index):
+        x = x + F.relu(self.gatedgraph1(x, edge_index))
+        # x = x + F.relu(self.gatedgraph2(x, edge_index))
         return x
 
 
@@ -155,22 +206,19 @@ class Structure():
 
     def set_y(self):
         self.y_1 = 'Gat(self.len, self.len)'  # 6:755
-        self.y_2_local_len = 64
-        self.y_2 = 'gnn.GINConv(nn.Sequential({},{},{},{}),train_eps =True)'\
-            .format('nn.Linear(self.len,self.y_2_local_len)',
-                    'nn.BatchNorm1d(self.y_2_local_len)',
-                    'nn.ReLU()',
-                    'nn.Linear(self.y_2_local_len, self.len)')  # 729
+        self.len = 64
+        self.y_2_local_len = self.len
+        self.y_2 = 'GINConv(self.len, self.len)'  # 729
         self.y_3 = 'Sage(self.len, self.len)'  # 714
         self.y_4 = 'Gcn(self.len, self.len)'  # 683
         self.y_5 = 'Sgc(self.len, self.len)'  # 77,759
         self.y_6 = 'Appnp(self.len, self.len)'  # 781
         self.y_7 = 'Agnn(self.len, self.len)'  # 734,686
         self.y_8 = 'Arma(self.len, self.len)'  # 612,556
-        self.y_9 = 'gnn.FeaStConv(self.len, self.len,2)'  # 2:728,693
-        self.y_10 = 'gnn.GENConv(self.len, self.len)'  # 722,67
-        self.y_11 = 'GMMConv(self.len, self.len,2,4)'  # 59,676
-        self.y_12 = 'gnn.GatedGraphConv(self.len,3)'
+        self.y_9 = 'FeaStConv(self.len, self.len)'  # 2:728,693
+        self.y_10 = 'GENConv(self.len, self.len)'  # 722,67
+        self.y_11 = 'GMMConv(self.len, self.len)'  # 59,676
+        self.y_12 = 'GatedGraphConv(self.len,self.len)'
         return
 
 
@@ -435,15 +483,11 @@ class DynamicSonNet(nn.Module, Structure):
 class SuperNet(nn.Module, Structure):
     def __init__(self, nfeat, nclass):
         super(SuperNet, self).__init__()
-        self.len = 64
+        self.hdim = 64
         self.x_blink = nn.Identity()
         self.z_blink = nn.Identity()
 
-        self.x1 = nn.Linear(nfeat, self.len)
-        self.x2 = nn.Linear(nfeat, self.len)
-        self.x3 = nn.Linear(nfeat, self.len)
-        self.x4 = nn.Linear(nfeat, self.len)
-        self.x5 = nn.Linear(nfeat, self.len)
+        self.x = nn.Linear(nfeat, self.hdim)
         self.x_1 = F.sigmoid
         self.x_2 = F.tanh
         self.x_3 = F.relu
@@ -458,11 +502,7 @@ class SuperNet(nn.Module, Structure):
                     layer = 'self.y{}{}_{}'.format(i, j, t)
                     exec("{}=eval(self.y_{})".format(layer, t))
 
-        self.z1 = nn.Linear(self.len, nclass)
-        self.z2 = nn.Linear(self.len, nclass)
-        self.z3 = nn.Linear(self.len, nclass)
-        self.z4 = nn.Linear(self.len, nclass)
-        self.z5 = nn.Linear(self.len, nclass)
+        self.z = nn.Linear(self.hdim, nclass)
         self.z_1 = F.sigmoid
         self.z_2 = F.tanh
         self.z_3 = F.relu
@@ -472,10 +512,10 @@ class SuperNet(nn.Module, Structure):
 
     def forward(self, x, edge_index, supermask):
         x = self.x_blink(x) if supermask[0] == 0 else eval(
-            'self.x_{}'.format(supermask[0]))(eval('self.x{}'.format(supermask[0]))(x))
+            'self.x_{}'.format(supermask[0]))(self.x(x))
         if supermask[1] == 0:
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l1_input = x
         l1_output = eval('self.y01_{}'.format(
@@ -483,7 +523,7 @@ class SuperNet(nn.Module, Structure):
         if supermask[2] == 0:
             x = l1_output
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l2_input = x if (1 <= supermask[2]
                          and supermask[2] <= 12) else l1_output
@@ -492,7 +532,7 @@ class SuperNet(nn.Module, Structure):
         if supermask[3] == 0:
             x = (l1_output+l2_output)/2
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l3_input = x if (1 <= supermask[3] and supermask[3] <= 12) else (
             l1_output if (13 <= supermask[3] and supermask[3] <= 24) else l2_output)
@@ -501,7 +541,7 @@ class SuperNet(nn.Module, Structure):
         if supermask[4] == 0:
             x = (l1_output+l2_output+l3_output)/3
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l4_input = x if (supermask[4] in [1, 12]) else (l1_output if (supermask[4] in [
             12+1, 12*2]) else (l2_output if (supermask[4] in [24+1, 12*3]) else l3_output))
@@ -510,7 +550,7 @@ class SuperNet(nn.Module, Structure):
         if supermask[5] == 0:
             x = (l1_output+l2_output+l3_output+l4_output)/4
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l5_input = x if (supermask[5] in [1, 12]) else (l1_output if (supermask[5] in [12+1, 12*2]) else (
             l2_output if (supermask[5] in [24+1, 12*3]) else (l3_output if (supermask[5] in [36+1, 12*4]) else l4_output)))
@@ -519,7 +559,7 @@ class SuperNet(nn.Module, Structure):
         if supermask[6] == 0:
             x = (l1_output+l2_output+l3_output+l4_output+l5_output)/5
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l6_input = x if (supermask[6] in [1, 12]) else (l1_output if (supermask[6] in [12+1, 12*2]) else (l2_output if (supermask[6] in [
             24+1, 12*3]) else (l3_output if (supermask[6] in [36+1, 12*4]) else (l4_output if (supermask[6] in [48+1, 12*5]) else l5_output))))
@@ -528,21 +568,18 @@ class SuperNet(nn.Module, Structure):
         x = (l1_output + l2_output + l3_output +
              l4_output + l5_output + l6_output) / 6
 
-        return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(eval('self.z{}'.format(supermask[7]))(x))
+        return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(self.z(x))
 
 
 class Darts(nn.Module, Structure):
     def __init__(self, nfeat, nclass):
         super(Darts, self).__init__()
         self.len = 64
+        self.hdim = self.len
         self.x_blink = nn.Identity()
         self.z_blink = nn.Identity()
 
-        self.x1 = nn.Linear(nfeat, self.len)
-        self.x2 = nn.Linear(nfeat, self.len)
-        self.x3 = nn.Linear(nfeat, self.len)
-        self.x4 = nn.Linear(nfeat, self.len)
-        self.x5 = nn.Linear(nfeat, self.len)
+        self.x = nn.Linear(nfeat, self.hdim)
         self.x_1 = F.sigmoid
         self.x_2 = F.tanh
         self.x_3 = F.relu
@@ -557,11 +594,7 @@ class Darts(nn.Module, Structure):
                     layer = 'self.y{}{}_{}'.format(i, j, t)
                     exec("{}=eval(self.y_{})".format(layer, t))
 
-        self.z1 = nn.Linear(self.len, nclass)
-        self.z2 = nn.Linear(self.len, nclass)
-        self.z3 = nn.Linear(self.len, nclass)
-        self.z4 = nn.Linear(self.len, nclass)
-        self.z5 = nn.Linear(self.len, nclass)
+        self.z = nn.Linear(self.hdim, nclass)
         self.z_1 = F.sigmoid
         self.z_2 = F.tanh
         self.z_3 = F.relu
@@ -584,7 +617,7 @@ class Darts(nn.Module, Structure):
         tmp_alpha = F.softmax(self.alpha)
         for i in range(5):
             tmp_lis.append(
-                eval('tmp_alpha[{}] * self.x_{}(self.x{}(x))'.format(i, i+1, i+1)))
+                eval('tmp_alpha[{}] * self.x_{}(self.x(x))'.format(i, i+1)))
         x = torch.sum(torch.stack(tmp_lis, axis=0), dim=0)
         y0 = x
         for j in range(1, 6 + 1):
@@ -604,7 +637,7 @@ class Darts(nn.Module, Structure):
         tmp_gamma = F.softmax(self.gamma)
         for i in range(5):
             tmp_lis.append(
-                eval('tmp_gamma[{}] * self.z_{}(self.z{}(x))'.format(i, i + 1, i + 1)))
+                eval('tmp_gamma[{}] * self.z_{}(self.z(x))'.format(i, i + 1)))
         x = torch.sum(torch.stack(tmp_lis, axis=0), dim=0)
         return x
 
@@ -642,14 +675,11 @@ class FedNas(nn.Module, Structure):
     def __init__(self, nfeat, nclass):
         super(FedNas, self).__init__()
         self.len = 64
+        self.hdim = self.len
         self.x_blink = nn.Identity()
         self.z_blink = nn.Identity()
 
-        self.x1 = nn.Linear(nfeat, self.len)
-        self.x2 = nn.Linear(nfeat, self.len)
-        self.x3 = nn.Linear(nfeat, self.len)
-        self.x4 = nn.Linear(nfeat, self.len)
-        self.x5 = nn.Linear(nfeat, self.len)
+        self.x = nn.Linear(nfeat, self.hdim)
         self.x_1 = F.sigmoid
         self.x_2 = F.tanh
         self.x_3 = F.relu
@@ -664,11 +694,7 @@ class FedNas(nn.Module, Structure):
                     layer = 'self.y{}{}_{}'.format(i, j, t)
                     exec("{}=eval(self.y_{})".format(layer, t))
 
-        self.z1 = nn.Linear(self.len, nclass)
-        self.z2 = nn.Linear(self.len, nclass)
-        self.z3 = nn.Linear(self.len, nclass)
-        self.z4 = nn.Linear(self.len, nclass)
-        self.z5 = nn.Linear(self.len, nclass)
+        self.z = nn.Linear(self.hdim, nclass)
         self.z_1 = F.sigmoid
         self.z_2 = F.tanh
         self.z_3 = F.relu
@@ -691,7 +717,7 @@ class FedNas(nn.Module, Structure):
         tmp_alpha = F.softmax(self.alpha)
         for i in range(5):
             tmp_lis.append(
-                eval('tmp_alpha[{}] * self.x_{}(self.x{}(x))'.format(i, i+1, i+1)))
+                eval('tmp_alpha[{}] * self.x_{}(self.x(x))'.format(i, i+1)))
         x = torch.sum(torch.stack(tmp_lis, axis=0), dim=0)
         y0 = x
         for j in range(1, 6 + 1):
@@ -711,7 +737,7 @@ class FedNas(nn.Module, Structure):
         tmp_gamma = F.softmax(self.gamma)
         for i in range(5):
             tmp_lis.append(
-                eval('tmp_gamma[{}] * self.z_{}(self.z{}(x))'.format(i, i + 1, i + 1)))
+                eval('tmp_gamma[{}] * self.z_{}(self.z(x))'.format(i, i + 1)))
         x = torch.sum(torch.stack(tmp_lis, axis=0), dim=0)
         return x
 
@@ -754,64 +780,6 @@ class FedNas(nn.Module, Structure):
         for name, param in self.named_parameters():
             if name.__contains__("alpha") or name.__contains__("beta") or name.__contains__("gamma"):
                 yield param
-
-
-# class GraphNas(nn.Module):
-#     def __init__(self, INPUT_SIZE):
-#         super(GraphNas, self).__init__()
-#         self.rnn = nn.RNN(
-#             input_size=INPUT_SIZE,
-#             hidden_size=HIDDENSIZE,
-#             num_layers=LAYERS,
-#             # batch_first=True
-#         )
-
-#         self.out1 = nn.Linear(HIDDENSIZE, 5)
-#         self.out2 = nn.Linear(HIDDENSIZE, 12)
-#         self.out8 = nn.Linear(HIDDENSIZE, 5)
-#         for i in range(3, 7 + 1):
-#             exec("self.out{} = nn.Linear(HIDDENSIZE, 13)".format(i))
-
-#         self.b = 0
-#         self.beta = 0.9
-#         return
-
-#     def generate_code(self):
-#         h_state = torch.FloatTensor(np.zeros((1, 1, INPUT_SIZE)))
-#         if torch.cuda.is_available():
-#             h_state = h_state.cuda()
-#         else:
-#             h_state = h_state.cpu()
-#         x = h_state
-#         res = []
-#         for i in range(1, 8 + 1):
-#             r_out, h_state = self.rnn(x, h_state)
-#             res.append(
-#                 F.softmax(eval("self.out{}".format(i))(r_out[0]), dim=1))
-#             x = h_state
-#         return res
-
-#     def get_loss(self, dummy_code, R):
-#         loss0 = 0
-#         idx = 1
-#         for code in dummy_code:
-#             exec(
-#                 "loss{} = loss{} + (-torch.log(torch.max(code))*({} - self.b))".format(idx, idx - 1, R))
-#             idx += 1
-#         self.b = self.beta * self.b + (1 - self.beta) * R
-#         print("reward~R:{},b:{}".format(R, self.b))
-#         return eval("loss{}".format(len(dummy_code)))
-
-#     def parse_code(self, dummy_code):
-#         supermask = []
-#         idx = 1
-#         for code in dummy_code:
-#             if idx == 1 or idx == 8:
-#                 supermask.append(int(torch.argmax(code) + 1))
-#             else:
-#                 supermask.append(int(torch.argmax(code)))
-#             idx += 1
-#         return supermask
 
 
 class GraphNas(nn.Module):
@@ -893,7 +861,6 @@ class GraphNas(nn.Module):
 
 if __name__ == "__main__":
     model = GraphNas(32)
-    # model.parameters()
     if torch.cuda.is_available():
         model.cuda()
     dummy_code = model.generate_code()
