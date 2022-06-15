@@ -41,7 +41,7 @@ if __name__ == '__main__':
         for process in processes:
             process.join()
     elif args.model == 'fl-random':
-        for i in range(5):
+        for i in range(50):
             clients = []
             for j in range(args.client):
                 clients.append(ClientCommonNet(j))

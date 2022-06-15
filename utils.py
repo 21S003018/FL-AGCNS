@@ -755,6 +755,30 @@ def num_params(model):
     return k
 
 
+def setalize_pop(pop: list):
+    ss = set()
+    for gene in pop:
+        tmp = ''
+        try:
+            idx = gene.index(0)
+            for g in gene[:idx+1]:
+                tmp = tmp + str(g) + '|'
+            for _ in range(idx, 7):
+                tmp = tmp + '0|'
+            tmp = tmp + str(gene[-1]) + '|'
+        except:
+            for g in gene:
+                tmp = tmp + str(g) + '|'
+        ss.add(tmp)
+    ret = []
+    for gene in ss:
+        ll = gene.split('|')[:-1]
+        for i, item in enumerate(ll):
+            ll[i] = int(item)
+        ret.append(ll)
+    return ret
+
+
 if __name__ == "__main__":
     read_ipport()
     pass

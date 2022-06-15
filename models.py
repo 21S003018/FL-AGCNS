@@ -88,11 +88,15 @@ class Sage(nn.Module):
         super(Sage, self).__init__()
         self.sage1 = gnn.SAGEConv(nfeat, nfeat)
         # self.sage2 = gnn.SAGEConv(nfeat, nclass)
+        # self.sage3 = gnn.SAGEConv(nfeat, nclass)
+        # self.sage4 = gnn.SAGEConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
         x = x + F.relu(self.sage1(x, edge_index))
         # x = x + F.relu(self.sage2(x, edge_index))
+        # x = x + F.relu(self.sage3(x, edge_index))
+        # x = x + F.relu(self.sage4(x, edge_index))
         return x
 
 
@@ -224,8 +228,7 @@ class Structure():
 
 class SonNet(nn.Module):
     def __init__(self, nfeat, nclass):
-        path = 'tmp.pkl'
-        with open(path, 'rb') as f:
+        with open('tmp.pkl', 'rb') as f:
             self.supermask = pickle.load(f)
         super(SonNet, self).__init__()
         self.hdim = 64
@@ -255,7 +258,8 @@ class SonNet(nn.Module):
         self.z_5 = nn.Identity()
         return
 
-    def forward(self, x, edge_index, supermask):
+    def forward(self, x, edge_index):
+        supermask = self.supermask
         x = self.x_blink(x) if supermask[0] == 0 else eval(
             'self.x_{}'.format(supermask[0]))(self.x(x))
         if supermask[1] == 0:
@@ -319,125 +323,94 @@ class SonNet(nn.Module):
 class DynamicSonNet(nn.Module, Structure):
     def __init__(self, nfeat, nclass):
         self.supermask = [2, 5, 19, 0, 0, 42, 28, 5]
-
         super(DynamicSonNet, self).__init__()
-        self.len = 64
-
+        self.hdim = 64
         self.x_blink = nn.Identity()
         self.z_blink = nn.Identity()
 
-        self.x1 = 'nn.Linear(nfeat, self.len)'
-        self.x2 = 'nn.Linear(nfeat, self.len)'
-        self.x3 = 'nn.Linear(nfeat, self.len)'
-        self.x4 = 'nn.Linear(nfeat, self.len)'
-        self.x5 = 'nn.Linear(nfeat, self.len)'
-        self.x_1 = 'F.sigmoid'
-        self.x_2 = 'F.tanh'
-        self.x_3 = 'F.relu'
-        self.x_4 = 'F.softmax'
-        self.x_5 = 'nn.Identity()'
+        self.x = nn.Linear(nfeat, self.hdim)
+        self.x_1 = F.sigmoid
+        self.x_2 = F.tanh
+        self.x_3 = F.relu
+        self.x_4 = F.softmax
+        self.x_5 = nn.Identity()
 
         Structure.set_y(self)
 
-        self.z1 = 'nn.Linear(self.len, nclass)'
-        self.z2 = 'nn.Linear(self.len, nclass)'
-        self.z3 = 'nn.Linear(self.len, nclass)'
-        self.z4 = 'nn.Linear(self.len, nclass)'
-        self.z5 = 'nn.Linear(self.len, nclass)'
-        self.z_1 = 'F.sigmoid'
-        self.z_2 = 'F.tanh'
-        self.z_3 = 'F.relu'
-        self.z_4 = 'F.softmax'
-        self.z_5 = 'nn.Identity()'
+        for j in range(1, 6 + 1):
+            for i in range(0, j):
+                for t in range(1, 12 + 1):
+                    layer = 'self.y{}{}_{}'.format(i, j, t)
+                    exec("{}=eval(self.y_{})".format(layer, t))
 
-        exec('self.x{}=eval(self.x{})'.format(
-            self.supermask[0], self.supermask[0]))
-        exec('self.x_{}=eval(self.x_{})'.format(
-            self.supermask[0], self.supermask[0]))
-        exec('self.z{}=eval(self.z{})'.format(
-            self.supermask[7], self.supermask[7]))
-        exec('self.z_{}=eval(self.z_{})'.format(
-            self.supermask[7], self.supermask[7]))
-
-        for i in range(1, 6 + 1):
-            tmp_mask = self.supermask[i]
-            if tmp_mask == 0:
-                break
-            layer = 'self.y{}{}_{}'.format(
-                int((tmp_mask - 1) / 12), i, (tmp_mask - 1) % 12 + 1)
-            exec("{}=eval(self.y_{})".format(layer, (tmp_mask - 1) % 12 + 1))
+        self.z = nn.Linear(self.hdim, nclass)
+        self.z_1 = F.sigmoid
+        self.z_2 = F.tanh
+        self.z_3 = F.relu
+        self.z_4 = F.softmax
+        self.z_5 = nn.Identity()
         return
 
     def forward(self, x, edge_index):
         supermask = self.supermask
-        x = self.x_blink(x) if supermask[0] == 0 else eval('self.x_{}'.format(supermask[0]))(
-            eval('self.x{}'.format(supermask[0]))(x))
+        x = self.x_blink(x) if supermask[0] == 0 else eval(
+            'self.x_{}'.format(supermask[0]))(self.x(x))
         if supermask[1] == 0:
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l1_input = x
-        # print('self.y01_{}'.format(supermask[1]))
         l1_output = eval('self.y01_{}'.format(
             supermask[1]))(l1_input, edge_index)
         if supermask[2] == 0:
             x = l1_output
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l2_input = x if (1 <= supermask[2]
                          and supermask[2] <= 12) else l1_output
-        # print('self.y{}2_{}'.format(int((supermask[2] - 1)/12),(supermask[2] - 1) % 12 + 1))
-        l2_output = eval('self.y{}2_{}'.format(int((supermask[2] - 1) / 12), (supermask[2] - 1) % 12 + 1))(l2_input,
-                                                                                                           edge_index)
+        l2_output = eval('self.y{}2_{}'.format(
+            int((supermask[2] - 1)/12), (supermask[2] - 1) % 12 + 1))(l2_input, edge_index)
         if supermask[3] == 0:
-            x = (l1_output + l2_output) / 2
+            x = (l1_output+l2_output)/2
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
         l3_input = x if (1 <= supermask[3] and supermask[3] <= 12) else (
             l1_output if (13 <= supermask[3] and supermask[3] <= 24) else l2_output)
-        # print('self.y{}3_{}'.format(int((supermask[3] - 1)/12),(supermask[3] - 1) % 12 + 1))
-        l3_output = eval('self.y{}3_{}'.format(int((supermask[3] - 1) / 12), (supermask[3] - 1) % 12 + 1))(l3_input,
-                                                                                                           edge_index)
+        l3_output = eval('self.y{}3_{}'.format(
+            int((supermask[3] - 1)/12), (supermask[3] - 1) % 12 + 1))(l3_input, edge_index)
         if supermask[4] == 0:
-            x = (l1_output + l2_output + l3_output) / 3
+            x = (l1_output+l2_output+l3_output)/3
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
-        l4_input = x if (supermask[4] in [1, 12]) else (l1_output if (supermask[4] in [12 + 1, 12 * 2]) else (
-            l2_output if (supermask[4] in [24 + 1, 12 * 3]) else l3_output))
-        # print('self.y{}4_{}'.format(int((supermask[4] - 1)/12),(supermask[4] - 1) % 12 + 1))
-        l4_output = eval('self.y{}4_{}'.format(int((supermask[4] - 1) / 12), (supermask[4] - 1) % 12 + 1))(l4_input,
-                                                                                                           edge_index)
+        l4_input = x if (supermask[4] in [1, 12]) else (l1_output if (supermask[4] in [
+            12+1, 12*2]) else (l2_output if (supermask[4] in [24+1, 12*3]) else l3_output))
+        l4_output = eval('self.y{}4_{}'.format(
+            int((supermask[4] - 1)/12), (supermask[4] - 1) % 12 + 1))(l4_input, edge_index)
         if supermask[5] == 0:
-            x = (l1_output + l2_output + l3_output + l4_output) / 4
+            x = (l1_output+l2_output+l3_output+l4_output)/4
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
-        l5_input = x if (supermask[5] in [1, 12]) else (l1_output if (supermask[5] in [12 + 1, 12 * 2]) else (
-            l2_output if (supermask[5] in [24 + 1, 12 * 3]) else (
-                l3_output if (supermask[5] in [36 + 1, 12 * 4]) else l4_output)))
-        # print('self.y{}5_{}'.format(int((supermask[5] - 1)/12),(supermask[5] - 1) % 12 + 1))
-        l5_output = eval('self.y{}5_{}'.format(int((supermask[5] - 1) / 12), (supermask[5] - 1) % 12 + 1))(l5_input,
-                                                                                                           edge_index)
+        l5_input = x if (supermask[5] in [1, 12]) else (l1_output if (supermask[5] in [12+1, 12*2]) else (
+            l2_output if (supermask[5] in [24+1, 12*3]) else (l3_output if (supermask[5] in [36+1, 12*4]) else l4_output)))
+        l5_output = eval('self.y{}5_{}'.format(
+            int((supermask[5] - 1)/12), (supermask[5] - 1) % 12 + 1))(l5_input, edge_index)
         if supermask[6] == 0:
-            x = (l1_output + l2_output + l3_output + l4_output + l5_output) / 5
+            x = (l1_output+l2_output+l3_output+l4_output+l5_output)/5
             return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-                eval('self.z{}'.format(supermask[7]))(x))
+                self.z(x))
 
-        l6_input = x if (supermask[6] in [1, 12]) else (l1_output if (supermask[6] in [12 + 1, 12 * 2]) else (
-            l2_output if (supermask[6] in [24 + 1, 12 * 3]) else (l3_output if (supermask[6] in [36 + 1, 12 * 4]) else (
-                l4_output if (supermask[6] in [48 + 1, 12 * 5]) else l5_output))))
-        # print('self.y{}6_{}'.format(int((supermask[6] - 1)/12),(supermask[6] - 1) % 12 + 1))
-        l6_output = eval('self.y{}6_{}'.format(int((supermask[6] - 1) / 12), (supermask[6] - 1) % 12 + 1))(l6_input,
-                                                                                                           edge_index)
-        # print('use 6 nodes')
+        l6_input = x if (supermask[6] in [1, 12]) else (l1_output if (supermask[6] in [12+1, 12*2]) else (l2_output if (supermask[6] in [
+            24+1, 12*3]) else (l3_output if (supermask[6] in [36+1, 12*4]) else (l4_output if (supermask[6] in [48+1, 12*5]) else l5_output))))
+        l6_output = eval('self.y{}6_{}'.format(
+            int((supermask[6] - 1)/12), (supermask[6] - 1) % 12 + 1))(l6_input, edge_index)
         x = (l1_output + l2_output + l3_output +
              l4_output + l5_output + l6_output) / 6
 
-        return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(
-            eval('self.z{}'.format(supermask[7]))(x))
+        return self.z_blink(x) if supermask[7] == 0 else eval('self.z_{}'.format(supermask[7]))(self.z(x))
 
 
 class SuperNet(nn.Module, Structure):
