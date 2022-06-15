@@ -79,7 +79,7 @@ def socket_recv_with_response(socket):
             data = data[:-9]
             break
     socket.send('okk'.encode())
-    if data.__sizeof__() >= 5*1024*1024:
+    if data.__sizeof__() >= 10*1024*1024:
         # logger.info('recv big obj:{:.2f}M'.format(
         #     data.__sizeof__()/(1024*1024)))
         print('recv big obj:{:.2f}M'.format(data.__sizeof__()/(1024*1024)))
@@ -116,7 +116,7 @@ def socket_recv(socket):
         if data[-9:].__contains__(OBJ_END.encode()):
             data = data[:-9]
             break
-    if data.__sizeof__() >= 5*1024*1024:
+    if data.__sizeof__() >= 10*1024*1024:
         # logger.info('recv big obj:{:.2f}M'.format(
         #     data.__sizeof__()/(1024*1024)))
         print('recv big obj:{:.2f}M'.format(data.__sizeof__()/(1024*1024)))

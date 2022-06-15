@@ -18,7 +18,7 @@ IP_PORT = ('localhost', 5100)
 # BASE = 9
 # gpu = [9, 10, 11]
 BASE = 0
-gpu = [0, 1, 0, 1]*6
+gpu = [0, 1, 2, 3]*6
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
@@ -161,14 +161,6 @@ class Controller():
                         avg_grad_dict[name] = grad_dicts[i][name].to(
                             self.device)
                         ret_avg_grad_dict[name] = grad_dicts[i][name]
-                # avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
-                #     + grad_dicts[1][name].to(self.device)\
-                #     + grad_dicts[2][name].to(self.device)
-                # + grad_dicts[3][name].to(self.device)
-                # + grad_dicts[4][name].to(self.device)\
-                # + grad_dicts[5][name].to(self.device)\
-                # + grad_dicts[6][name].to(self.device)\
-                # + grad_dicts[7][name].to(self.device)
             else:
                 avg_grad_dict[name] = None
         self.update_grad(avg_grad_dict)
@@ -380,8 +372,11 @@ class Client(Contacter):
         grad = {}
         for name, params in self.model.named_parameters():
             if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
-                grad[name] = eval(
-                    'self.model.{}.to(\'cpu\').grad'.format(name))
+                try:
+                    grad[name] = eval(
+                        "self.model._parameters['{}'].grad.to(\'cpu\')".format(name))
+                except:
+                    grad[name] = None
                 continue
 
             name += 'ending'
@@ -392,8 +387,11 @@ class Client(Contacter):
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
             label = slots[len(slots)-1].replace('ending', '')
-            grad[name] = eval(
-                "self.model.{}._parameters['{}'].to(\'cpu\').grad".format(layer, label))
+            try:
+                grad[name] = eval(
+                    "self.model.{}._parameters['{}'].grad.to(\'cpu\')".format(layer, label))
+            except:
+                grad[name] = None
             if not grad[name] == None:
                 grad[name] *= self.train_rate
         return grad
