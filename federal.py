@@ -88,15 +88,11 @@ class Controller():
         self.broadcast_with_waiting_res('dataset')
         self.broadcast_with_waiting_res(self.dataset)
         print('controller broadcasts datasetname:{} over'.format(self.dataset))
-        # time.sleep(1)
         self.broadcast_with_waiting_res('model')
         self.broadcast_with_waiting_res(self.model_name)
-        # self.broadcast_with_waiting_res(utils.serialize_model(self.model));print('controller broadcasts model over')
         self.broadcast(utils.serialize_model(self.model))
         self.blink_aggregate()
         print('controller broadcasts model over')
-        # train
-        # ...
         return
 
     def broadcast(self, message):
@@ -150,7 +146,6 @@ class Controller():
         avg_grad_dict = {}
         ret_avg_grad_dict = {}
         for name in grad_dicts[0].keys():
-            # print(name,grad_dicts[0][name],grad_dicts[1][name],grad_dicts[2][name])
             if not grad_dicts[0][name] == None:
                 for i in range(self.num_client):
                     if avg_grad_dict.__contains__(name):
@@ -256,14 +251,10 @@ class Client(Contacter):
         self.socket.connect(self.ip_port)
         command = None
         while self.is_continue(command):
-            # print('client{} get {}'.format(self.id,command))
-            # ;print('client{} recv "{}",processing...'.format(self.id,command))
             command = self.recv_with_res()
-            # ;print('client{} processes "{}" over'.format(self.id,command))
             self.process(command)
         self.socket.close()
         print('client{} closes'.format(self.id))
-        # self.end_analyse()
         return
 
     def is_continue(self, command):
@@ -433,7 +424,6 @@ class Client(Contacter):
         print(self.id)
         idx = 0
         for name, param in self.model.named_parameters():
-            # print(name, param)
             idx += 1
             if idx > 1:
                 break
@@ -517,7 +507,7 @@ class ControllerSuperNet(Controller):
         supermasks = self.supermasks
         num_pop = len(supermasks)
         t = 0.5
-        volumn = int(num_pop * t)  # volumn
+        volumn = int(num_pop * t)
         reservoir = []
         while len(reservoir) < volumn:
             j = 0
@@ -699,26 +689,19 @@ class ControllerCommonNet(Controller):
 
     def work(self, epochs=200):
         Controller.work(self)
-        optval = -1
         for epoch in range(epochs):
             self.broadcast_with_waiting_res('train')
-
             self.broadcast('get')
             grad_dicts = self.aggregate()
             self.broadcast(self.aggregate_grad(grad_dicts))
             self.blink_aggregate()
 
-            # save model
             self.broadcast_with_waiting_res('val')
             self.broadcast('get')
             accu = 0
             accus = self.aggregate()
-            for idx in range(self.num_client):
-                accu += float(accus[idx])
-            if accu > optval:
-                optval = accu
-                torch.save(self.model.state_dict(), 'model.pth')
-            print(epoch)
+            accu = sum(accus)
+            print('Iter{}, accu:{}'.format(epoch+1, accu))
 
             # val
             if DEBUG:
@@ -738,22 +721,8 @@ class ControllerCommonNet(Controller):
                     print('train epoch~{} with accu {} on val dataset,loss={}'.format(
                         epoch, accu, loss))
 
-        self.model.load_state_dict(torch.load('model.pth'))
         # get metrics
         res = {}
-        st_time = time.time()
-        self.broadcast_with_waiting_res('model')
-        self.broadcast_with_waiting_res(self.model_name)
-        self.broadcast(utils.serialize_model(self.model))
-        self.blink_aggregate()
-        self.broadcast_with_waiting_res('test')
-        self.broadcast('get')
-        accu = 0
-        accus = self.aggregate()
-        ed_time = time.time()
-
-        for idx in range(self.num_client):
-            accu += float(accus[idx])
 
         params = list(self.model.named_parameters())
         k = 0
@@ -765,7 +734,6 @@ class ControllerCommonNet(Controller):
         num_params = k
 
         res['accu'] = accu
-        res['time'] = ed_time - st_time
         res['num_params'] = num_params
         return res
 
@@ -787,22 +755,18 @@ class ClientCommonNet(Client):
 
     def process_train(self):
         self.recv()
-        self.model.train()  # ;print('client{} change state to train'.format(self.id))
-        # ;print('client{} get output of model'.format(self.id))
+        self.model.train()
+        self.data = self.datas[torch.randint(0, 50, [2])[0].item()]
         y_predict = self.model(self.data.x, self.data.edge_index)
-        # ;print('client{} get loss'.format(self.id))
         loss = F.cross_entropy(
-            y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
-        self.optimizer.zero_grad()  # ;print('client{} zero grad'.format(self.id))
-        loss.backward()  # ;print('client{} backward'.format(self.id))
-        grad = self.get_grad_dict()  # ;print('client{} get grad'.format(self.id))
-        self.send(grad)  # ;print('client{} upload grad'.format(self.id))
-        # ;print('client{} get aggr_grad'.format(self.id))
+            y_predict[self.data.train_mask], self.data.y[self.data.train_mask], self.data.weight)
+        self.optimizer.zero_grad()
+        loss.backward()
+        grad = self.get_grad_dict()
+        self.send(grad)
         aggr_grad = self.recv_with_res()
-        # ;print('client{} update model'.format(self.id))
         self.update_grad(aggr_grad)
         self.loss = loss.item()
-        # print('client~{} has loss:{}'.format(self.id,loss.item()))
         return
 
     def process_val(self):
@@ -810,20 +774,7 @@ class ClientCommonNet(Client):
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.val_mask], self.data.y[self.data.val_mask])
-        print(accu, self.val_rate)
         self.send(accu * self.val_rate)
-        return
-
-    def process_test(self):
-        self.recv()
-        self.model.eval()
-        num_correct = 0
-        num_total = 0
-        for data in self.datas:
-            num_correct += utils.num_correct(self.model(data.x, data.edge_index)[
-                                             data.test_mask], data.y[data.test_mask])
-            num_total += len(data.x)
-        self.send(num_correct/num_total * self.test_rate)
         return
 
 
