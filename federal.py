@@ -533,6 +533,8 @@ class ControllerSuperNet(Controller):
 
         result_supermasks = supermasks + new_supermasks
         result_supermasks = utils.setalize_pop(result_supermasks)
+        while len(result_supermasks) < num_pop:
+            result_supermasks.append(utils.random_supermask())
         performance = []
         for supermask in result_supermasks:
             accu = self.aggregate_accu(supermask)
@@ -662,6 +664,8 @@ class ClientSuperNet(Client):
                 new_supermasks.append(son)
         result_supermasks = supermasks + new_supermasks
         result_supermasks = utils.setalize_pop(result_supermasks)
+        while len(result_supermasks) < num_pop:
+            result_supermasks.append(utils.random_supermask())
         performance = []
         for supermask in result_supermasks:
             performance.append(val(supermask))

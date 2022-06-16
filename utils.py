@@ -1,3 +1,4 @@
+from typing import List
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -755,13 +756,13 @@ def num_params(model):
     return k
 
 
-def setalize_pop(pop: list):
+def setalize_pop(pop: List):
     ss = set()
     for gene in pop:
         tmp = ''
         try:
             idx = gene.index(0)
-            for g in gene[:idx+1]:
+            for g in gene[:idx]:
                 tmp = tmp + str(g) + '|'
             for _ in range(idx, 7):
                 tmp = tmp + '0|'
@@ -780,5 +781,6 @@ def setalize_pop(pop: list):
 
 
 if __name__ == "__main__":
-    read_ipport()
+    print(setalize_pop(
+        [[5, 10, 13, 0, 0, 12, 31, 3], [5, 10, 13, 0, 12, 24, 31, 3]]))
     pass
