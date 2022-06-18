@@ -1,2 +1,0 @@
-nohup python -u server.py --client 8 --model fl-graphnas --dataset Physics 2>&1 >> log/fl-graphnas_physics_server.log &
-nohup python -u client.py --client 8 --model fl-graphnas 2>&1 >> log/fl-graphnas_physics_client.log &
