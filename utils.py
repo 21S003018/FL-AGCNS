@@ -489,12 +489,12 @@ def setalize(supermasks):
 
 
 # a group of funcitons used in e-a
-maskRange = [[1, 5], [1, 12], [1, 24], [
-    1, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
+maskRange = [[1, 5], [1, 12], [13, 24], [
+    25, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
 
 
 def rand_element(idx):
-    zero_p = [0, 0, 1/6, 1/5, 1/4, 1/3, 1/2, 0]
+    zero_p = [0, 0, 0, 0, 0.2, 0.2, 0.2, 0]
     rand_seed = zero_p[idx]
     if random() < rand_seed:
         return 0
@@ -525,7 +525,7 @@ def cross_over(original, target):
 
 
 def mutate(original):
-    c = 0.1
+    c = 0.125
     son = []
     for i, range in enumerate(maskRange):
         if np.random.random() < c:
@@ -756,31 +756,7 @@ def num_params(model):
     return k
 
 
-def setalize_pop(pop: List):
-    ss = set()
-    for gene in pop:
-        tmp = ''
-        try:
-            idx = gene.index(0)
-            for g in gene[:idx]:
-                tmp = tmp + str(g) + '|'
-            for _ in range(idx, 7):
-                tmp = tmp + '0|'
-            tmp = tmp + str(gene[-1]) + '|'
-        except:
-            for g in gene:
-                tmp = tmp + str(g) + '|'
-        ss.add(tmp)
-    ret = []
-    for gene in ss:
-        ll = gene.split('|')[:-1]
-        for i, item in enumerate(ll):
-            ll[i] = int(item)
-        ret.append(ll)
-    return ret
-
-
 if __name__ == "__main__":
-    print(setalize_pop(
-        [[5, 10, 13, 0, 0, 12, 31, 3], [5, 10, 13, 0, 12, 24, 31, 3]]))
+    p = 0.2
+    print(p**3, 3*p**2*(1-p), 3*p*(1-p)**2, (1-p)**3)
     pass

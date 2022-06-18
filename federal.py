@@ -1,5 +1,7 @@
 import socket
 import random
+
+from regex import P
 from models import *
 from external_models import *
 from utils import Contacter
@@ -17,7 +19,7 @@ logger = logging.getLogger(__name__)
 IP_PORT = ('localhost', 5100)
 # BASE = 9
 # gpu = [9, 10, 11]
-BASE = 0
+BASE = 2
 gpu = [0, 1, 2, 3]*6
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
@@ -178,6 +180,9 @@ class Controller():
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
             exec("self.model.{}._parameters['{}'].grad = grad".format(
                 layer, label))
@@ -326,14 +331,17 @@ class Client(Contacter):
         # chuange the parameters of model
         for name, param in param_dict.items():
             if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
-                exec('model.{} = param'.format(name))
+                exec('model.{} = nn.Parameter(param)'.format(name))
                 continue
             name += 'ending'
             slots = name.split('.')
-            layer = name.replace('.{}'.format(slots[len(slots)-1]), '')
+            layer = name.replace('.{}'.format(slots[-1]), '')
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
             exec("model.{}._parameters['{}'] = param".format(layer, label))
         model = model.to(self.device)
@@ -377,6 +385,9 @@ class Client(Contacter):
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
             try:
                 grad[name] = eval(
@@ -402,6 +413,9 @@ class Client(Contacter):
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
             exec("self.model.{}._parameters['{}'].grad = grad".format(
                 layer, label))
@@ -457,6 +471,8 @@ class ControllerSuperNet(Controller):
         self.broadcast_with_waiting_res(self.supermasks)
         for epoch in range(evo_epochs):
             st_time = time.time()
+            if epoch <= 50:
+                supermasks = [utils.random_supermask() for i in range(num_pop)]
             # train
             for sample_epoch in range(sample_epochs):
                 self.broadcast_with_waiting_res('train')
@@ -466,13 +482,14 @@ class ControllerSuperNet(Controller):
                 self.broadcast(self.aggregate_grad(grad_dicts))
                 self.blink_aggregate()
                 print('sample epoch~{}'.format(sample_epoch))
-            # evo
-            self.broadcast_with_waiting_res('population')
-            self.broadcast('get')
-            populations = self.aggregate()
-            print('controller evoing')
-            self.evo()
-            self.update_pop(0.5*pow(0.99, epoch), populations)
+            if epoch >= 50:
+                # evo
+                self.broadcast_with_waiting_res('population')
+                self.broadcast('get')
+                populations = self.aggregate()
+                print('controller evoing')
+                self.evo()
+                self.update_pop(0.5*pow(0.99, epoch), populations)
             # loss
             self.broadcast_with_waiting_res('loss')
             self.broadcast('get')
@@ -521,7 +538,7 @@ class ControllerSuperNet(Controller):
                 j += 1
 
         new_supermasks = []
-        l = 0.5
+        l = 0.2
         for original in reservoir:
             if np.random.random() < l:
                 son = utils.cross_over(original, reservoir[randint(0, volumn)])
@@ -532,7 +549,7 @@ class ControllerSuperNet(Controller):
                 new_supermasks.append(son)
 
         result_supermasks = supermasks + new_supermasks
-        result_supermasks = utils.setalize_pop(result_supermasks)
+        result_supermasks = utils.setalize(result_supermasks)
         while len(result_supermasks) < num_pop:
             result_supermasks.append(utils.random_supermask())
         performance = []
@@ -663,7 +680,7 @@ class ClientSuperNet(Client):
                 son = utils.mutate(original)
                 new_supermasks.append(son)
         result_supermasks = supermasks + new_supermasks
-        result_supermasks = utils.setalize_pop(result_supermasks)
+        result_supermasks = utils.setalize(result_supermasks)
         while len(result_supermasks) < num_pop:
             result_supermasks.append(utils.random_supermask())
         performance = []
@@ -728,6 +745,17 @@ class ControllerCommonNet(Controller):
         # get metrics
         res = {}
 
+        # st_time = time.time()
+        # # self.broadcast_with_waiting_res('model')
+        # # self.broadcast_with_waiting_res(self.model_name)
+        # # self.broadcast(utils.serialize_model(self.model))
+        # # self.blink_aggregate()
+        # self.broadcast_with_waiting_res('test')
+        # self.broadcast('get')
+        # accu = 0
+        # accus = self.aggregate()
+        # ed_time = time.time()
+
         params = list(self.model.named_parameters())
         k = 0
         for name, i in params:
@@ -739,6 +767,7 @@ class ControllerCommonNet(Controller):
 
         res['accu'] = accu
         res['num_params'] = num_params
+        # res['time'] = ed_time - st_time
         return res
 
 
@@ -779,6 +808,17 @@ class ClientCommonNet(Client):
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.val_mask], self.data.y[self.data.val_mask])
         self.send(accu * self.val_rate)
+        return
+
+    def process_test(self):
+        self.recv()
+        self.model.eval()
+        accu = 0
+        for data in self.datas:
+            accu += utils.accuracy(self.model(data.x, data.edge_index)
+                                   [data.test_mask], data.y[data.test_mask])
+        # print(utils.num_correct(self.model(self.data.x, self.data.edge_index)[self.data.test_mask],self.data.y[self.data.test_mask]))
+        self.send(accu/len(self.datas) * self.test_rate)
         return
 
 
@@ -904,7 +944,7 @@ class ControllerFedNas(Controller):
         super(ControllerFedNas, self).__init__(num_client)
         return
 
-    def work(self, evo_epochs=250, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
+    def work(self, evo_epochs=125, sample_epochs=SAMPLE_EPOCH, num_pop=NUM_POP, sample_size=SAMPLE_SIZE):
         '''
         command sequence:
         supermasks
