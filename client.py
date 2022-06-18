@@ -8,7 +8,6 @@ parser = argparse.ArgumentParser(description='client end usage')
 parser.add_argument('--mode',
                     dest='mode',
                     action='store',
-                    # type=bool,
                     default=None,
                     help='test mode or not')
 parser.add_argument('--model',
