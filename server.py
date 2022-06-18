@@ -7,7 +7,6 @@ parser = argparse.ArgumentParser(description='server end usage')
 parser.add_argument('--mode',
                     dest='mode',
                     action='store',
-                    # type=bool,
                     default=None,
                     help='test mode or not')
 parser.add_argument('--code',
@@ -35,24 +34,12 @@ parser.add_argument('--dataset',
                              'pubmed', 'corafull', 'Physics', 'SBM'},
                     default='cora',
                     help='used dataset')
-# parser.add_argument('--round',
-#                     dest='round',
-#                     action='store',
-#                     type=int,
-#                     default=250,
-#                     help='the number of iterations in the search')
 parser.add_argument('--client',
                     dest='client',
                     action='store',
                     type=int,
                     default=3,
                     help='the number of clients in the search')
-# parser.add_argument('--lr',
-#                     dest='lr',
-#                     action='store',
-#                     type=float,
-#                     default=0.02,
-#                     help='learning rate')
 parser.add_argument('--save_dir',
                     dest='save_dir',
                     action='store',
@@ -60,19 +47,7 @@ parser.add_argument('--save_dir',
                     help='the directory to save the best code and best population')
 args = parser.parse_args()
 
-nfeat, nclass = 0, 0
-if args.dataset == 'cora':
-    nfeat, nclass = 1433, 7
-elif args.dataset == 'citeseer':
-    nfeat, nclass = 3703, 6
-elif args.dataset == 'pubmed':
-    nfeat, nclass = 500, 3
-elif args.dataset == 'corafull':
-    nfeat, nclass = 8710, 70
-elif args.dataset == 'Physics':
-    nfeat, nclass = 8415, 5
-elif args.dataset == 'SBM':
-    nfeat, nclass = 6, 6
+nfeat, nclass = 6, 6
 
 controller = None
 if __name__ == '__main__':

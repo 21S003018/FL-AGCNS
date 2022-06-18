@@ -1,6 +1,7 @@
 import socket
 import random
 
+from torch import optim
 from models import *
 from external_models import *
 from utils import Contacter
@@ -36,7 +37,6 @@ class Controller():
         :param num_client:
         '''
         self.num_client = num_client
-        # self.device = torch.device('cpu')
         self.device = torch.device('cuda:{}'.format(
             BASE) if torch.cuda.is_available() else 'cpu')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -210,7 +210,6 @@ class Client(Contacter):
         '''
         super(Client, self).__init__()
         self.id = id
-        # self.device = torch.device('cpu')
         self.device = torch.device('cuda:{}'.format(
             gpu[id]) if torch.cuda.is_available() else 'cpu')
         self.ip_port = utils.get_ip_port(self.id)
@@ -231,13 +230,13 @@ class Client(Contacter):
         self.loss = None
         path = ''
         self.datas = []
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
-            for i in range(self.id*50, (self.id+1)*50):
-                path = 'data/{}/{}_{}copynode.pkl'.format(
-                    dataset, i, ''if copy_node else'un')
-                with open(path, 'rb') as f:
-                    self.datas.append(pickle.load(f).to(self.device))
-            print(f"Client {self.id} loads data over!")
+        assert dataset.lower() == 'sbm'
+        for i in range(self.id*50, (self.id+1)*50):
+            path = 'data/{}/{}_{}copynode.pkl'.format(
+                dataset, i, ''if copy_node else'un')
+            with open(path, 'rb') as f:
+                self.datas.append(pickle.load(f).to(self.device))
+        print(f"Client {self.id} loads data over!")
         self.cal_rate(copy_node)
         return
 
@@ -283,34 +282,10 @@ class Client(Contacter):
         :return:
         '''
         self.dataset_name = self.recv_with_res()
-        if self.dataset_name.lower() == 'cora':
-            self.nfeat, self.nclass = 1433, 7
-            self.nnode = 2708
-            self.num_train_node, self.num_val_node, self.num_test_node = 140, 500, 1000
-        elif self.dataset_name.lower() == 'citeseer':
-            self.nfeat, self.nclass = 3703, 6
-            self.nnode = 3327
-            self.num_train_node, self.num_val_node, self.num_test_node = 120, 500, 1000
-        elif self.dataset_name.lower() == 'pubmed':
-            self.nfeat, self.nclass = 500, 3
-            self.nnode = 19717
-            self.num_train_node, self.num_val_node, self.num_test_node = 60, 500, 1000
-        elif self.dataset_name.lower() == 'corafull':
-            self.nfeat, self.nclass = 8710, 70
-            self.nnode = 19793
-            self.num_train_node, self.num_val_node, self.num_test_node = 1395, 500, 1000
-        elif self.dataset_name.lower() == 'physics':
-            self.nfeat, self.nclass = 8415, 5
-            self.nnode = 34493
-            self.num_train_node, self.num_val_node, self.num_test_node = 100, 500, 1000
-        elif self.dataset_name.lower() == "sbm":
-            self.nfeat, self.nclass = 6, 6
-            self.nnode = 1401803
-            self.num_train_node, self.num_val_node, self.num_test_node = 1168087, 116896, 116820
-        elif self.dataset_name.lower() == 'reddit':
-            self.nfeat, self.nclass = 602, 41
-            self.nnode = 232965
-            self.num_train_node, self.num_val_node, self.num_test_node = 153431, 23831, 55703
+        assert self.dataset_name.lower() == "sbm"
+        self.nfeat, self.nclass = 6, 6
+        self.nnode = 1401803
+        self.num_train_node, self.num_val_node, self.num_test_node = 1168087, 116896, 116820
         return
 
     def process_model(self):
@@ -351,10 +326,8 @@ class Client(Contacter):
         if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
             self.train_rate = sum([float(
                 torch.sum(data.train_mask)) for data in self.datas])/self.num_train_node
-            # self.train_rate = 1/3
             self.val_rate = sum([float(torch.sum(data.val_mask))
                                 for data in self.datas])/self.num_val_node
-            # self.val_rate = 1/3
             self.test_rate = sum([float(
                 torch.sum(data.test_mask)) for data in self.datas])/self.num_test_node
             print(self.id, self.train_rate, self.val_rate, self.test_rate)
@@ -811,7 +784,6 @@ class ClientCommonNet(Client):
         for data in self.datas:
             accu += utils.accuracy(self.model(data.x, data.edge_index)
                                    [data.test_mask], data.y[data.test_mask])
-        # print(utils.num_correct(self.model(self.data.x, self.data.edge_index)[self.data.test_mask],self.data.y[self.data.test_mask]))
         self.send(accu/len(self.datas) * self.test_rate)
         return
 
@@ -891,13 +863,13 @@ class ClientDarts(Client):
         self.loss = None
         path = ''
         self.datas = []
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
-            for i in range(self.id*50, (self.id+1)*50):
-                path = 'data/{}/{}_{}copynode.pkl'.format(
-                    dataset, i, ''if copy_node else'un')
-                with open(path, 'rb') as f:
-                    self.datas.append(pickle.load(f).to(self.device))
-            print(f"Client {self.id} loads data over!")
+        assert dataset.lower() == 'sbm'
+        for i in range(self.id*50, (self.id+1)*50):
+            path = 'data/{}/{}_{}copynode.pkl'.format(
+                dataset, i, ''if copy_node else'un')
+            with open(path, 'rb') as f:
+                self.datas.append(pickle.load(f).to(self.device))
+        print(f"Client {self.id} loads data over!")
         self.cal_rate(copy_node)
         return
 
@@ -1010,13 +982,13 @@ class ClientFedNas(Client):
         self.loss = None
         path = ''
         self.datas = []
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
-            for i in range(self.id*50, (self.id+1)*50):
-                path = 'data/{}/{}_{}copynode.pkl'.format(
-                    dataset, i, ''if copy_node else'un')
-                with open(path, 'rb') as f:
-                    self.datas.append(pickle.load(f).to(self.device))
-            print(f"Client {self.id} loads data over!")
+        assert dataset.lower() == 'sbm'
+        for i in range(self.id*50, (self.id+1)*50):
+            path = 'data/{}/{}_{}copynode.pkl'.format(
+                dataset, i, ''if copy_node else'un')
+            with open(path, 'rb') as f:
+                self.datas.append(pickle.load(f).to(self.device))
+        print(f"Client {self.id} loads data over!")
         self.cal_rate(copy_node)
         return
 
