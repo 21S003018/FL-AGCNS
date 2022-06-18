@@ -1,7 +1,6 @@
 import socket
 import random
 
-from regex import P
 from models import *
 from external_models import *
 from utils import Contacter
@@ -17,12 +16,8 @@ logger = logging.getLogger(__name__)
 
 # static configuration
 IP_PORT = ('localhost', 5100)
-# BASE = 9
-# gpu = [9, 10, 11]
 BASE = 2
 gpu = [0, 1, 2, 3]*6
-# CLIENTBASE = 1
-# gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
 # hyper-parameter
 LR = 0.02
@@ -32,7 +27,6 @@ NUM_POP = 60
 SAMPLE_SIZE = 20
 # mode
 DEBUG = False
-NBCLIENT = 3
 
 
 class Controller():
