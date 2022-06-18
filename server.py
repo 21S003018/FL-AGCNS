@@ -27,7 +27,7 @@ parser.add_argument('--model',
 parser.add_argument('--gcn_model',
                     dest='gcn_model',
                     default=None,
-                    choices={'Gat', 'Sage', 'Gcn', 'Sgc', 'Appnp', 'Agnn', 'Arma', 'Gated'})
+                    choices={'Gat', 'Sage', 'Gcn', 'Sgc', 'Appnp', 'Agnn', 'Arma', 'Gated', 'Gnn'})
 parser.add_argument('--dataset',
                     dest='dataset',
                     action='store',

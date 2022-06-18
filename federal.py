@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 IP_PORT = ('localhost', 5100)
 # BASE = 9
 # gpu = [9, 10, 11]
-BASE = 0
-gpu = [2, 2, 3, 1, 2, 3, 1, 2, 3]*13
+BASE = 7
+gpu = [7, 7, 7, 1, 2, 3, 1, 2, 3]*13
 # CLIENTBASE = 1
 # gpu = [BASE, CLIENTBASE, CLIENTBASE]
 COPY_NODE = False
@@ -190,6 +190,9 @@ class Controller():
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
             exec("self.model.{}._parameters['{}'].grad = grad".format(
                 layer, label))
@@ -357,6 +360,9 @@ class Client(Contacter):
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
             exec("model.{}._parameters['{}'] = param".format(layer, label))
         model = model.to(self.device)
@@ -399,8 +405,11 @@ class Client(Contacter):
         grad = {}
         for name, params in self.model.named_parameters():
             if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
-                grad[name] = eval(
-                    'self.model.{}.to(\'cpu\').grad'.format(name))
+                try:
+                    grad[name] = eval(
+                        "self.model._parameters['{}'].grad.to(\'cpu\')".format(name))
+                except:
+                    grad[name] = None
                 continue
 
             name += 'ending'
@@ -410,9 +419,15 @@ class Client(Contacter):
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
-            grad[name] = eval(
-                "self.model.{}._parameters['{}'].to(\'cpu\').grad".format(layer, label))
+            try:
+                grad[name] = eval(
+                    "self.model.{}._parameters['{}'].grad.to(\'cpu\')".format(layer, label))
+            except:
+                grad[name] = None
             if not grad[name] == None:
                 grad[name] *= self.train_rate
         return grad
@@ -432,6 +447,9 @@ class Client(Contacter):
             if slots[len(slots)-2].isdigit():
                 layer = layer.replace('.{}'.format(
                     slots[len(slots)-2]), '[{}]'.format(slots[len(slots)-2]))
+            if slots[len(slots)-3].isdigit():
+                layer = layer.replace('.{}'.format(
+                    slots[len(slots)-3]), '[{}]'.format(slots[len(slots)-3]))
             label = slots[len(slots)-1].replace('ending', '')
             exec("self.model.{}._parameters['{}'].grad = grad".format(
                 layer, label))
@@ -804,7 +822,6 @@ class ControllerCommonNet(Controller):
             if accu > optval:
                 optval = accu
                 torch.save(self.model.state_dict(), 'model.pth')
-            print(epoch)
 
             # val
             if DEBUG:
