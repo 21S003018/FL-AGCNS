@@ -15,20 +15,14 @@ logger = logging.getLogger(__name__)
 
 # static configuration
 IP_PORT = ('localhost', 5100)
-# BASE = 9
-# gpu = [9, 10, 11]
 BASE = 7
 gpu = [7, 7, 7, 1, 2, 3, 1, 2, 3]*13
-# CLIENTBASE = 1
-# gpu = [BASE, CLIENTBASE, CLIENTBASE]
-COPY_NODE = False
-# hyper-parameter
+COPY_NODE = True
 LR = 0.02
 EVO_EPOCH = 250
 SAMPLE_EPOCH = 5
 NUM_POP = 60
 SAMPLE_SIZE = 20
-# mode
 DEBUG = False
 
 
@@ -39,7 +33,6 @@ class Controller():
         :param num_client:
         '''
         self.num_client = num_client
-        # self.device = torch.device('cpu')
         self.device = torch.device('cuda:{}'.format(
             BASE) if torch.cuda.is_available() else 'cpu')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -87,10 +80,8 @@ class Controller():
         self.broadcast_with_waiting_res('dataset')
         self.broadcast_with_waiting_res(self.dataset)
         print('controller broadcasts datasetname:{} over'.format(self.dataset))
-        # time.sleep(1)
         self.broadcast_with_waiting_res('model')
         self.broadcast_with_waiting_res(self.model_name)
-        # self.broadcast_with_waiting_res(utils.serialize_model(self.model));print('controller broadcasts model over')
         self.broadcast(utils.serialize_model(self.model))
         self.blink_aggregate()
         print('controller broadcasts model over')
@@ -149,7 +140,6 @@ class Controller():
         avg_grad_dict = {}
         ret_avg_grad_dict = {}
         for name in grad_dicts[0].keys():
-            # print(name,grad_dicts[0][name],grad_dicts[1][name],grad_dicts[2][name])
             if not grad_dicts[0][name] == None:
                 for i in range(self.num_client):
                     if avg_grad_dict.__contains__(name):
@@ -160,14 +150,6 @@ class Controller():
                         avg_grad_dict[name] = grad_dicts[i][name].to(
                             self.device)
                         ret_avg_grad_dict[name] = grad_dicts[i][name]
-                # avg_grad_dict[name] = grad_dicts[0][name].to(self.device)\
-                #     + grad_dicts[1][name].to(self.device)\
-                #     + grad_dicts[2][name].to(self.device)
-                # + grad_dicts[3][name].to(self.device)
-                # + grad_dicts[4][name].to(self.device)\
-                # + grad_dicts[5][name].to(self.device)\
-                # + grad_dicts[6][name].to(self.device)\
-                # + grad_dicts[7][name].to(self.device)
             else:
                 avg_grad_dict[name] = None
         self.update_grad(avg_grad_dict)
@@ -226,7 +208,6 @@ class Client(Contacter):
         '''
         super(Client, self).__init__()
         self.id = id
-        # self.device = torch.device('cpu')
         self.device = torch.device('cuda:{}'.format(
             gpu[id]) if torch.cuda.is_available() else 'cpu')
         self.ip_port = utils.get_ip_port(self.id)
@@ -251,15 +232,7 @@ class Client(Contacter):
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:
                 self.data = pickle.load(f).to(self.device)
-            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
-                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
-        elif dataset.lower() == 'reddit':
-            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
-                dataset, self.id, ''if copy_node else'un')
-            with open(path, 'rb') as f:
-                self.data = pickle.load(f)
-                for idx in range(len(self.data)):
-                    self.data[idx].to(self.device)
+            print(f"Client {self.id} loads data over!")
         self.cal_rate(copy_node)
         return
 
@@ -329,14 +302,6 @@ class Client(Contacter):
             self.nfeat, self.nclass = 8415, 5
             self.nnode = 34493
             self.num_train_node, self.num_val_node, self.num_test_node = 100, 500, 1000
-        elif self.dataset_name.lower() == "sbm":
-            self.nfeat, self.nclass = 6, 6
-            self.nnode = 1401803
-            self.num_train_node, self.num_val_node, self.num_test_node = 1168087, 116896, 116820
-        elif self.dataset_name.lower() == 'reddit':
-            self.nfeat, self.nclass = 602, 41
-            self.nnode = 232965
-            self.num_train_node, self.num_val_node, self.num_test_node = 153431, 23831, 55703
         return
 
     def process_model(self):
@@ -375,29 +340,13 @@ class Client(Contacter):
         :param copy_node:
         :return:
         '''
-        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
-            # path = 'data/reddit/subg_{}copynode.pkl'.format('' if copy_node else 'un')
-            # with open(path, 'rb') as f:
-            #     data = pickle.load(f)
+        if self.dataset_name.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
             self.train_rate = float(
                 torch.sum(self.data.train_mask))/self.num_train_node
             self.val_rate = float(
                 torch.sum(self.data.val_mask))/self.num_val_node
             self.test_rate = float(
                 torch.sum(self.data.test_mask))/self.num_test_node
-        elif self.dataset_name.lower() == 'reddit':
-            path = 'data/reddit/subg_{}copynode.pkl'.format(
-                ''if copy_node else'un')
-            with open(path, 'rb') as f:
-                data = pickle.load(f)
-            self.train_rate = float(
-                torch.sum(data[self.id].train_mask)) / self.num_train_node
-            self.val_rate = float(
-                torch.sum(data[self.id].val_mask)) / self.num_val_node
-            self.test_rate = float(
-                torch.sum(data[self.id].test_mask)) / self.num_test_node
-        # print(self.train_rate,self.val_rate,self.test_rate)
-        # print(torch.sum(self.data.test_mask))
         return
 
     def get_grad_dict(self):
@@ -472,7 +421,6 @@ class Client(Contacter):
         print(self.id)
         idx = 0
         for name, param in self.model.named_parameters():
-            # print(name, param)
             idx += 1
             if idx > 1:
                 break
@@ -507,34 +455,29 @@ class ControllerSuperNet(Controller):
         evo_epochs = 1
         for epoch in range(evo_epochs):
             st_time = time.time()
+            if epoch <= 50:
+                supermasks = [utils.random_supermask() for i in range(num_pop)]
             for sample_epoch in range(sample_epochs):
                 self.broadcast_with_waiting_res('train')
                 sample_supermasks = random.sample(self.supermasks, sample_size)
                 self.broadcast(sample_supermasks)
                 grad_dicts = self.aggregate()
-                # self.broadcast_with_waiting_res(self.aggregate_grad(grad_dicts))
                 self.broadcast(self.aggregate_grad(grad_dicts))
                 self.blink_aggregate()
-                # logger.info('sample epoch~{}'.format(sample_epoch))
                 print('sample epoch~{}'.format(sample_epoch))
-            self.broadcast_with_waiting_res('population')
-            self.broadcast('get')  # ;print('client processing pop')
-            populations = self.aggregate()
-            print('controller evoing')
-            self.evo()
-            # print('controller evo over')
-            self.update_pop2(0.5*pow(0.99, epoch), populations)
+            if epoch >= 50:
+                # evo
+                self.broadcast_with_waiting_res('population')
+                self.broadcast('get')
+                populations = self.aggregate()
+                print('controller evoing')
+                self.evo()
+                self.update_pop(0.5*pow(0.99, epoch), populations)
             # loss
-            # print("brocasting loss")
             self.broadcast_with_waiting_res('loss')
-            # print("brocast loss over")
             self.broadcast('get')
-            # print("broadcase get")
-            loss = 0
             losses = self.aggregate()
-            # print("aggregate loss over")
-            for idx in range(self.num_client):
-                loss += losses[idx]
+            loss = sum(losses)
             print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{}\n'.format(
                 epoch, loss, time.time() - st_time, self.best_supermask, self.best_accu))
 
@@ -548,16 +491,14 @@ class ControllerSuperNet(Controller):
                         accu += float(accus[idx])
                     print('use sonnet {} with accu {} on val dataset'.format(
                         supermask, accu))
-        self.get_best_supermask()
+        # self.get_best_supermask()
         return
 
     def aggregate_accu(self, supermask):
         self.broadcast_with_waiting_res('val')
         self.broadcast(supermask)
-        accu = 0
         accus = self.aggregate()
-        for idx in range(self.num_client):
-            accu += float(accus[idx])
+        accu = sum(accus)
         return accu
 
     def evo(self):
@@ -578,7 +519,7 @@ class ControllerSuperNet(Controller):
                 j += 1
 
         new_supermasks = []
-        l = 0.5
+        l = 0.2
         for original in reservoir:
             if np.random.random() < l:
                 son = utils.cross_over(original, reservoir[randint(0, volumn)])
@@ -590,6 +531,8 @@ class ControllerSuperNet(Controller):
 
         result_supermasks = supermasks + new_supermasks
         result_supermasks = utils.setalize(result_supermasks)
+        while len(result_supermasks) < num_pop:
+            result_supermasks.append(utils.random_supermask())
         performance = []
         for supermask in result_supermasks:
             accu = self.aggregate_accu(supermask)
@@ -602,31 +545,14 @@ class ControllerSuperNet(Controller):
         result.reverse()
         result = result[: num_pop]
         self.supermasks = [result_supermasks[idx] for idx in result]
-        # print(performance)
-        # print(result)
-        # if DEBUG:
-        #     # print(self.supermasks)
-        #     print([performance[idx] for idx in result])
-        # self.send(self.supermasks[0:int(self.train_rate * len(self.supermasks)) + 1])
         return
 
-    def update_pop2(self, d, populations):
+    def update_pop(self, d, populations):
         # get the supermask from the controller
         num_reserved = int((1-d) * len(self.supermasks)) + 1
-        # candidates = utils.setalize(self.supermasks)
-        # performance = []
-        # for supermask in candidates:
-        #     performance.append(self.aggregate_accu(supermask))
-        # result = sorted(range(len(performance)), key=lambda k: performance[k])
-        # result.reverse()
-        # result = result[: num_reserved]
-        # candidates_from_controller = [candidates[idx] for idx in result]
         candidates_from_controller = self.supermasks[:num_reserved]
 
         # get the supermask from the clients
-        # pop1 = populations[0]
-        # pop2 = populations[1]
-        # pop3 = populations[2]
         candidates = []
         num = 0
         idx = 0
@@ -638,28 +564,6 @@ class ControllerSuperNet(Controller):
                     num += 1
             idx += 1
         candidate = candidates_from_controller + utils.setalize(candidates)
-        self.supermasks = candidate[0:len(self.supermasks)]
-        return
-
-    def update_pop(self, populations):
-        pop1 = populations[0]
-        pop2 = populations[1]
-        pop3 = populations[2]
-        candidate = []
-        num = 0
-        idx = 0
-        upper = len(self.supermasks)
-        while num < upper:
-            if idx < len(pop1):
-                candidate.append(pop1[idx])
-                num += 1
-            if idx < len(pop2):
-                candidate.append(pop2[idx])
-                num += 1
-            if idx < len(pop3):
-                candidate.append(pop3[idx])
-                num += 1
-            idx += 1
         self.supermasks = candidate[0:len(self.supermasks)]
         return
 
@@ -678,9 +582,6 @@ class ControllerSuperNet(Controller):
                 best_supermask = supermask
         self.output = best_supermask
         return
-    # def output_best_population(self):
-    #     self.output = self.supermasks
-    #     return
 
 
 class ClientSuperNet(Client):
@@ -706,8 +607,8 @@ class ClientSuperNet(Client):
 
     def process_train(self):
         self.model.train()
-        supermasks = self.recv()  # ;print('client~{} get supermasks'.format(self.id))
-        sm_idx = 0  # ;st_time=time.time()
+        supermasks = self.recv()
+        sm_idx = 0
         for supermask in supermasks:
             y_predict = self.model(
                 self.data.x, self.data.edge_index, supermask)
@@ -718,20 +619,14 @@ class ClientSuperNet(Client):
                 exec(
                     'loss_{}=loss_{} + F.cross_entropy(y_predict[self.data.train_mask],self.data.y[self.data.train_mask])'.format(sm_idx, sm_idx - 1))
             sm_idx += 1
-        # loss = eval('loss_{}'.format(sm_idx - 1)) / len(supermasks)
-        # ;print('factor{}'.format(factor),time.time()-st_time)
-        factor = len(supermasks)
-        loss = eval('loss_{}'.format(sm_idx - 1)) / \
-            factor  # ;st_time=time.time()
+        loss = eval('loss_{}'.format(sm_idx - 1)) / len(supermasks)
         self.optimizer.zero_grad()
-        loss.backward()  # ;print(time.time()-st_time)
+        loss.backward()
         grad = self.get_grad_dict()
-        self.send(grad)  # ;print('client~{} send out grad'.format(self.id))
-        aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
+        self.send(grad)
+        aggr_grad = self.recv_with_res()
         self.update_grad(aggr_grad)
-        # self.end_analyse()
         self.loss = loss.item()
-        # print('client~{} has loss:{}'.format(self.id,loss.item()))
         return
 
     def process_population(self):
@@ -754,7 +649,6 @@ class ClientSuperNet(Client):
                 if temp < volumn:
                     reservoir[temp] = supermasks[j]
                 j += 1
-        # print('pop 1')
         new_supermasks = []
         l = 0.5
         for original in reservoir:
@@ -765,22 +659,15 @@ class ClientSuperNet(Client):
                 # mutation
                 son = utils.mutate(original)
                 new_supermasks.append(son)
-        # print('pop 2')
         result_supermasks = supermasks + new_supermasks
         result_supermasks = utils.setalize(result_supermasks)
         performance = []
         for supermask in result_supermasks:
             performance.append(val(supermask))
-        # print('pop 3')
         result = sorted(range(len(performance)), key=lambda k: performance[k])
         result.reverse()
         result = result[: num_pop]
         self.supermasks = [result_supermasks[idx] for idx in result]
-        # print(performance)
-        # print(result)
-        # if DEBUG:
-        #     # print(self.supermasks)
-        #     print([performance[idx] for idx in result])
         self.send(self.supermasks[0:int(
             self.train_rate * len(self.supermasks)) + 1])
         return
@@ -790,7 +677,6 @@ class ClientSuperNet(Client):
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index, supermask)[self.data.val_mask],
                               self.data.y[self.data.val_mask])
-        # print(accu,self.val_rate)
         self.send(accu * self.val_rate)
         return
 
@@ -805,20 +691,16 @@ class ControllerCommonNet(Controller):
         optval = -1
         for epoch in range(epochs):
             self.broadcast_with_waiting_res('train')
-            # self.broadcast(pickle.dumps('train'))#;print('controller broadcasts command:"{}" over'.format('train'))
             self.broadcast('get')
-            grad_dicts = self.aggregate()  # ;print('controller aggregates grads over')
-            # self.broadcast_with_waiting_res(self.aggregate_grad(grad_dicts))#;print('controller broadcasts grads over')
+            grad_dicts = self.aggregate()
             self.broadcast(self.aggregate_grad(grad_dicts))
-            self.blink_aggregate()  # ;print('controller broadcasts grads over')
+            self.blink_aggregate()
 
             # save model
             self.broadcast_with_waiting_res('val')
             self.broadcast('get')
-            accu = 0
             accus = self.aggregate()
-            for idx in range(self.num_client):
-                accu += float(accus[idx])
+            accu = sum(accus)
             if accu > optval:
                 optval = accu
                 torch.save(self.model.state_dict(), 'model.pth')
@@ -855,8 +737,7 @@ class ControllerCommonNet(Controller):
         accus = self.aggregate()
         ed_time = time.time()
 
-        for idx in range(self.num_client):
-            accu += float(accus[idx])
+        accu = sum(accus)
 
         params = list(self.model.named_parameters())
         k = 0
@@ -890,22 +771,17 @@ class ClientCommonNet(Client):
 
     def process_train(self):
         self.recv()
-        self.model.train()  # ;print('client{} change state to train'.format(self.id))
-        # ;print('client{} get output of model'.format(self.id))
+        self.model.train()
         y_predict = self.model(self.data.x, self.data.edge_index)
-        # ;print('client{} get loss'.format(self.id))
         loss = F.cross_entropy(
             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
-        self.optimizer.zero_grad()  # ;print('client{} zero grad'.format(self.id))
-        loss.backward()  # ;print('client{} backward'.format(self.id))
-        grad = self.get_grad_dict()  # ;print('client{} get grad'.format(self.id))
-        self.send(grad)  # ;print('client{} upload grad'.format(self.id))
-        # ;print('client{} get aggr_grad'.format(self.id))
+        self.optimizer.zero_grad()
+        loss.backward()
+        grad = self.get_grad_dict()
+        self.send(grad)
         aggr_grad = self.recv_with_res()
-        # ;print('client{} update model'.format(self.id))
         self.update_grad(aggr_grad)
         self.loss = loss.item()
-        # print('client~{} has loss:{}'.format(self.id,loss.item()))
         return
 
     def process_val(self):
@@ -913,7 +789,6 @@ class ClientCommonNet(Client):
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.val_mask], self.data.y[self.data.val_mask])
-        print(accu, self.val_rate)
         self.send(accu * self.val_rate)
         return
 
@@ -922,7 +797,6 @@ class ClientCommonNet(Client):
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.test_mask], self.data.y[self.data.test_mask])
-        # print(utils.num_correct(self.model(self.data.x, self.data.edge_index)[self.data.test_mask],self.data.y[self.data.test_mask]))
         self.send(accu * self.test_rate)
         return
 
@@ -950,21 +824,15 @@ class ControllerDarts(Controller):
         Controller.work(self)
         for epoch in range(evo_epochs):
             st_time = time.time()
-            # for sample_epoch in range(sample_epochs):
             self.broadcast_with_waiting_res('train')
             self.broadcast('get')
             grad_dicts = self.aggregate()
             self.broadcast(self.aggregate_grad(grad_dicts))
             self.blink_aggregate()
-            # print('sample epoch~{}'.format(sample_epoch))
-            # print('controller evoing')
-            # loss
             self.broadcast_with_waiting_res('loss')
             self.broadcast('get')
-            loss = 0
             losses = self.aggregate()
-            for idx in range(self.num_client):
-                loss += losses[idx]
+            loss = sum(losses)
             print('train -epoch~{},loss={},use time:{}'.format(epoch,
                   loss, time.time() - st_time))
             if DEBUG:
@@ -980,10 +848,8 @@ class ControllerDarts(Controller):
     def aggregate_accu(self, supermask):
         self.broadcast_with_waiting_res('val')
         self.broadcast(supermask)
-        accu = 0
         accus = self.aggregate()
-        for idx in range(self.num_client):
-            accu += float(accus[idx])
+        accu = sum(accus)
         return accu
 
 
@@ -1008,46 +874,36 @@ class ClientDarts(Client):
             model.get_arc_params(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:
                 self.data = pickle.load(f).to(self.device)
-            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
-                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
-        elif dataset.lower() == 'reddit':
-            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
-                dataset, self.id, ''if copy_node else'un')
-            with open(path, 'rb') as f:
-                self.data = pickle.load(f)
-                for idx in range(len(self.data)):
-                    self.data[idx].to(self.device)
+            print(f"Client {self.id} loads data over!")
         self.cal_rate(copy_node)
         return
 
     def process_train(self):
         self.model.train()
-        self.recv()  # ;print('client~{} get supermasks'.format(self.id))
+        self.recv()
 
         y_predict = self.model(self.data.x, self.data.edge_index)
         loss = F.cross_entropy(
             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
         self.optimizer.zero_grad()
-        loss.backward()  # ;print(time.time()-st_time)
+        loss.backward()
 
         y_predict = self.model(self.data.x, self.data.edge_index)
         loss = F.cross_entropy(
             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
         self.a_optimizer.zero_grad()
-        loss.backward()  # ;print(time.time()-st_time)
+        loss.backward()
 
         grad = self.get_grad_dict()
-        self.send(grad)  # ;print('client~{} send out grad'.format(self.id))
-        aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
+        self.send(grad)
+        aggr_grad = self.recv_with_res()
         self.update_grad(aggr_grad)
-        # self.end_analyse()
         self.loss = loss.item()
-        # print('client~{} has loss:{}'.format(self.id,loss.item()))
         return
 
     def process_val(self):
@@ -1082,14 +938,11 @@ class ControllerFedNas(Controller):
         Controller.work(self)
         for epoch in range(evo_epochs):
             st_time = time.time()
-            # for sample_epoch in range(sample_epochs):
             self.broadcast_with_waiting_res('train')
             self.broadcast('get')
             grad_dicts = self.aggregate()
             self.broadcast(self.aggregate_grad(grad_dicts))
             self.blink_aggregate()
-            # print('sample epoch~{}'.format(sample_epoch))
-            # print('controller evoing')
             # loss
             self.broadcast_with_waiting_res('loss')
             self.broadcast('get')
@@ -1113,10 +966,8 @@ class ControllerFedNas(Controller):
     def aggregate_accu(self, supermask):
         self.broadcast_with_waiting_res('val')
         self.broadcast(supermask)
-        accu = 0
         accus = self.aggregate()
-        for idx in range(self.num_client):
-            accu += float(accus[idx])
+        accu = sum(accus)
         return accu
 
 
@@ -1142,39 +993,30 @@ class ClientFedNas(Client):
             model.get_arc_params(), lr=LR, weight_decay=5e-6)
         self.loss = None
         path = ''
-        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics', 'sbm']:
+        if dataset.lower() in ['cora', 'citeseer', 'pubmed', 'corafull', 'physics']:
             path = 'data/{}/{}_{}copynode.pkl'.format(
                 dataset, self.id, ''if copy_node else'un')
             with open(path, 'rb') as f:
                 self.data = pickle.load(f).to(self.device)
-            print(self.data.x.device, self.data.y.device, self.data.edge_index.device,
-                  self.data.train_mask.device, self.data.val_mask.device, self.data.test_mask.device)
-        elif dataset.lower() == 'reddit':
-            path = 'data/{}/subsubg{}_{}copynode.pkl'.format(
-                dataset, self.id, ''if copy_node else'un')
-            with open(path, 'rb') as f:
-                self.data = pickle.load(f)
-                for idx in range(len(self.data)):
-                    self.data[idx].to(self.device)
+            print(f"Client {self.id} loads data over!")
         self.cal_rate(copy_node)
         return
 
     def process_train(self):
         self.model.train()
-        self.recv()  # ;print('client~{} get supermasks'.format(self.id))
-
+        self.recv()
         # calculate the loss of training data
         y_predict = self.model(self.data.x, self.data.edge_index)
         loss = F.cross_entropy(
             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
         self.optimizer.zero_grad()
-        loss.backward()  # ;print(time.time()-st_time)
+        loss.backward()
 
         y_predict = self.model(self.data.x, self.data.edge_index)
         loss = F.cross_entropy(
             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
         self.a_optimizer.zero_grad()
-        loss.backward()  # ;print(time.time()-st_time)
+        loss.backward()
 
         grads = self.get_grad_dict()
 
@@ -1183,13 +1025,13 @@ class ClientFedNas(Client):
         loss = F.cross_entropy(
             y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
         self.optimizer.zero_grad()
-        loss.backward()  # ;print(time.time()-st_time)
+        loss.backward()
 
         y_predict = self.model(self.data.x, self.data.edge_index)
         loss = F.cross_entropy(
             y_predict[self.data.val_mask], self.data.y[self.data.val_mask])
         self.a_optimizer.zero_grad()
-        loss.backward()  # ;print(time.time()-st_time)
+        loss.backward()
 
         grad_eval = self.get_grad_dict()
 
@@ -1200,12 +1042,10 @@ class ClientFedNas(Client):
             else:
                 grads[name] += self.lamda * grad_eval[name]
 
-        self.send(grads)  # ;print('client~{} send out grad'.format(self.id))
-        aggr_grad = self.recv_with_res()  # ;print('client~{} recv grad'.format(self.id))
+        self.send(grads)
+        aggr_grad = self.recv_with_res()
         self.update_grad(aggr_grad)
-        # self.end_analyse()
         self.loss = loss.item()
-        # print('client~{} has loss:{}'.format(self.id,loss.item()))
         return
 
     def process_val(self):

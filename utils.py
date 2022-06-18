@@ -1,7 +1,7 @@
 import numpy as np
 import torch
-from torch_geometric.datasets import Planetoid, Reddit
-from torch_geometric.data import ClusterData, Data, ClusterLoader
+from torch_geometric.datasets import Planetoid
+from torch_geometric.data import ClusterData, Data
 from numpy.random import randint, random
 import pickle
 import logging
@@ -10,16 +10,11 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 OBJ_END = 'eofeofeof'
-
-
-def change_machine_of_data(data, id=''):
-    return
-
-
 IP_PORT_BASE = 6000
 ADDR = "addr"
 
 
+# ip port
 def reset_ipport():
     for label in [''] + list(range(100)):
         path = '{}/ip_oprt{}.pkl'.format(ADDR, label)
@@ -49,21 +44,7 @@ def get_ip_port(id=''):
     return ans
 
 
-def global_evaluate(model, dataset_name, mode='test'):
-    '''
-    test the accuracy on the whole dataset
-    :param model: nn.Module
-    :param dataset_name: str
-    :param mode: val or test
-    :return:
-    '''
-    model.eval()
-    data = get_raw_data(dataset_name)[0]
-    mask = eval('data.{}_mask'.format(mode))
-    print(num_correct(model(data.x, data.edge_index)[mask], data.y[mask]))
-    return accuracy(model(data.x, data.edge_index)[mask], data.y[mask])
-
-
+# net contact
 def socket_recv_with_response(socket):
     '''
     recv message with specified socket and response okk
@@ -135,6 +116,48 @@ def socket_send(socket, mess):
     return
 
 
+class Contacter():
+    '''
+    use this class as a interface to process data recv and send
+    '''
+
+    def __init__(self):
+        self.socket = None
+        return
+
+    def recv_with_res(self):
+        data = socket_recv_with_response(self.socket)
+        return data
+
+    def recv(self):
+        data = socket_recv(self.socket)
+        return data
+
+    def send_with_waiting_res(self, mess):
+        socket_send_with_waiting_response(self.socket, mess)
+        return
+
+    def send(self, mess):
+        socket_send(self.socket, mess)
+        return
+
+
+# serealize data
+def setalize(supermasks):
+    '''
+    remove the same supermask, ank keep only one copy for each supermask
+    :param supermasks:
+    :return:
+    '''
+    sm_set = set()
+    for tmp in supermasks:
+        sm_set.add(str(tmp))
+    setlized_sms = []
+    for tmp in sm_set:
+        setlized_sms.append(eval(tmp))
+    return setlized_sms
+
+
 def serialize_model(model):
     '''
     encode all the parameters in a nn model
@@ -148,74 +171,7 @@ def serialize_model(model):
     return param_dict
 
 
-def analyse_subgraph(datas):
-    """
-    analyse the statistics of graphs
-    :param datas: a list of torch_geometric.data.Data
-    :return:
-    """
-    for i in range(len(datas)):
-        print('num_node', len(eval('datas[{}]'.format(i)).train_mask))
-        print('num_edge', len(eval('datas[{}]'.format(i)).edge_index[0]))
-        print('num of train node', torch.sum(
-            eval('datas[{}]'.format(i)).train_mask))
-        print('num of val node', torch.sum(
-            eval('datas[{}]'.format(i)).val_mask))
-        print('num of test node', torch.sum(
-            eval('datas[{}]'.format(i)).test_mask))
-        print()
-    return
-
-
-def load_data(dataset='Cora'):
-    '''
-    get the num_features,num_classes,edge_index,x,y,train_mask,test_mask of a dataset
-    :param dataset:
-    :return:
-    '''
-    if dataset.lower() in ['cora', 'citeseer', 'pubmed']:
-        dataset = Planetoid(root='data/', name=dataset)
-    elif dataset.lower() == 'reddit':
-        dataset = Reddit('data/reddit/')
-    if isinstance(dataset, str):
-        return None
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    data = dataset[0].to(device)
-    return dataset.num_node_features, dataset.num_classes, data.edge_index, data.x, data.y, data.train_mask, data.test_mask
-
-
-def get_raw_data(dataset='cora'):
-    '''
-    get raw dataset
-    :param dataset:
-    :return: Planetoid or Reddit and dataset[0] is type of torch_geometric.data.Data
-    '''
-    if dataset.lower() in ['cora', 'citeseer', 'pubmed']:
-        dataset = Planetoid(root='data/', name=dataset)
-    elif dataset.lower() == 'reddit':
-        dataset = Reddit('data/reddit/')
-    return dataset
-
-
-def cal_edge_attr_for_gmmconv(edge_index):
-    '''
-    contruct edge_attr on specified dataset for gmmconv
-    :param edge_index:
-    :return:
-    '''
-    message = edge_index[0]
-    ans = torch.ones(torch.max(edge_index) + 1)
-    for index in message:
-        ans[index] += 1
-    edge_attr = []
-    for i in range(len(edge_index[0])):
-        u, v = edge_index[0][i], edge_index[1][i]
-        edge_attr.append([1/np.sqrt(ans[u]), 1/np.sqrt(ans[v])])
-    # device = torch.device('cpu')
-    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    return torch.Tensor(edge_attr).to(edge_index.device)
-
-
+# partition datasets
 class PartitionTool():
     def __init__(self):
         return
@@ -350,160 +306,38 @@ class PartitionTool():
         print('sub graph pack over')
         return datas
 
-    # static partition and then save them into file system
-    def generate_static_train_data(self):
-        '''
-        init data file structure is as:
-        data/
-        data/{cora,citeseer,pubmed,reddit}/raw
-        :return:
-        all the pkl files will be put in the same dir 'raw'
-        '''
-        # partition_tool = PartitionTool()
-        for name in ['cora', 'citeseer', 'pubmed']:
-            dataset = get_raw_data(name)
-            copy = True
-            print(name, copy)
-            datas = self.partition_subgraph(dataset[0], 3, copy_node=copy)
-            for id in range(3):
-                print(len(datas[id].x))
-                print(torch.max(datas[id].edge_index))
-                path = 'data/{}/{}_{}copynode.pkl'.format(
-                    name, id, '' if copy else 'un')
-                with open(path, 'wb') as f:
-                    pickle.dump(datas[id], f)
-            analyse_subgraph(datas)
-            copy = False
-            print(name, copy)
-            datas = self.partition_subgraph(dataset[0], 3, copy_node=copy)
-            for id in range(3):
-                path = 'data/{}/{}_{}copynode.pkl'.format(
-                    name, id, '' if copy else 'un')
-                with open(path, 'wb') as f:
-                    pickle.dump(datas[id], f)
-            analyse_subgraph(datas)
 
-        dataset = Reddit('data/reddit/')
-        datas = self.partition_subgraph(dataset[0], 3, False)
-        with open('data/reddit/subg_uncopynode.pkl', 'wb') as f:
-            pickle.dump(datas, f)
-        analyse_subgraph(datas)
-
-        for i in range(3):
-            sub_datas = self.partition_subgraph(datas[i], 100, False)
-            with open('data/reddit/subsubg{}_uncopynode.pkl'.format(i), 'wb') as f:
-                pickle.dump(sub_datas, f)
-
-        datas = self.partition_subgraph(dataset[0], 3, True)
-        with open('data/reddit/subg_copynode.pkl', 'wb') as f:
-            pickle.dump(datas, f)
-        analyse_subgraph(datas)
-
-        for i in range(3):
-            sub_datas = self.partition_subgraph(datas[i], 100, False)
-            with open('data/reddit/subsubg{}_copynode.pkl'.format(i), 'wb') as f:
-                pickle.dump(sub_datas, f)
-        return
-
-    def generate_static_uncopy_data_with_torch_gnn(self):
-        '''
-        generate train data with lib function of torch_geometric
-        :return:
-        '''
-        for name in ['cora', 'citeseer', 'pubmed']:
-            print(name)
-            data = get_raw_data(name)[0]
-            cluster_data = ClusterData(data, num_parts=3, recursive=False)
-            train_loader = ClusterLoader(
-                cluster_data, batch_size=1, shuffle=True, num_workers=12)
-            id = 0
-            for batch in train_loader:
-                # print(len(datas[id].x))
-                # print(torch.max(datas[id].edge_index))
-                path = 'data/{}/{}_uncopynode.pkl'.format(name, id)
-                id += 1
-                with open(path, 'wb') as f:
-                    pickle.dump(batch, f)
-                analyse_subgraph([batch])
-        print('reddit')
-        data = Reddit('data/reddit/')[0]
-        cluster_data = ClusterData(data, num_parts=3, recursive=False)
-        train_loader = ClusterLoader(
-            cluster_data, batch_size=1, shuffle=True, num_workers=12)
-        datas = []
-        for batch in train_loader:
-            datas.append(batch)
-        with open('data/reddit/subg_uncopynode.pkl', 'wb') as f:
-            pickle.dump(datas, f)
-        analyse_subgraph(datas)
-        # analyse_subgraph(data)
-        for i in range(3):
-            print(i)
-            cluster_data = ClusterData(
-                datas[i], num_parts=100, recursive=False)
-            train_loader = ClusterLoader(
-                cluster_data, batch_size=1, shuffle=True, num_workers=12)
-            sub_datas = []
-            for batch in train_loader:
-                sub_datas.append(batch)
-            with open('data/reddit/subsubg{}_uncopynode.pkl'.format(i), 'wb') as f:
-                pickle.dump(sub_datas, f)
-            analyse_subgraph(sub_datas)
-        return
-
-
-class Contacter():
+# cal edge_feat
+def cal_edge_attr_for_gmmconv(edge_index):
     '''
-    use this class as a interface to process data recv and send
-    '''
-
-    def __init__(self):
-        self.socket = None
-        return
-
-    def recv_with_res(self):
-        data = socket_recv_with_response(self.socket)
-        return data
-
-    def recv(self):
-        data = socket_recv(self.socket)
-        return data
-
-    def send_with_waiting_res(self, mess):
-        socket_send_with_waiting_response(self.socket, mess)
-        return
-
-    def send(self, mess):
-        socket_send(self.socket, mess)
-        return
-
-
-def setalize(supermasks):
-    '''
-    remove the same supermask, ank keep only one copy for each supermask
-    :param supermasks:
+    contruct edge_attr on specified dataset for gmmconv
+    :param edge_index:
     :return:
     '''
-    sm_set = set()
-    for tmp in supermasks:
-        sm_set.add(str(tmp))
-    setlized_sms = []
-    for tmp in sm_set:
-        setlized_sms.append(eval(tmp))
-    return setlized_sms
+    message = edge_index[0]
+    ans = torch.ones(torch.max(edge_index) + 1)
+    for index in message:
+        ans[index] += 1
+    edge_attr = []
+    for i in range(len(edge_index[0])):
+        u, v = edge_index[0][i], edge_index[1][i]
+        edge_attr.append([1/np.sqrt(ans[u]), 1/np.sqrt(ans[v])])
+    # device = torch.device('cpu')
+    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    return torch.Tensor(edge_attr).to(edge_index.device)
 
 
-# a group of funcitons used in e-a
-maskRange = [[1, 5], [1, 12], [1, 24], [
-    1, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
+# evo related
+MASKRANGE = [[1, 5], [1, 12], [13, 24], [
+    25, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
 
 
 def rand_element(idx):
-    zero_p = [0, 0, 1/6, 1/5, 1/4, 1/3, 1/2, 0]
+    zero_p = [0, 0, 0, 0, 0.2, 0.2, 0.2, 0]
     rand_seed = zero_p[idx]
     if random() < rand_seed:
         return 0
-    return randint(maskRange[idx][0], maskRange[idx][1] + 1)
+    return randint(MASKRANGE[idx][0], MASKRANGE[idx][1] + 1)
 
 
 def random_supermask():
@@ -513,7 +347,7 @@ def random_supermask():
     '''
     mask = []
     idx = 0
-    for r in maskRange:
+    for r in MASKRANGE:
         mask.append(rand_element(idx))
         idx += 1
     return mask
@@ -521,7 +355,7 @@ def random_supermask():
 
 def cross_over(original, target):
     son = []
-    for i in range(len(maskRange)):
+    for i in range(len(MASKRANGE)):
         if np.random.random() > 0.5:
             son.append(target[i])
         else:
@@ -530,9 +364,9 @@ def cross_over(original, target):
 
 
 def mutate(original):
-    c = 0.1
+    c = 0.125
     son = []
-    for i, range in enumerate(maskRange):
+    for i, range in enumerate(MASKRANGE):
         if np.random.random() < c:
             son.append(rand_element(i))
         else:
@@ -540,6 +374,7 @@ def mutate(original):
     return son
 
 
+# metrics
 def accuracy(output, labels):
     '''
     get accuracy
@@ -566,190 +401,21 @@ def num_correct(output, labels):
     return int(correct)
 
 
-def load_pkl(name, id, copy_node=True):
-    '''
-    get the data on the specified machine
-    use as test function
-    :param name:
-    :param id:
-    :param copy_node:
-    :return:
-    '''
-    path = 'data/{}/{}_{}copynode.pkl'.format(name,
-                                              id, '' if copy_node else 'un')
-    with open(path, 'rb') as f:
-        data = pickle.load(f)
-    return data
-
-
-def deserialize_model(serialized_params):
-    '''
-    use as test
-    :param serialized_params:
-    :return:
-    '''
-    return pickle.loads(serialized_params)
-
-
-def partition_dataset(dataset, k, copy_node=False, data=None):
-    '''
-    old version for partition dataset
-    :param dataset:
-    :param k:
-    :param copy_node:
-    :param data:
-    :return:
-    '''
-    if isinstance(dataset, Reddit):
-        path = 'data/reddit/subg_copynode.pkl' if copy_node else 'data/reddit/subg_uncopynode.pkl'
-        with open(path, 'rb') as f:
-            datas = pickle.load(f)
-        return datas[0], datas[1], datas[2]
-
-    if data == None:
-        data = dataset[0]
-    cluster = ClusterData(data, k)
-    idx_0 = cluster.perm[cluster.partptr[0]:cluster.partptr[1]]
-    idx_1 = cluster.perm[cluster.partptr[1]:cluster.partptr[2]]
-    idx_2 = cluster.perm[cluster.partptr[2]:cluster.partptr[3]]
-    print('cluster over!')
-    # expand
-    if copy_node == True:
-        def expand(edge_index, idx):
-            id_map = torch.zeros(max(edge_index)).bool()
-            for tmp in idx:
-                id_map[int(tmp)] = True
-            print('id_map', len(id_map), id_map)
-
-            extra_node = set()
-            id_set = set()
-            for tmp in idx:
-                id_set.add(int(tmp))
-            new_edge_index = [[], []]
-
-            for i in range(len(edge_index[0])):
-                if i % 1000000 == 0:
-                    print(i)
-                u, v = edge_index[0][i], edge_index[1][i]
-                if id_map[int(u)]:
-                    new_edge_index[0].append(u)
-                    new_edge_index[1].append(v)
-                    extra_node.add(int(v))
-            # print(len(id_set))
-            for id in extra_node:
-                id_set.add(id)
-            return torch.LongTensor(list(id_set)), torch.LongTensor(new_edge_index)
-    else:
-        def expand(edge_index, idx):
-            id_set = torch.zeros(max(edge_index)).bool()
-            for tmp in idx:
-                id_set[int(tmp)] = True
-            new_edge_index = [[], []]
-            for i in range(len(edge_index[0])):
-                if i % 1000000 == 0:
-                    print(i)
-                u, v = edge_index[0][i], edge_index[1][i]
-                if id_set[int(u)] and id_set[int(v)]:
-                    new_edge_index[0].append(u)
-                    new_edge_index[1].append(v)
-            return idx, torch.LongTensor(new_edge_index)
-
-    edge_index = data.edge_index
-    # print(edge_index)
-    idx_0, edge_index_0 = expand(edge_index, idx_0)
-    idx_1, edge_index_1 = expand(edge_index, idx_1)
-    idx_2, edge_index_2 = expand(edge_index, idx_2)
-    print('subgraph expands over')
-
-    def hashing(idx, edge_index):
-        idx_map = {}
-        a, rank = idx.sort(0, descending=False)
-        idx = a
-        for i in range(len(idx)):
-            idx_map[int(idx[i])] = i
-        # print(idx_map)
-        # print(edge_index)
-        for i in range(len(edge_index[0])):
-            edge_index[0][i], edge_index[1][i] = idx_map[int(
-                edge_index[0][i])], idx_map[int(edge_index[1][i])]
-        # print(edge_index)
-        return torch.LongTensor(edge_index)
-    # print(torch.max(edge_index_0))
-    edge_index_0 = hashing(idx_0, edge_index_0)
-    # print(torch.max(edge_index_0))
-    edge_index_1 = hashing(idx_1, edge_index_1)
-    edge_index_2 = hashing(idx_2, edge_index_2)
-
-    print('hash over')
-    x = data.x
-    idx_0_bool_tensor = torch.zeros(len(x)).bool()
-    for idx in idx_0:
-        idx_0_bool_tensor[idx] = True
-
-    idx_1_bool_tensor = torch.zeros(len(x)).bool()
-    for idx in idx_1:
-        idx_1_bool_tensor[idx] = True
-
-    idx_2_bool_tensor = torch.zeros(len(x)).bool()
-    for idx in idx_2:
-        idx_2_bool_tensor[idx] = True
-
-    x_0 = x[idx_0_bool_tensor]
-    x_1 = x[idx_1_bool_tensor]
-    x_2 = x[idx_2_bool_tensor]
-
-    y = data.y
-    y_0 = y[idx_0_bool_tensor]
-    y_1 = y[idx_1_bool_tensor]
-    y_2 = y[idx_2_bool_tensor]
-
-    train_mask = data.train_mask
-    train_mask_0 = train_mask[idx_0_bool_tensor]
-    train_mask_1 = train_mask[idx_1_bool_tensor]
-    train_mask_2 = train_mask[idx_2_bool_tensor]
-
-    val_mask = data.val_mask
-    val_mask_0 = val_mask[idx_0_bool_tensor]
-    val_mask_1 = val_mask[idx_1_bool_tensor]
-    val_mask_2 = val_mask[idx_2_bool_tensor]
-
-    test_mask = data.test_mask
-    test_mask_0 = test_mask[idx_0_bool_tensor]
-    test_mask_1 = test_mask[idx_1_bool_tensor]
-    test_mask_2 = test_mask[idx_2_bool_tensor]
-    data_0 = Data(x=x_0, y=y_0, edge_index=edge_index_0,
-                  train_mask=train_mask_0, val_mask=val_mask_0, test_mask=test_mask_0)
-    data_1 = Data(x=x_1, y=y_1, edge_index=edge_index_1,
-                  train_mask=train_mask_1, val_mask=val_mask_1, test_mask=test_mask_1)
-    data_2 = Data(x=x_2, y=y_2, edge_index=edge_index_2,
-                  train_mask=train_mask_2, val_mask=val_mask_2, test_mask=test_mask_2)
-    print('sub graph pack over')
-    return data_0, data_1, data_2
-
-
-def generate_mask_from_idx(idxs, total):
-    ans = torch.zeros(total).bool()
-    for idx in idxs:
-        ans[idx] = True
-    return ans
-
-
-def output_data(data, path):
-    with open(path, 'wb') as f:
-        pickle.dump(data, f)
-    return
-
-
-def read_data(path):
-    with open(path, 'rb') as f:
-        data = pickle.load(f)
-    return data
-
-
-def generate_new_data(data, train_mask, val_mask, test_mask):
-    return Data(x=data.x, y=data.y, edge_index=data.edge_index, train_mask=train_mask, val_mask=val_mask, test_mask=test_mask)
+def num_params(model):
+    params = list(model.named_parameters())
+    k = 0
+    for _, i in params:
+        l = 1
+        for j in i.size():
+            l *= j
+        k = k + l
+    return k
 
 
 if __name__ == "__main__":
-    read_ipport()
+    # partitioner = PartitionTool()
+    # partitioner.partition_subgraph()
+    with open('data/citeseer/{}_{}copynode.pkl'.format(0, ''), 'rb') as f:
+        data = pickle.load(f)
+    print(data)
     pass
