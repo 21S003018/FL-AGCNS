@@ -1,58 +1,19 @@
-## environment
+## Environment
 
 soft：[torch_geometric](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html)
 
-hard：4 GPU
-
-## usage
-
-#### server end
-
-```text
-usage: server.py [-h] [--mode MODE]
-                 [--code SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK]
-                 [--model {fl-rl,fl-darts,fl-agcns,fl-random}]
-                 [--dataset {citeseer,Physics,pubmed,corafull,cora}]
-                 [--client CLIENT] [--save_dir SAVE_DIR]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --mode MODE           test mode or not
-  --code SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK SUPERMASK
-                        code of son net
-  --model {fl-rl,fl-darts,fl-agcns,fl-random}
-                        search model
-  --dataset {citeseer,Physics,pubmed,corafull,cora}
-                        used dataset
-  --client CLIENT       the number of clients in the search
-  --save_dir SAVE_DIR   the directory to save the best code and best population
-```
-
-#### client end
-
-```text
-usage: client.py [-h] [--mode MODE]
-                 [--model {fl-random,fl-darts,fl-agcns,fl-rl}]
-                 [--client CLIENT]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --mode MODE           test mode or not
-  --model {fl-random,fl-darts,fl-agcns,fl-rl}
-                        search model
-  --client CLIENT       the number of clients in the search
-```
-
-## example
-
-We prepare cora dataset in this repository and use cora as example.
-
-```python
-1.python server.py --mode test --code 5 0 0 0 0 0 0 2 --dataset cora
-2.python client.py --mode test
-```
-
+## Train FL model
+Use the command in `cmd.sh`.<br>
 Please open two terminals, input the first command line into one terminal and input the second one into another terminal.
+
+## Evaluation GNN model and generetad GNN model
+
+### Prepare data
+1. Before run the example, you should prepare data first. In this step, you could refer to [SBM generating method](https://github.com/graphdeeplearning/benchmarking-gnns/tree/master/data/SBMs) and you would get three sets named `SBM_CLUSTER_train.pkl`,`SBM_CLUSTER_val.pkl` and `SBM_CLUSTER_test.pkl`, which should be placed under `data/SBM/`.
+2. Run `python make_data.py`, and you could get partitioned datasets.
+
+### Evaluation model
+Run `python sbm.py` directly.
 
 ## note
 
