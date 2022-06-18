@@ -73,9 +73,6 @@ def socket_recv_with_response(socket):
     data = b''
     while True:
         packet = socket.recv(1024*4)
-        # if packet.__contains__(OBJ_END.encode()):
-        #     data += packet.replace(OBJ_END.encode(), b'')
-        #     break
         data += packet
         if data[-9:].__contains__(OBJ_END.encode()):
             data = data[:-9]
