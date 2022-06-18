@@ -37,7 +37,6 @@ for i in range(1000):
     path = f'data/SBM/{i}_uncopynode.pkl'
     with open(path, 'rb') as f:
         datas.append(pickle.load(f).to('cuda:0'))
-torch.cuda.manual_seed(0)
 
 
 EPOCHS = 50
@@ -50,12 +49,12 @@ def train_single_epoch(model):
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='min', factor=0.5, patience=5)
     st_time = time.time()
+    best_val_accu = 0
     for epoch in range(EPOCHS):
         losses = 0
         train_accu = 0
         val_accu = 0
         test_accu = 0
-        best_val_accu = 0
         for iter, data in enumerate(datas):
             preds = model(data.x, data.edge_index)
             labels = data.y[data.train_mask]
@@ -70,7 +69,7 @@ def train_single_epoch(model):
             val_accu += accuracy(preds[data.val_mask],
                                  data.y[data.val_mask])
             test_accu += accuracy(preds[data.test_mask],
-                                  data.y[data.test_mask])
+                                  data.y[data.test_mask])*len(data.y[data.test_mask])/116820
         if val_accu > best_val_accu:
             best_val_accu = val_accu
             torch.save(model.state_dict(), 'sbm_model.pth')
@@ -80,7 +79,6 @@ def train_single_epoch(model):
 
     test_accu = 0
     model.load_state_dict(torch.load('sbm_model.pth'))
-    model.eval()
     for iter, data in enumerate(datas):
         preds = model(data.x, data.edge_index)
         test_accu += accuracy(preds[data.test_mask],
@@ -102,7 +100,9 @@ def train(supermask):
 
 # code
 # supermask = [5, 2, 1+12*1, 4+12*2, 5+12*3, (5+12*4)*0, (5+12*5)*0, 5]  # random sure
-# supermask = [3, 4, 5+12*1, 9+12*2, 2, 12+12*4, 0, 2] # agcns sure
+# supermask = [3, 4, 5+12*1, 9+12*2, 2, 12+12*4, 0, 2] # agcns old
+# supermask = [5, 7, 4+12*1, 8+12*2, 2+12*3, 10+12*1, 3+12*2, 5] # new agcns 1
+# supermask = [5, 7, 4+12*1, 8+12*2, 2+12*3, 6+12*1, 2+12*2, 5]  # new agcns 2
 # supermask = [5, 10, 6+12*1, 1+12*2, 2, 0, 0, 5]  # graphnas sure
 # supermask = [3, 1, 1+12*1, 10+12*2, 2+12*2, 0, 0, 4]  # darts sure
 # supermask = [4, 1, 1+12*1, 1+12*2, 10, 2, 0, 4]  # fednas sure
@@ -110,6 +110,8 @@ def train(supermask):
 
 supermasks = [[5, 2, 1+12*1, 4+12*2, 5+12*3, (5+12*4)*0, (5+12*5)*0, 5],
               [3, 4, 5+12*1, 9+12*2, 2, 12+12*4, 0, 2],
+              [5, 7, 4+12*1, 8+12*2, 2+12*3, 10+12*1, 3+12*2, 5],
+              [5, 7, 4+12*1, 8+12*2, 2+12*3, 6+12*1, 2+12*2, 5],
               [5, 10, 6+12*1, 1+12*2, 2, 0, 0, 5],
               [3, 1, 1+12*1, 10+12*2, 2+12*2, 0, 0, 4],
               [4, 1, 1+12*1, 1+12*2, 10, 2, 0, 4],
