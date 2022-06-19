@@ -289,6 +289,16 @@ class Structure():
 
         return eval('self.z_{}'.format(supermask[7]))(self.z(x))
 
+    def num_params(self, supermask):
+        ret = 0
+        ret += utils.num_params(self.x)
+        ret += utils.num_params(self.z)
+        for i in range(1, 7):
+            if supermask[i] != 0:
+                ret += utils.num_params(
+                    eval(eval('self.y_{}'.format(int((supermask[i]-1) % 12+1)))))
+        return ret
+
 
 class SonNet(nn.Module, Structure):
     def __init__(self, nfeat, nclass):
@@ -584,5 +594,7 @@ if __name__ == "__main__":
     #         local_mask[i] = 0
     # print(local_mask)
     model = SonNet(6, 6)
-    print(model.nfeat)
+    # print(model.nfeat)
+    print(model.num_params(
+        [4, 1, 13, 25, 10, 2, 0, 4]))
     pass

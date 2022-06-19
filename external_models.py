@@ -11,7 +11,7 @@ class Gcn(nn.Module):
         super(Gcn, self).__init__()
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
-        self.convs = nn.ModuleList([gnn.GCNConv(hdim, hdim) for _ in range(4)])
+        self.convs = nn.ModuleList([gnn.GCNConv(hdim, hdim) for _ in range(6)])
         self.lnout = nn.Linear(hdim, nclass)
         return
 
@@ -29,7 +29,7 @@ class Sage(nn.Module):
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
         self.convs = nn.ModuleList(
-            [gnn.SAGEConv(hdim, hdim) for _ in range(4)])
+            [gnn.SAGEConv(hdim, hdim) for _ in range(6)])
         self.lnout = nn.Linear(hdim, nclass)
         return
 
@@ -49,7 +49,7 @@ class Gat(nn.Module):
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
         self.convs = nn.ModuleList(
-            [gnn.GATConv(hdim, hdim) for _ in range(4)])
+            [gnn.GATConv(hdim, hdim) for _ in range(6)])
         self.lnout = nn.Linear(hdim, nclass)
         return
 
@@ -69,7 +69,7 @@ class Sgc(nn.Module):
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
         self.convs = nn.ModuleList(
-            [gnn.SGConv(hdim, hdim, 1) for _ in range(4)])
+            [gnn.SGConv(hdim, hdim, 1) for _ in range(6)])
         self.lnout = nn.Linear(hdim, nclass)
         return
 
@@ -89,8 +89,8 @@ class Appnp(nn.Module):
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
         self.convs = nn.ModuleList(
-            [gnn.APPNP(K=1, alpha=0.1) for _ in range(4)])
-        self.appnp = gnn.APPNP(K=4, alpha=0.1)
+            [gnn.APPNP(K=1, alpha=0.1) for _ in range(6)])
+        self.appnp = gnn.APPNP(K=6, alpha=0.1)
         self.lnout = nn.Linear(hdim, nclass)
         return
 
@@ -107,7 +107,7 @@ class Agnn(nn.Module):
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
         self.convs = nn.ModuleList(
-            [gnn.AGNNConv() for _ in range(4)])
+            [gnn.AGNNConv() for _ in range(6)])
         self.lnout = nn.Linear(hdim, nclass)
         return
 
@@ -127,7 +127,7 @@ class Arma(nn.Module):
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
         self.convs = nn.ModuleList(
-            [gnn.ARMAConv(hdim, hdim, 2) for _ in range(4)])
+            [gnn.ARMAConv(hdim, hdim, 2) for _ in range(6)])
         self.lnout = nn.Linear(hdim, nclass)
         return
 
@@ -147,7 +147,7 @@ class Gated(nn.Module):
         hdim = 64
         self.lnin = nn.Linear(nfeat, hdim)
         self.convs = nn.ModuleList(
-            [gnn.GatedGraphConv(hdim, 1) for _ in range(4)])
+            [gnn.GatedGraphConv(hdim, 1) for _ in range(6)])
         self.lnout = nn.Linear(hdim, nclass)
         return
 
