@@ -684,71 +684,49 @@ class ControllerCommonNet(Controller):
 
     def work(self, epochs=200):
         Controller.work(self)
-        optval = -1
-        for epoch in range(epochs):
-            self.broadcast_with_waiting_res('train')
-            self.broadcast('get')
-            grad_dicts = self.aggregate()
-            self.broadcast(self.aggregate_grad(grad_dicts))
+        accus = []
+        for i in range(10):
+            print('random iter{}'.format(i))
+            optval = -1
+            self.model = eval(self.model_name)(
+                self.nfeat, self.nclass).to(self.device)
+            self.optimizer = optim.Adam(
+                self.model.parameters(), lr=LR, weight_decay=5e-6)
+            self.broadcast_with_waiting_res('model')
+            self.broadcast_with_waiting_res(self.model_name)
+            self.broadcast(utils.serialize_model(self.model))
             self.blink_aggregate()
+            print("broadcast model over")
+            for epoch in range(epochs):
+                self.broadcast_with_waiting_res('train')
+                self.broadcast('get')
+                grad_dicts = self.aggregate()
+                self.broadcast(self.aggregate_grad(grad_dicts))
+                self.blink_aggregate()
 
-            # save model
-            self.broadcast_with_waiting_res('val')
+                # save model
+                self.broadcast_with_waiting_res('val')
+                self.broadcast('get')
+                accu = sum(self.aggregate())
+                if accu > optval:
+                    optval = accu
+                    torch.save(self.model.state_dict(), 'model.pth')
+                    print('--epoch{}, val accu:{}'.format(epoch, accu))
+
+            self.model.load_state_dict(torch.load('model.pth'))
+            # get metrics
+            self.broadcast_with_waiting_res('model')
+            self.broadcast_with_waiting_res(self.model_name)
+            self.broadcast(utils.serialize_model(self.model))
+            self.blink_aggregate()
+            st_time = time.time()
+            self.broadcast_with_waiting_res('test')
             self.broadcast('get')
-            accus = self.aggregate()
-            accu = sum(accus)
-            if accu > optval:
-                optval = accu
-                torch.save(self.model.state_dict(), 'model.pth')
-                print(f'Iter-{epoch+1}: val_accu:{accu}')
-
-            # val
-            if DEBUG:
-                if epoch % 20 == 0:
-                    self.broadcast_with_waiting_res('val')
-                    self.broadcast('get')
-                    accu = 0
-                    accus = self.aggregate()
-                    for idx in range(self.num_client):
-                        accu += accus[idx]
-                    self.broadcast_with_waiting_res('loss')
-                    self.broadcast('get')
-                    loss = 0
-                    losses = self.aggregate()
-                    for idx in range(self.num_client):
-                        loss += losses[idx]
-                    print('train epoch~{} with accu {} on val dataset,loss={}'.format(
-                        epoch, accu, loss))
-
-        self.model.load_state_dict(torch.load('model.pth'))
-        # get metrics
-        res = {}
-        st_time = time.time()
-        self.broadcast_with_waiting_res('model')
-        self.broadcast_with_waiting_res(self.model_name)
-        self.broadcast(utils.serialize_model(self.model))
-        self.blink_aggregate()
-        self.broadcast_with_waiting_res('test')
-        self.broadcast('get')
-        accu = 0
-        accus = self.aggregate()
-        ed_time = time.time()
-
-        accu = sum(accus)
-
-        params = list(self.model.named_parameters())
-        k = 0
-        for name, i in params:
-            l = 1
-            for j in i.size():
-                l *= j
-            k = k + l
-        num_params = k
-
-        res['accu'] = accu
-        res['time'] = ed_time - st_time
-        res['num_params'] = num_params
-        return res
+            accu = sum(self.aggregate()) * 100
+            ed_time = time.time()
+            print('test accu:{}'.format(accu))
+            accus.append(accu)
+        return round(np.mean(accus), 1), round(np.std(accus), 2), round(ed_time-st_time, 3)
 
 
 class ClientCommonNet(Client):
@@ -783,6 +761,7 @@ class ClientCommonNet(Client):
 
     def process_val(self):
         self.recv()
+        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.val_mask], self.data.y[self.data.val_mask])
         self.send(accu * self.val_rate)
@@ -790,6 +769,7 @@ class ClientCommonNet(Client):
 
     def process_test(self):
         self.recv()
+        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.test_mask], self.data.y[self.data.test_mask])
         self.send(accu * self.test_rate)

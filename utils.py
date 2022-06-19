@@ -403,8 +403,8 @@ def num_params(model):
 if __name__ == "__main__":
     # partitioner = PartitionTool()
     # partitioner.partition_subgraph()
-    for i in range(18):
-        with open('data/Physics/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
+    for i in range(12):
+        with open('data/pubmed/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
             data = pickle.load(f)
         print(data.edge_index.max(), data, data.train_mask.sum(),
               data.val_mask.sum(), data.test_mask.sum())
