@@ -180,9 +180,7 @@ class PartitionTool():
         '''
         cluster = ClusterData(data, k)
         print(len(cluster.perm))
-        # cluster.perm = torch.Tensor(np.random.shuffle(np.array(cluster.perm)))
-        # return
-        # cluster.perm =
+        print(cluster.partptr)
         for i in range(k):
             exec('self.idx_{} = cluster.perm[cluster.partptr[{}]:cluster.partptr[{}]]'.format(
                 i, i, i + 1))
@@ -194,9 +192,9 @@ class PartitionTool():
                 new_edge_index_v = []
                 extra_node = set()
                 for tmp in idx:
+                    extra_node.add(int(tmp))
                     for v in v2e[int(tmp)]:
                         extra_node.add(v)
-                        extra_node.add(int(tmp))
                     new_edge_index_u += [int(tmp)
                                          for i in range(len(v2e[int(tmp)]))]
                     new_edge_index_v += v2e[int(tmp)]
@@ -231,15 +229,8 @@ class PartitionTool():
 
         for i in range(k):
             print(i)
-            tmp_idx_set = set()
-            for tmp in eval('self.idx_{}'.format(i)):
-                tmp_idx_set.add(int(tmp))
-            exec('self.idx_{}, self.edge_index_{} = expand(edge_index, self.idx_{})'.format(
+            exec('self.expanded_idx_{}, self.edge_index_{} = expand(edge_index, self.idx_{})'.format(
                 i, i, i))
-            new_idx_set = set()
-            for tmp in eval('self.idx_{}'.format(i)):
-                new_idx_set.add(int(tmp))
-            exec('self.extra_idx_{} = list(new_idx_set.difference(tmp_idx_set))'.format(i))
         print('subgraph expands over')
 
         def hashing(idx, edge_index):
@@ -255,22 +246,18 @@ class PartitionTool():
                     edge_index[0][i])], idx_map[int(edge_index[1][i])]
             return torch.LongTensor(edge_index)
 
-        def hash_extra_idx(idx, extra_idx):
+        def idx_map(idx):
             idx = np.array(idx)
             idx = np.sort(idx)
             idx_map = np.zeros(int(np.max(idx)) + 1)
             for i in range(len(idx)):
                 idx_map[int(idx[i])] = i
-            for i in range(len(extra_idx)):
-                extra_idx[i] = idx_map[extra_idx[i]]
-            return torch.LongTensor(extra_idx)
+            return torch.tensor(idx_map, dtype=int)
 
         for i in range(k):
             print(i)
             exec(
-                'self.edge_index_{} = hashing(self.idx_{},self.edge_index_{})'.format(i, i, i))
-            exec('self.extra_idx_{} = hash_extra_idx(self.idx_{},self.extra_idx_{})'.format(
-                i, i, i))
+                'self.edge_index_{} = hashing(self.expanded_idx_{},self.edge_index_{})'.format(i, i, i))
         print('hash over')
         x = data.x
         y = data.y
@@ -278,26 +265,30 @@ class PartitionTool():
         val_mask = data.val_mask
         test_mask = data.test_mask
         datas = []
+        train = 0
+        val = 0
+        test = 0
         for i in range(k):
             print(i)
             exec('idx_{}_bool_tensor = torch.zeros(len(x)).bool()'.format(i))
             exec(
                 'for idx in self.idx_{}:idx_{}_bool_tensor[idx] = True'.format(i, i))
-            exec('x_{} = x[idx_{}_bool_tensor]'.format(i, i))
-            exec('y_{} = y[idx_{}_bool_tensor]'.format(i, i))
             exec('train_mask_{} = train_mask[idx_{}_bool_tensor]'.format(i, i))
             exec('val_mask_{} = val_mask[idx_{}_bool_tensor]'.format(i, i))
             exec('test_mask_{} = test_mask[idx_{}_bool_tensor]'.format(i, i))
+            exec(
+                'for idx in self.expanded_idx_{}:idx_{}_bool_tensor[idx] = True'.format(i, i))
+            exec('x_{} = x[idx_{}_bool_tensor]'.format(i, i))
+            exec('y_{} = y[idx_{}_bool_tensor]'.format(i, i))
 
-            for tmp in eval('self.extra_idx_{}'.format(i)):
-                exec('train_mask_{}[tmp] = False'.format(i))
-                exec('val_mask_{}[tmp] = False'.format(i))
-                exec('test_mask_{}[tmp] = False'.format(i))
+            train += eval('train_mask_{}'.format(i)).sum()
+            val += eval('val_mask_{}'.format(i)).sum()
+            test += eval('test_mask_{}'.format(i)).sum()
 
             exec('data_{} = Data(x=x_{},y=y_{},edge_index=self.edge_index_{},train_mask=train_mask_{},val_mask=val_mask_{},test_mask=test_mask_{})'.format(
                 i, i, i, i, i, i, i))
             datas.append(eval('data_{}'.format(i)))
-        print('sub graph pack over')
+        print('sub graph pack over', train, val, test)
         return datas
 
 
@@ -403,8 +394,8 @@ def num_params(model):
 if __name__ == "__main__":
     # partitioner = PartitionTool()
     # partitioner.partition_subgraph()
-    for i in range(12):
-        with open('data/pubmed/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
+    for i in range(3):
+        with open('data/citeseer/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
             data = pickle.load(f)
         print(data.edge_index.max(), data, data.train_mask.sum(),
               data.val_mask.sum(), data.test_mask.sum())
