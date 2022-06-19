@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 OBJ_END = 'eofeofeof'
-IP_PORT_BASE = 6000
+IP_PORT_BASE = 9000
 ADDR = "addr"
 
 # ip oprt

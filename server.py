@@ -56,7 +56,7 @@ if __name__ == '__main__':
         model = args.gcn_model
         controller = ControllerCommonNet(args.client)
         controller.configure(model, args.dataset, nfeat, nclass)
-        res = controller.work(epochs=50)
+        res = controller.work(epochs=1)
         print('evaluate {} on {}, get the result as:\n{}'.format(
             args.gcn_model, args.dataset, res))
         controller.broadcast_with_waiting_res('ending')
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             pickle.dump(args.supermask, f)
         controller = ControllerCommonNet(args.client)
         controller.configure('SonNet', args.dataset, nfeat, nclass)
-        res = controller.work(epochs=50)
+        res = controller.work(epochs=1)
         print('Test on sonnet of {}, get the result as\n{}'.format(args.dataset, res))
         controller.broadcast_with_waiting_res('ending')
         controller.close()

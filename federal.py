@@ -712,16 +712,16 @@ class ControllerCommonNet(Controller):
         # get metrics
         res = {}
 
-        # st_time = time.time()
+        st_time = time.time()
         # # self.broadcast_with_waiting_res('model')
         # # self.broadcast_with_waiting_res(self.model_name)
         # # self.broadcast(utils.serialize_model(self.model))
         # # self.blink_aggregate()
-        # self.broadcast_with_waiting_res('test')
-        # self.broadcast('get')
-        # accu = 0
-        # accus = self.aggregate()
-        # ed_time = time.time()
+        self.broadcast_with_waiting_res('test')
+        self.broadcast('get')
+        accu = 0
+        accus = self.aggregate()
+        ed_time = time.time()
 
         params = list(self.model.named_parameters())
         k = 0
@@ -734,7 +734,7 @@ class ControllerCommonNet(Controller):
 
         res['accu'] = accu
         res['num_params'] = num_params
-        # res['time'] = ed_time - st_time
+        res['time'] = ed_time - st_time
         return res
 
 

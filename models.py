@@ -596,5 +596,5 @@ if __name__ == "__main__":
     model = SonNet(6, 6)
     # print(model.nfeat)
     print(model.num_params(
-        [4, 1, 13, 25, 10, 2, 0, 4]))
+        [5, 8, 15, 25, 22, 0, 0, 4]))
     pass

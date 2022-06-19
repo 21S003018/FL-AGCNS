@@ -1,6 +1,7 @@
 ## Environment
 
-soft：[torch_geometric](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html)
+soft: [torch_geometric](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html)
+hard: A6000*4
 
 ## Run Federated Learning model
 Use the command in `cmd.sh`.<br>
