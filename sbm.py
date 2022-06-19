@@ -69,7 +69,7 @@ def train_single_epoch(model):
             val_accu += accuracy(preds[data.val_mask],
                                  data.y[data.val_mask])
             test_accu += accuracy(preds[data.test_mask],
-                                  data.y[data.test_mask])*len(data.y[data.test_mask])/116820
+                                  data.y[data.test_mask])
         if val_accu > best_val_accu:
             best_val_accu = val_accu
             torch.save(model.state_dict(), 'sbm_model.pth')
