@@ -76,9 +76,9 @@ class Maker():
 
 if __name__ == '__main__':
     maker = Maker()
-    # maker.partition('cora', 3, True)
-    # maker.partition('citeseer', 3, True)
-    # maker.partition('pubmed', 12, True)
-    # maker.partition(CORAFULL, 16, True)
-    # maker.partition(PHYSICS, 20, True)
+    maker.partition('cora', 3, True)
+    maker.partition('citeseer', 3, True)
+    maker.partition('pubmed', 12, True)
+    maker.partition(CORAFULL, 16, True)
+    maker.partition(PHYSICS, 18, True)
     pass

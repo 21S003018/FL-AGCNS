@@ -577,12 +577,19 @@ class GraphNas(nn.Module):
 
 
 if __name__ == "__main__":
-    model = GraphNas(32)
+    # model = GraphNas(32)
     # model.parameters()
-    if torch.cuda.is_available():
-        model.cuda()
-    dummy_code = model.generate_code()
-    supermask = model.parse_code(dummy_code)
-    print(dummy_code)
-    print(supermask)
+    # if torch.cuda.is_available():
+    #     model.cuda()
+    # dummy_code = model.generate_code()
+    # supermask = model.parse_code(dummy_code)
+    # print(dummy_code)
+    # print(supermask)
+    # for i in range(12):
+    #     print(i)
+    with open('data/pubmed/{}_{}copynode.pkl'.format(8, ''), 'rb') as f:
+        data = pickle.load(f)
+    model = GMMConv(500, 64)
+    print(data.x.size(), data.edge_index.size(), data.edge_index.max())
+    model(data.x, data.edge_index)
     pass

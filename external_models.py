@@ -62,7 +62,7 @@ class Appnp(nn.Module):
         super(Appnp, self).__init__()
         self.linear = nn.Linear(nfeat, 64)
         self.linear2 = nn.Linear(64, nclass)
-        self.appnp = gnn.APPNP(K=4, alpha=0.1)
+        self.appnp = gnn.APPNP(K=5, alpha=0.1)
         return
 
     def forward(self, x, edge_index):

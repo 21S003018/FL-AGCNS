@@ -7,7 +7,6 @@ parser = argparse.ArgumentParser(description='server end usage')
 parser.add_argument('--mode',
                     dest='mode',
                     action='store',
-                    # type=bool,
                     default=None,
                     help='test mode or not')
 parser.add_argument('--code',
@@ -35,24 +34,12 @@ parser.add_argument('--dataset',
                              'pubmed', 'corafull', 'Physics', 'SBM'},
                     default='cora',
                     help='used dataset')
-# parser.add_argument('--round',
-#                     dest='round',
-#                     action='store',
-#                     type=int,
-#                     default=250,
-#                     help='the number of iterations in the search')
 parser.add_argument('--client',
                     dest='client',
                     action='store',
                     type=int,
                     default=3,
                     help='the number of clients in the search')
-# parser.add_argument('--lr',
-#                     dest='lr',
-#                     action='store',
-#                     type=float,
-#                     default=0.02,
-#                     help='learning rate')
 parser.add_argument('--save_dir',
                     dest='save_dir',
                     action='store',

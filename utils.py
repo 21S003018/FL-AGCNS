@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid
 from torch_geometric.data import ClusterData, Data
 from numpy.random import randint, random
@@ -10,7 +11,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 OBJ_END = 'eofeofeof'
-IP_PORT_BASE = 6000
+IP_PORT_BASE = 8000
 ADDR = "addr"
 
 
@@ -59,9 +60,7 @@ def socket_recv_with_response(socket):
             data = data[:-9]
             break
     socket.send('okk'.encode())
-    if data.__sizeof__() >= 5*1024*1024:
-        # logger.info('recv big obj:{:.2f}M'.format(
-        #     data.__sizeof__()/(1024*1024)))
+    if data.__sizeof__() >= 10*1024*1024:
         print('recv big obj:{:.2f}M'.format(data.__sizeof__()/(1024*1024)))
     return pickle.loads(data)
 
@@ -89,16 +88,11 @@ def socket_recv(socket):
     data = b''
     while True:
         packet = socket.recv(1024*4)
-        # if packet.__contains__(OBJ_END.encode()):
-        #     data += packet.replace(OBJ_END.encode(), b'')
-        #     break
         data += packet
         if data[-9:].__contains__(OBJ_END.encode()):
             data = data[:-9]
             break
-    if data.__sizeof__() >= 5*1024*1024:
-        # logger.info('recv big obj:{:.2f}M'.format(
-        #     data.__sizeof__()/(1024*1024)))
+    if data.__sizeof__() >= 10*1024*1024:
         print('recv big obj:{:.2f}M'.format(data.__sizeof__()/(1024*1024)))
     return pickle.loads(data)
 
@@ -314,17 +308,11 @@ def cal_edge_attr_for_gmmconv(edge_index):
     :param edge_index:
     :return:
     '''
-    message = edge_index[0]
-    ans = torch.ones(torch.max(edge_index) + 1)
-    for index in message:
-        ans[index] += 1
-    edge_attr = []
-    for i in range(len(edge_index[0])):
-        u, v = edge_index[0][i], edge_index[1][i]
-        edge_attr.append([1/np.sqrt(ans[u]), 1/np.sqrt(ans[v])])
-    # device = torch.device('cpu')
-    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    return torch.Tensor(edge_attr).to(edge_index.device)
+    embedding_matrix = torch.bincount(
+        edge_index[0], minlength=edge_index.max()+1).unsqueeze(1)+1
+    edge_attr = F.embedding(
+        edge_index, embedding_matrix).pow(-0.5).T.squeeze(0)
+    return edge_attr.to(edge_index.device)
 
 
 # evo related
@@ -333,7 +321,7 @@ MASKRANGE = [[1, 5], [1, 12], [13, 24], [
 
 
 def rand_element(idx):
-    zero_p = [0, 0, 0, 0, 0.2, 0.2, 0.2, 0]
+    zero_p = [0, 0, 0, 0.2, 0.2, 0.2, 0.2, 0]
     rand_seed = zero_p[idx]
     if random() < rand_seed:
         return 0
@@ -415,7 +403,13 @@ def num_params(model):
 if __name__ == "__main__":
     # partitioner = PartitionTool()
     # partitioner.partition_subgraph()
-    with open('data/citeseer/{}_{}copynode.pkl'.format(0, ''), 'rb') as f:
-        data = pickle.load(f)
-    print(data)
+    for i in range(18):
+        with open('data/Physics/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
+            data = pickle.load(f)
+        print(data.edge_index.max(), data, data.train_mask.sum(),
+              data.val_mask.sum(), data.test_mask.sum())
+    # print(read_ipport())
+    # x = torch.rand(5, 1)
+    # y = torch.ones(5, 1)
+    # print(x, x.where(x > 0.5, y))
     pass

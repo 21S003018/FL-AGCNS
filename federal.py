@@ -14,9 +14,8 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 # static configuration
-IP_PORT = ('localhost', 5100)
-BASE = 7
-gpu = [7, 7, 7, 1, 2, 3, 1, 2, 3]*13
+BASE = 3
+gpu = [0, 1, 2, 3, 0, 1, 2, 3]*13
 COPY_NODE = True
 LR = 0.02
 EVO_EPOCH = 250
@@ -452,7 +451,6 @@ class ControllerSuperNet(Controller):
         self.supermasks = supermasks
         self.broadcast_with_waiting_res('supermasks')
         self.broadcast_with_waiting_res(self.supermasks)
-        evo_epochs = 1
         for epoch in range(evo_epochs):
             st_time = time.time()
             if epoch <= 50:
@@ -631,7 +629,6 @@ class ClientSuperNet(Client):
 
     def process_population(self):
         def val(supermask):
-            self.model.eval()
             return utils.accuracy(self.model(self.data.x, self.data.edge_index, supermask)[self.data.val_mask], self.data.y[self.data.val_mask])
         self.recv()
         supermasks = self.supermasks
@@ -674,7 +671,6 @@ class ClientSuperNet(Client):
 
     def process_val(self):
         supermask = self.recv()
-        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index, supermask)[self.data.val_mask],
                               self.data.y[self.data.val_mask])
         self.send(accu * self.val_rate)
@@ -704,6 +700,7 @@ class ControllerCommonNet(Controller):
             if accu > optval:
                 optval = accu
                 torch.save(self.model.state_dict(), 'model.pth')
+                print(f'Iter-{epoch+1}: val_accu:{accu}')
 
             # val
             if DEBUG:
@@ -786,7 +783,6 @@ class ClientCommonNet(Client):
 
     def process_val(self):
         self.recv()
-        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.val_mask], self.data.y[self.data.val_mask])
         self.send(accu * self.val_rate)
@@ -794,7 +790,6 @@ class ClientCommonNet(Client):
 
     def process_test(self):
         self.recv()
-        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.test_mask], self.data.y[self.data.test_mask])
         self.send(accu * self.test_rate)
@@ -908,7 +903,6 @@ class ClientDarts(Client):
 
     def process_val(self):
         self.recv()
-        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],
                               self.data.y[self.data.val_mask])
         self.send(accu * self.val_rate)
@@ -1050,7 +1044,6 @@ class ClientFedNas(Client):
 
     def process_val(self):
         self.recv()
-        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],
                               self.data.y[self.data.val_mask])
         self.send(accu * self.val_rate)
