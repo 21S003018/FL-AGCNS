@@ -80,5 +80,5 @@ if __name__ == '__main__':
     # maker.partition('citeseer', 3, True)
     # maker.partition('pubmed', 12, True)
     # maker.partition(CORAFULL, 18, True)
-    # maker.partition(PHYSICS, 16, True)
+    maker.partition(PHYSICS, 16, True)
     pass
