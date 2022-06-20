@@ -73,7 +73,7 @@ class GINConv(nn.Module):
 class Gat(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Gat, self).__init__()
-        self.gat = gnn.GATConv(nfeat, nfeat)
+        self.gat = gnn.GATConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -84,7 +84,7 @@ class Gat(nn.Module):
 class Sage(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Sage, self).__init__()
-        self.sage = gnn.SAGEConv(nfeat, nfeat)
+        self.sage = gnn.SAGEConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -95,7 +95,7 @@ class Sage(nn.Module):
 class Gcn(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Gcn, self).__init__()
-        self.gcn = gnn.GCNConv(nfeat, nfeat)
+        self.gcn = gnn.GCNConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -139,7 +139,7 @@ class Agnn(nn.Module):
 class Arma(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Arma, self).__init__()
-        self.arma = gnn.ARMAConv(nfeat, nfeat, num_stacks=2)
+        self.arma = gnn.ARMAConv(nfeat, nclass, num_stacks=2)
         return
 
     def forward(self, x, edge_index):
@@ -150,7 +150,7 @@ class Arma(nn.Module):
 class FeaStConv(nn.Module):
     def __init__(self, nfeat, nclass):
         super(FeaStConv, self).__init__()
-        self.feastconv = gnn.FeaStConv(nfeat, nfeat, 2)
+        self.feastconv = gnn.FeaStConv(nfeat, nclass, 2)
         return
 
     def forward(self, x, edge_index):
@@ -161,7 +161,7 @@ class FeaStConv(nn.Module):
 class GENConv(nn.Module):
     def __init__(self, nfeat, nclass):
         super(GENConv, self).__init__()
-        self.genconv = gnn.GENConv(nfeat, nfeat)
+        self.genconv = gnn.GENConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -172,11 +172,22 @@ class GENConv(nn.Module):
 class GatedGraphConv(nn.Module):
     def __init__(self, nfeat, nclass):
         super(GatedGraphConv, self).__init__()
-        self.gatedgraph = gnn.GatedGraphConv(nfeat, 1)
+        self.gatedgraph = gnn.GatedGraphConv(nclass, 1)
         return
 
     def forward(self, x, edge_index):
         x = F.relu(self.gatedgraph(x, edge_index))
+        return x
+
+
+class Linear(nn.Module):
+    def __init__(self, nfeat, nclass):
+        super(Linear, self).__init__()
+        self.linear = nn.Linear(nfeat, nclass)
+        return
+
+    def forward(self, x, edge_index):
+        x = self.linear(x)
         return x
 
 
@@ -189,12 +200,10 @@ class Structure():
         return
 
     def set_x(self):
-        self.x = nn.Linear(self.nfeat, self.hdim)
-        self.x_1 = F.sigmoid
-        self.x_2 = F.tanh
-        self.x_3 = F.relu
-        self.x_4 = F.softmax
-        self.x_5 = nn.Identity()
+        self.x_1 = Linear(self.nfeat, self.hdim)
+        self.x_2 = Gat(self.nfeat, self.hdim)
+        self.x_3 = Gcn(self.nfeat, self.hdim)
+        self.x_4 = Sgc(self.nfeat, self.hdim)
         return
 
     def set_y(self, len=64):
@@ -237,7 +246,7 @@ class Structure():
         if self.first:
             print(local_mask)
             self.first = False
-        x = eval('self.x_{}'.format(supermask[0]))(self.x(x))
+        x = F.relu(eval('self.x_{}'.format(supermask[0]))(x, edge_index))
 
         if supermask[1] != 0:
             l1_input = x
@@ -587,9 +596,11 @@ if __name__ == "__main__":
     # print(supermask)
     # for i in range(12):
     #     print(i)
+
+    with open('tmp.pkl', 'wb') as f:
+        pickle.dump([8, 6, 19, 31, 43, 42, 18, 2], f)
     with open('data/pubmed/{}_{}copynode.pkl'.format(8, ''), 'rb') as f:
         data = pickle.load(f)
-    model = GMMConv(500, 64)
-    print(data.x.size(), data.edge_index.size(), data.edge_index.max())
+    model = SonNet(500, 3)
     model(data.x, data.edge_index)
     pass

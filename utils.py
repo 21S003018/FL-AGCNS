@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 OBJ_END = 'eofeofeof'
-IP_PORT_BASE = 8000
+IP_PORT_BASE = 7000
 ADDR = "addr"
 
 
@@ -313,8 +313,8 @@ def cal_edge_attr_for_gmmconv(edge_index):
 
 
 # evo related
-MASKRANGE = [[1, 5], [1, 12], [13, 24], [
-    25, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
+MASKRANGE = [[1, 4], [1, 12], [13, 24], [
+    1, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
 
 
 def rand_element(idx):
