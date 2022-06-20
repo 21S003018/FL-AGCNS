@@ -109,36 +109,13 @@ class Arma(nn.Module):
 class Gated(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Gated, self).__init__()
-        self.linearin = nn.Linear(nfeat, 64)
-        self.linearin = nn.Sequential(
-            nn.Linear(nfeat,)
-        )
-        self.lins = []
-        dim = nfeat
-        while int(dim/4) > 64:
-            self.lins.append(nn.Linear(dim, int(dim/4)))
-            dim = int(dim/4)
-        self.lins.append(nn.Linear(dim, int(dim/4)))
+        self.linear1 = nn.Linear(nfeat, 64)
         self.gated = gnn.GatedGraphConv(64, 3)
         self.linear = nn.Linear(64, nclass)
         return
 
     def forward(self, x, edge_index):
-        for linear in self.lins:
-            x = F.relu(linear(x))
-        x = F.relu(self.gated(x, edge_index))
+        x = F.relu(self.linear1(x))
+        x = self.gated(x, edge_index)
         x = self.linear(x)
         return F.softmax(x)
-# class Gated(nn.Module):
-#     def __init__(self, nfeat, nclass):
-#         super(Gated, self).__init__()
-#         self.linear1 = nn.Linear(nfeat, 64)
-#         self.gated = gnn.GatedGraphConv(64, 3)
-#         self.linear = nn.Linear(64, nclass)
-#         return
-
-#     def forward(self, x, edge_index):
-#         x = F.relu(self.linear1(x))
-#         x = self.gated(x, edge_index)
-#         x = self.linear(x)
-#         return F.softmax(x)

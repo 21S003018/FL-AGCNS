@@ -249,10 +249,10 @@ class PartitionTool():
         def idx_map(idx):
             idx = np.array(idx)
             idx = np.sort(idx)
-            idx_map = np.zeros(int(np.max(idx)) + 1)
+            ret_idx_map = np.zeros(int(np.max(idx)) + 1, dtype=int)
             for i in range(len(idx)):
-                idx_map[int(idx[i])] = i
-            return torch.tensor(idx_map, dtype=int)
+                ret_idx_map[int(idx[i])] = i
+            return ret_idx_map
 
         for i in range(k):
             print(i)
@@ -272,15 +272,21 @@ class PartitionTool():
             print(i)
             exec('idx_{}_bool_tensor = torch.zeros(len(x)).bool()'.format(i))
             exec(
-                'for idx in self.idx_{}:idx_{}_bool_tensor[idx] = True'.format(i, i))
-            exec('train_mask_{} = train_mask[idx_{}_bool_tensor]'.format(i, i))
-            exec('val_mask_{} = val_mask[idx_{}_bool_tensor]'.format(i, i))
-            exec('test_mask_{} = test_mask[idx_{}_bool_tensor]'.format(i, i))
-            exec(
                 'for idx in self.expanded_idx_{}:idx_{}_bool_tensor[idx] = True'.format(i, i))
             exec('x_{} = x[idx_{}_bool_tensor]'.format(i, i))
             exec('y_{} = y[idx_{}_bool_tensor]'.format(i, i))
-
+            exec(
+                'train_mask_{} = torch.zeros(len(self.expanded_idx_{})).bool()'.format(i, i))
+            exec('val_mask_{} = torch.zeros(len(self.expanded_idx_{})).bool()'.format(i, i))
+            exec(
+                'test_mask_{} = torch.zeros(len(self.expanded_idx_{})).bool()'.format(i, i))
+            ret_idx_map = idx_map(eval('self.expanded_idx_{}'.format(i)))
+            for idx in eval('self.idx_{}'.format(i)):
+                exec(
+                    'train_mask_{}[ret_idx_map[idx]] = train_mask[idx]'.format(i))
+                exec('val_mask_{}[ret_idx_map[idx]] = val_mask[idx]'.format(i))
+                exec(
+                    'test_mask_{}[ret_idx_map[idx]] = test_mask[idx]'.format(i))
             train += eval('train_mask_{}'.format(i)).sum()
             val += eval('val_mask_{}'.format(i)).sum()
             test += eval('test_mask_{}'.format(i)).sum()

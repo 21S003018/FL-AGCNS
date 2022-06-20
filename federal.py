@@ -346,6 +346,7 @@ class Client(Contacter):
                 torch.sum(self.data.val_mask))/self.num_val_node
             self.test_rate = float(
                 torch.sum(self.data.test_mask))/self.num_test_node
+            print(self.id, self.train_rate, self.val_rate, self.test_rate)
         return
 
     def get_grad_dict(self):
