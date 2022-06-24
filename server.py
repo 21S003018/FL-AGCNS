@@ -88,7 +88,7 @@ if __name__ == '__main__':
     elif args.model == 'fl-random':
         print(args.model)
         begin = time.time()
-        for i in range(5):
+        for i in range(50):
             tmp_supermask = utils.random_supermask()
             with open('tmp.pkl', 'wb') as f:
                 pickle.dump(tmp_supermask, f)

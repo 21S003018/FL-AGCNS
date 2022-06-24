@@ -313,7 +313,7 @@ def cal_edge_attr_for_gmmconv(edge_index):
 
 
 # evo related
-MASKRANGE = [[1, 4], [1, 12], [13, 24], [
+MASKRANGE = [[1, 1], [1, 12], [13, 24], [
     1, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
 
 
@@ -397,16 +397,53 @@ def num_params(model):
     return k
 
 
+def parse_path(supermask):
+    def get_leaf_idx(supermask):
+        local_mask = torch.ones(7, dtype=int)
+        for i in range(1, 7):
+            local_mask[int((supermask[i]-1)/12)] = 0
+            if supermask[i] == 0:
+                local_mask[i] = 0
+        return local_mask.nonzero()
+    leaf_idx = get_leaf_idx(supermask)
+
+    def get_supermask_from_leaf(leaf_idx, supermask, ret=torch.zeros(len(supermask), dtype=int)):
+        ret[0], ret[-1] = supermask[0], supermask[-1]
+        idx = leaf_idx
+        code = supermask[idx]
+        while code and idx:
+            ret[idx] = code
+            idx = int((code-1)/12)
+            code = supermask[idx]
+        return ret
+    leaf_idx = sorted(leaf_idx, key=lambda x: get_supermask_from_leaf(
+        x, supermask, torch.zeros(len(supermask), dtype=int)).tolist().__str__(), reverse=True)
+    ans = []
+    for idx in leaf_idx:
+        if len(ans) < 0:
+            ans.append(get_supermask_from_leaf(
+                idx, supermask, ans[-1].clone()))
+        else:
+            ans.append(get_supermask_from_leaf(idx, supermask,
+                       torch.zeros(len(supermask), dtype=int)))
+    return ans
+
+
 if __name__ == "__main__":
-    # partitioner = PartitionTool()
-    # partitioner.partition_subgraph()
-    for i in range(3):
-        with open('data/citeseer/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
-            data = pickle.load(f)
-        print(data.edge_index.max(), data, data.train_mask.sum(),
-              data.val_mask.sum(), data.test_mask.sum())
-    # print(read_ipport())
-    # x = torch.rand(5, 1)
-    # y = torch.ones(5, 1)
-    # print(x, x.where(x > 0.5, y))
+    # # partitioner = PartitionTool()
+    # # partitioner.partition_subgraph()
+    # for i in range(3):
+    #     with open('data/citeseer/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
+    #         data = pickle.load(f)
+    #     print(data.edge_index.max(), data, data.train_mask.sum(),
+    #           data.val_mask.sum(), data.test_mask.sum())
+    # # print(read_ipport())
+    # # x = torch.rand(5, 1)
+    # # y = torch.ones(5, 1)
+    # # print(x, x.where(x > 0.5, y))
+    import os
+    for id in range(2200, 2300):
+        os.system('kill -9 {}'.format(id))
+    # print(parse_path([1, 6, 21, 24, 43, 21, 49, 5]))
+    # print(parse_path([4, 12, 13, 6, 0, 42, 0, 2]))
     pass
