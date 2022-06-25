@@ -37,7 +37,7 @@ We have searched some good architectures and you could evaluate it using the fol
 
 ```bash
 # cora
-python server.py --mode test --code ? --dataset cora
+python server.py --mode test --code 1 6 6 0 0 54 55 5 --dataset cora
 python client.py --mode test
 # citeseer
 python server.py --mode test --code ? --dataset citeseer
