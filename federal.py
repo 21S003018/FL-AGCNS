@@ -39,6 +39,8 @@ class Controller():
         self.socket.listen(3)
         self.best_supermask = None
         self.best_accu = 0
+        self.best_supermask_var = None
+        self.pop_var = None
         return
 
     def configure(self, model_name, dataset, nfeat, nclass):
@@ -315,7 +317,7 @@ class Client(Contacter):
         # chuange the parameters of model
         for name, param in param_dict.items():
             if not name.__contains__('.') and (name in ['alpha', 'gamma'] or name.__contains__('beta')):
-                exec('model.{} = param'.format(name))
+                exec('model.{} = nn.Parameter(param)'.format(name))
                 continue
             name += 'ending'
             slots = name.split('.')  # ;print('slots',slots)
@@ -346,6 +348,7 @@ class Client(Contacter):
                 torch.sum(self.data.val_mask))/self.num_val_node
             self.test_rate = float(
                 torch.sum(self.data.test_mask))/self.num_test_node
+            print(self.id, self.train_rate, self.val_rate, self.test_rate)
         return
 
     def get_grad_dict(self):
@@ -453,7 +456,7 @@ class ControllerSuperNet(Controller):
         self.broadcast_with_waiting_res(self.supermasks)
         for epoch in range(evo_epochs):
             st_time = time.time()
-            if epoch <= 50:
+            if epoch < 50:
                 supermasks = [utils.random_supermask() for i in range(num_pop)]
             for sample_epoch in range(sample_epochs):
                 self.broadcast_with_waiting_res('train')
@@ -476,8 +479,8 @@ class ControllerSuperNet(Controller):
             self.broadcast('get')
             losses = self.aggregate()
             loss = sum(losses)
-            print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{}\n'.format(
-                epoch, loss, time.time() - st_time, self.best_supermask, self.best_accu))
+            print('train evo-epoch~{},loss={},use time:{}, current best supermask:{} with accu:{} with var: {}, current pop var: {}\n'.format(
+                epoch, loss, time.time() - st_time, self.best_supermask, self.best_accu, self.best_supermask_var, self.pop_var))
 
             if DEBUG:
                 for supermask in self.supermasks:
@@ -496,8 +499,12 @@ class ControllerSuperNet(Controller):
         self.broadcast_with_waiting_res('val')
         self.broadcast(supermask)
         accus = self.aggregate()
-        accu = sum(accus)
-        return accu
+        accu = 0
+        client_accus = []
+        for tmp in accus:
+            accu += tmp[0]
+            client_accus.append(tmp[1])
+        return accu, np.array(client_accus)
 
     def evo(self):
         supermasks = self.supermasks
@@ -532,12 +539,16 @@ class ControllerSuperNet(Controller):
         while len(result_supermasks) < num_pop:
             result_supermasks.append(utils.random_supermask())
         performance = []
-        for supermask in result_supermasks:
-            accu = self.aggregate_accu(supermask)
+        avg_accu = np.zeros(self.num_client)
+        for i, supermask in enumerate(result_supermasks):
+            accu, accus = self.aggregate_accu(supermask)
+            avg_accu = avg_accu + 1/(i+1)*accus
             if accu > self.best_accu:
-                self.best_accu, self.best_supermask = accu, supermask
+                self.best_accu, self.best_supermask, self.best_supermask_var = accu, supermask, accus.var()
             performance.append(accu)
-            print("supermask:{},accu:{}".format(supermask, accu), end=";")
+            print("supermask:{},accu:{}".format(
+                supermask, accu), end=";")
+        self.pop_var = avg_accu.var()
         print()
         result = sorted(range(len(performance)), key=lambda k: performance[k])
         result.reverse()
@@ -671,9 +682,10 @@ class ClientSuperNet(Client):
 
     def process_val(self):
         supermask = self.recv()
+        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index, supermask)[self.data.val_mask],
                               self.data.y[self.data.val_mask])
-        self.send(accu * self.val_rate)
+        self.send((accu * self.val_rate, accu))
         return
 
 
@@ -722,9 +734,15 @@ class ControllerCommonNet(Controller):
             st_time = time.time()
             self.broadcast_with_waiting_res('test')
             self.broadcast('get')
-            accu = sum(self.aggregate()) * 100
+            accus = self.aggregate()
+            accu = 0
+            client_accus = []
+            for tmp in accus:
+                accu += tmp[0]
+                client_accus.append(tmp[1])
+            accu = accu * 100
             ed_time = time.time()
-            print('test accu:{}'.format(accu))
+            print('test accu:{}, var:{}'.format(accu, np.array(client_accus).var()))
             accus.append(accu)
         return round(np.mean(accus), 1), round(np.std(accus), 2), round(ed_time-st_time, 3)
 
@@ -732,6 +750,7 @@ class ControllerCommonNet(Controller):
 class ClientCommonNet(Client):
     def __init__(self, id):
         Client.__init__(self, id)
+        self.epoch = 0
         return
 
     def process(self, command):
@@ -747,6 +766,11 @@ class ClientCommonNet(Client):
     def process_train(self):
         self.recv()
         self.model.train()
+        # # if code test
+        # self.model.iter_supermask()
+        # print(
+        #     f'Epoch-{self.epoch}: Client_{self.id} iterates supermask to {self.model.supermask}')
+        self.epoch += 1
         y_predict = self.model(self.data.x, self.data.edge_index)
         loss = F.cross_entropy(
             y_predict[self.data.train_mask], self.data.y[self.data.train_mask])
@@ -760,6 +784,9 @@ class ClientCommonNet(Client):
         return
 
     def process_val(self):
+        # # if code test
+        # self.model.reset_supermask()
+        # print(f'Client_{self.id} resets supermask to {self.model.supermask}')
         self.recv()
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
@@ -768,11 +795,14 @@ class ClientCommonNet(Client):
         return
 
     def process_test(self):
+        # # if code test
+        # self.model.reset_supermask()
+        # print(f'Client_{self.id} resets supermask to {self.model.supermask}')
         self.recv()
         self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[
                               self.data.test_mask], self.data.y[self.data.test_mask])
-        self.send(accu * self.test_rate)
+        self.send((accu * self.test_rate, accu))
         return
 
 
@@ -924,8 +954,8 @@ class ControllerFedNas(Controller):
             losses = self.aggregate()
             for idx in range(self.num_client):
                 loss += losses[idx]
-            print('train -epoch~{},loss={},use time:{}'.format(epoch,
-                  loss, time.time() - st_time))
+            print('train -epoch~{},loss={},use time:{}, current metric:{}'.format(epoch,
+                  loss, time.time() - st_time, self.parse_metric()))
             if DEBUG:
                 self.broadcast_with_waiting_res('val')
                 self.broadcast('get')
@@ -937,12 +967,17 @@ class ControllerFedNas(Controller):
 
         return
 
-    def aggregate_accu(self, supermask):
-        self.broadcast_with_waiting_res('val')
+    def parse_metric(self):
+        supermask = self.model.generate_supermask()
+        self.broadcast_with_waiting_res('test')
         self.broadcast(supermask)
         accus = self.aggregate()
-        accu = sum(accus)
-        return accu
+        accu = 0
+        client_accus = []
+        for tmp in accus:
+            accu += tmp[0]
+            client_accus.append(tmp[1])
+        return accu, client_accus, np.array(client_accus).var()
 
 
 class ClientFedNas(Client):
@@ -957,6 +992,8 @@ class ClientFedNas(Client):
             self.process_model()
         if command == 'train':
             self.process_train()
+        elif command == 'test':
+            self.process_test()
         return
 
     def configure(self, model, dataset, copy_node=COPY_NODE):
@@ -1024,7 +1061,16 @@ class ClientFedNas(Client):
 
     def process_val(self):
         self.recv()
+        self.model.eval()
         accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.val_mask],
                               self.data.y[self.data.val_mask])
-        self.send(accu * self.val_rate)
+        self.send((accu * self.val_rate, accu))
+        return
+
+    def process_test(self):
+        self.recv()
+        self.model.eval()
+        accu = utils.accuracy(self.model(self.data.x, self.data.edge_index)[self.data.test_mask],
+                              self.data.y[self.data.test_mask])
+        self.send((accu * self.test_rate, accu))
         return

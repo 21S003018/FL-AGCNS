@@ -73,7 +73,7 @@ class GINConv(nn.Module):
 class Gat(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Gat, self).__init__()
-        self.gat = gnn.GATConv(nfeat, nfeat)
+        self.gat = gnn.GATConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -84,7 +84,7 @@ class Gat(nn.Module):
 class Sage(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Sage, self).__init__()
-        self.sage = gnn.SAGEConv(nfeat, nfeat)
+        self.sage = gnn.SAGEConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -95,7 +95,7 @@ class Sage(nn.Module):
 class Gcn(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Gcn, self).__init__()
-        self.gcn = gnn.GCNConv(nfeat, nfeat)
+        self.gcn = gnn.GCNConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -139,7 +139,7 @@ class Agnn(nn.Module):
 class Arma(nn.Module):
     def __init__(self, nfeat, nclass):
         super(Arma, self).__init__()
-        self.arma = gnn.ARMAConv(nfeat, nfeat, num_stacks=2)
+        self.arma = gnn.ARMAConv(nfeat, nclass, num_stacks=2)
         return
 
     def forward(self, x, edge_index):
@@ -150,7 +150,7 @@ class Arma(nn.Module):
 class FeaStConv(nn.Module):
     def __init__(self, nfeat, nclass):
         super(FeaStConv, self).__init__()
-        self.feastconv = gnn.FeaStConv(nfeat, nfeat, 2)
+        self.feastconv = gnn.FeaStConv(nfeat, nclass, 2)
         return
 
     def forward(self, x, edge_index):
@@ -161,7 +161,7 @@ class FeaStConv(nn.Module):
 class GENConv(nn.Module):
     def __init__(self, nfeat, nclass):
         super(GENConv, self).__init__()
-        self.genconv = gnn.GENConv(nfeat, nfeat)
+        self.genconv = gnn.GENConv(nfeat, nclass)
         return
 
     def forward(self, x, edge_index):
@@ -172,11 +172,22 @@ class GENConv(nn.Module):
 class GatedGraphConv(nn.Module):
     def __init__(self, nfeat, nclass):
         super(GatedGraphConv, self).__init__()
-        self.gatedgraph = gnn.GatedGraphConv(nfeat, 1)
+        self.gatedgraph = gnn.GatedGraphConv(nclass, 1)
         return
 
     def forward(self, x, edge_index):
         x = F.relu(self.gatedgraph(x, edge_index))
+        return x
+
+
+class Linear(nn.Module):
+    def __init__(self, nfeat, nclass):
+        super(Linear, self).__init__()
+        self.linear = nn.Linear(nfeat, nclass)
+        return
+
+    def forward(self, x, edge_index):
+        x = F.relu(self.linear(x))
         return x
 
 
@@ -189,12 +200,10 @@ class Structure():
         return
 
     def set_x(self):
-        self.x = nn.Linear(self.nfeat, self.hdim)
-        self.x_1 = F.sigmoid
-        self.x_2 = F.tanh
-        self.x_3 = F.relu
-        self.x_4 = F.softmax
-        self.x_5 = nn.Identity()
+        self.x_1 = Linear(self.nfeat, self.hdim)
+        # self.x_2 = Gat(self.nfeat, self.hdim)
+        # self.x_3 = Gcn(self.nfeat, self.hdim)
+        # self.x_4 = Sgc(self.nfeat, self.hdim)
         return
 
     def set_y(self, len=64):
@@ -237,7 +246,7 @@ class Structure():
         if self.first:
             print(local_mask)
             self.first = False
-        x = eval('self.x_{}'.format(supermask[0]))(self.x(x))
+        x = F.relu(eval('self.x_{}'.format(supermask[0]))(x, edge_index))
 
         if supermask[1] != 0:
             l1_input = x
@@ -295,6 +304,8 @@ class SonNet(nn.Module, Structure):
     def __init__(self, nfeat, nclass):
         with open('tmp.pkl', 'rb') as f:
             self.supermask = pickle.load(f)
+        self.leaf_supermasks = utils.parse_path(self.supermask)
+        self.iter = 0
         nn.Module.__init__(self)
         Structure.__init__(self, 64, nfeat, nclass)
         Structure.set_x(self)
@@ -302,9 +313,20 @@ class SonNet(nn.Module, Structure):
         Structure.set_z(self)
         return
 
-    def forward(self, x, edge_index):
-        supermask = self.supermask
+    def forward(self, x, edge_index, supermask=None):
+        if supermask == None:
+            supermask = self.supermask
         return Structure.forward(self, x, edge_index, supermask)
+
+    def iter_supermask(self, ):
+        self.supermask = self.leaf_supermasks[int(
+            self.iter % len(self.leaf_supermasks))]
+        self.iter += 1
+        return
+
+    def reset_supermask(self, ):
+        self.supermask = self.leaf_supermasks[-1]
+        return
 
 
 class DynamicSonNet(nn.Module, Structure):
@@ -434,7 +456,7 @@ class FedNas(nn.Module, Structure):
 
         self.tau = 10
         self.register_parameter('alpha', nn.Parameter(
-            Variable(torch.ones(5)/2, requires_grad=True)))
+            Variable(torch.ones(1)/2, requires_grad=True)))
         self.register_parameter('gamma', nn.Parameter(
             Variable(torch.ones(5)/2, requires_grad=True)))
         for j in range(1, 7):
@@ -446,9 +468,9 @@ class FedNas(nn.Module, Structure):
         device = self.alpha.device
         tmp_lis = []
         tmp_alpha = F.softmax(self.alpha)
-        for i in range(5):
+        for i in range(1):
             tmp_lis.append(
-                eval('tmp_alpha[{}] * self.x_{}(self.x(x))'.format(i, i+1)))
+                eval('tmp_alpha[{}] * self.x_{}(x,edge_index)'.format(i, i+1)))
         x = torch.sum(torch.stack(tmp_lis, axis=0), dim=0)
         y0 = x
         for j in range(1, 6 + 1):
@@ -477,7 +499,7 @@ class FedNas(nn.Module, Structure):
         supermask = [0, 0, 0, 0, 0, 0, 0, 0]
         max_alpha = torch.Tensor([-1000000]).to(device)
         arg_max_alpha = None
-        for idx in range(5):
+        for idx in range(1):
             if eval('torch.abs(self.alpha[{}])'.format(idx)) > max_alpha:
                 max_alpha = eval('torch.abs(self.alpha[{}])'.format(idx))
                 arg_max_alpha = idx
@@ -587,9 +609,11 @@ if __name__ == "__main__":
     # print(supermask)
     # for i in range(12):
     #     print(i)
+
+    with open('tmp.pkl', 'wb') as f:
+        pickle.dump([8, 6, 19, 31, 43, 42, 18, 2], f)
     with open('data/pubmed/{}_{}copynode.pkl'.format(8, ''), 'rb') as f:
         data = pickle.load(f)
-    model = GMMConv(500, 64)
-    print(data.x.size(), data.edge_index.size(), data.edge_index.max())
+    model = SonNet(500, 3)
     model(data.x, data.edge_index)
     pass

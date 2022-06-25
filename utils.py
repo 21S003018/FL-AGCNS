@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 OBJ_END = 'eofeofeof'
-IP_PORT_BASE = 8000
+IP_PORT_BASE = 7000
 ADDR = "addr"
 
 
@@ -249,10 +249,10 @@ class PartitionTool():
         def idx_map(idx):
             idx = np.array(idx)
             idx = np.sort(idx)
-            idx_map = np.zeros(int(np.max(idx)) + 1)
+            ret_idx_map = np.zeros(int(np.max(idx)) + 1, dtype=int)
             for i in range(len(idx)):
-                idx_map[int(idx[i])] = i
-            return torch.tensor(idx_map, dtype=int)
+                ret_idx_map[int(idx[i])] = i
+            return ret_idx_map
 
         for i in range(k):
             print(i)
@@ -272,15 +272,21 @@ class PartitionTool():
             print(i)
             exec('idx_{}_bool_tensor = torch.zeros(len(x)).bool()'.format(i))
             exec(
-                'for idx in self.idx_{}:idx_{}_bool_tensor[idx] = True'.format(i, i))
-            exec('train_mask_{} = train_mask[idx_{}_bool_tensor]'.format(i, i))
-            exec('val_mask_{} = val_mask[idx_{}_bool_tensor]'.format(i, i))
-            exec('test_mask_{} = test_mask[idx_{}_bool_tensor]'.format(i, i))
-            exec(
                 'for idx in self.expanded_idx_{}:idx_{}_bool_tensor[idx] = True'.format(i, i))
             exec('x_{} = x[idx_{}_bool_tensor]'.format(i, i))
             exec('y_{} = y[idx_{}_bool_tensor]'.format(i, i))
-
+            exec(
+                'train_mask_{} = torch.zeros(len(self.expanded_idx_{})).bool()'.format(i, i))
+            exec('val_mask_{} = torch.zeros(len(self.expanded_idx_{})).bool()'.format(i, i))
+            exec(
+                'test_mask_{} = torch.zeros(len(self.expanded_idx_{})).bool()'.format(i, i))
+            ret_idx_map = idx_map(eval('self.expanded_idx_{}'.format(i)))
+            for idx in eval('self.idx_{}'.format(i)):
+                exec(
+                    'train_mask_{}[ret_idx_map[idx]] = train_mask[idx]'.format(i))
+                exec('val_mask_{}[ret_idx_map[idx]] = val_mask[idx]'.format(i))
+                exec(
+                    'test_mask_{}[ret_idx_map[idx]] = test_mask[idx]'.format(i))
             train += eval('train_mask_{}'.format(i)).sum()
             val += eval('val_mask_{}'.format(i)).sum()
             test += eval('test_mask_{}'.format(i)).sum()
@@ -307,8 +313,8 @@ def cal_edge_attr_for_gmmconv(edge_index):
 
 
 # evo related
-MASKRANGE = [[1, 5], [1, 12], [13, 24], [
-    25, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
+MASKRANGE = [[1, 1], [1, 12], [13, 24], [
+    1, 36], [1, 48], [1, 60], [1, 72], [1, 5]]
 
 
 def rand_element(idx):
@@ -391,16 +397,53 @@ def num_params(model):
     return k
 
 
+def parse_path(supermask):
+    def get_leaf_idx(supermask):
+        local_mask = torch.ones(7, dtype=int)
+        for i in range(1, 7):
+            local_mask[int((supermask[i]-1)/12)] = 0
+            if supermask[i] == 0:
+                local_mask[i] = 0
+        return local_mask.nonzero()
+    leaf_idx = get_leaf_idx(supermask)
+
+    def get_supermask_from_leaf(leaf_idx, supermask, ret=torch.zeros(len(supermask), dtype=int)):
+        ret[0], ret[-1] = supermask[0], supermask[-1]
+        idx = leaf_idx
+        code = supermask[idx]
+        while code and idx:
+            ret[idx] = code
+            idx = int((code-1)/12)
+            code = supermask[idx]
+        return ret
+    leaf_idx = sorted(leaf_idx, key=lambda x: get_supermask_from_leaf(
+        x, supermask, torch.zeros(len(supermask), dtype=int)).tolist().__str__(), reverse=True)
+    ans = []
+    for idx in leaf_idx:
+        if len(ans) < 0:
+            ans.append(get_supermask_from_leaf(
+                idx, supermask, ans[-1].clone()))
+        else:
+            ans.append(get_supermask_from_leaf(idx, supermask,
+                       torch.zeros(len(supermask), dtype=int)))
+    return ans
+
+
 if __name__ == "__main__":
-    # partitioner = PartitionTool()
-    # partitioner.partition_subgraph()
-    for i in range(3):
-        with open('data/citeseer/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
-            data = pickle.load(f)
-        print(data.edge_index.max(), data, data.train_mask.sum(),
-              data.val_mask.sum(), data.test_mask.sum())
-    # print(read_ipport())
-    # x = torch.rand(5, 1)
-    # y = torch.ones(5, 1)
-    # print(x, x.where(x > 0.5, y))
+    # # partitioner = PartitionTool()
+    # # partitioner.partition_subgraph()
+    # for i in range(3):
+    #     with open('data/citeseer/{}_{}copynode.pkl'.format(i, ''), 'rb') as f:
+    #         data = pickle.load(f)
+    #     print(data.edge_index.max(), data, data.train_mask.sum(),
+    #           data.val_mask.sum(), data.test_mask.sum())
+    # # print(read_ipport())
+    # # x = torch.rand(5, 1)
+    # # y = torch.ones(5, 1)
+    # # print(x, x.where(x > 0.5, y))
+    import os
+    for id in range(2200, 2300):
+        os.system('kill -9 {}'.format(id))
+    # print(parse_path([1, 6, 21, 24, 43, 21, 49, 5]))
+    # print(parse_path([4, 12, 13, 6, 0, 42, 0, 2]))
     pass

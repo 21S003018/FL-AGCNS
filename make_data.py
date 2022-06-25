@@ -1,5 +1,5 @@
-from os import name
 import pickle
+from random import randint
 from torch_geometric.datasets import Coauthor, CoraFull, Planetoid
 from utils import PartitionTool
 import torch
@@ -40,16 +40,18 @@ class Maker():
                 visit[label] -= 1
         val_mask = torch.zeros(len(data.y)).bool()
         num = 0
-        for index in range(len(data.y)):
-            if train_mask[index] == False:
+        while True:
+            index = randint(0, len(data.y)-1)
+            if train_mask[index] == False and val_mask[index] == False:
                 val_mask[index] = True
                 num += 1
             if num == 500:
                 break
         test_mask = torch.zeros(len(data.y)).bool()
         num = 0
-        for index in range(len(data.y)):
-            if train_mask[index] == False and val_mask[index] == False:
+        while True:
+            index = randint(0, len(data.y)-1)
+            if train_mask[index] == False and val_mask[index] == False and test_mask[index] == False:
                 test_mask[index] = True
                 num += 1
             if num == 1000:
@@ -62,6 +64,7 @@ class Maker():
         data.train_mask = train_mask
         data.val_mask = val_mask
         data.test_mask = test_mask
+        print(train_mask.sum(), val_mask.sum(), test_mask.sum())
         datas = self.partitioner.partition_subgraph(data, k, copy_node)
         for i in range(k):
             path = "data/{}/{}_{}copynode.pkl".format(
@@ -79,6 +82,6 @@ if __name__ == '__main__':
     # maker.partition('cora', 3, True)
     # maker.partition('citeseer', 3, True)
     # maker.partition('pubmed', 12, True)
-    # maker.partition(CORAFULL, 18, True)
-    # maker.partition(PHYSICS, 16, True)
+    # maker.partition(CORAFULL, 16, True)
+    # maker.partition(PHYSICS, 18, True)
     pass
