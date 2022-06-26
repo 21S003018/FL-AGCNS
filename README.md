@@ -37,20 +37,20 @@ We have searched some good architectures and you could evaluate it using the fol
 
 ```bash
 # cora
-python server.py --mode test --code 1 6 6 0 0 54 55 5 --dataset cora
+python server.py --mode test --code 1 6 0 0 6 54 55 5 --dataset cora
 python client.py --mode test
 # citeseer
-python server.py --mode test --code ? --dataset citeseer
+python server.py --mode test --code 1 4 18 30 42 0 0 5 --dataset citeseer
 python client.py --mode test
 # pubmed
-python server.py --mode test --client 12 --code ? --dataset pubmed
+python server.py --mode test --client 12 --code 1 0 0 6 42 43 0 5 --dataset pubmed
 python client.py --mode test --client 12
-# corafull
-python server.py --mode test --client 16 --code ? --dataset pubmed
+# corafull(extension to cora, you could use cora's code and the presented in paper is 1 6 0 6 42 54 55 5)
+python server.py --mode test --client 16 --code 1 6 0 0 6 54 55 5 --dataset pubmed
 python client.py --mode test --client 16
 # Physics
-python server.py --mode test --client 20 --code ? --dataset Physics
-python client.py --mode test --client 20
+python server.py --mode test --client 18 --code 1 5 0 7 0 42 0 4 --dataset Physics
+python client.py --mode test --client 18
 ```
 
 Please open two terminals, input the first command line into one terminal and input the second one into another terminal.
